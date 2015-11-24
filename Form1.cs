@@ -23,7 +23,7 @@ namespace BingRewardsBot
 {
     public partial class Form1 : Form
     {
-        private  const int TORCONTROLPORT = 9053;
+        private  const int TORCONTROLPORT = 9050;
         //private const string TORSOCKSPORT = "8118";
         private const string TORSERVER = "127.0.0.1";
         private int dxloops = 0;
@@ -479,6 +479,41 @@ namespace BingRewardsBot
                 {
                     this.toolStripStatusLabel1.Text = MYIP + this.ip;
                 }
+
+                // new us ip
+                if (this.country == "US")
+                {
+                    SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                    m_dbConnection.Open();
+
+                    string sql = "select count(*) from searches where ip='" + this.ip + "," + this.country + "';";
+                    SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+
+                    int count = 0;
+                    while (reader.Read())
+                    {
+                        count = Convert.ToInt32(reader["count(*)"]);
+                    }
+
+                    if (count == 0)
+                    {
+                        sql = "insert into searches (date, ip, account, points) values ('','" + this.ip + "," + this.country + "','','')";
+                        command = new SQLiteCommand(sql, m_dbConnection);
+                        command.ExecuteNonQuery();
+                    }
+                    m_dbConnection.Close();
+
+                    try
+                    {
+                        this.authLock = false;
+                        this.timer_auth.Enabled = false;
+                        this.timer_auth.Stop();
+                    }
+                    catch { }
+
+                }
+
 
                 // Database  
                 if (!File.Exists(Application.StartupPath + Path.DirectorySeparatorChar + "points.sqlite"))

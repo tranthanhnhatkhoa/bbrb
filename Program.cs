@@ -11,7 +11,7 @@ namespace BingRewardsBot
 {
     static class Program
     {
-        private const string TORSOCKSPORT = "8119";
+        private const string TORSOCKSPORT = "8118";
 
         [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
@@ -55,6 +55,7 @@ namespace BingRewardsBot
 
             //setProxy("127.0.0.1:8118", true);
             WinInetInterop.SetConnectionProxy("localhost:"+TORSOCKSPORT);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
