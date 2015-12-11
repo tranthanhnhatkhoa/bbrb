@@ -18,11 +18,13 @@ using IP2Location;
 using System.Data.SQLite;
 //using HtmlAgilityPack;
 using mshtml;
+using SetProxy;
 
 namespace BingRewardsBot
 {
     public partial class Form1 : Form
     {
+        private const string TORSOCKSPORT = "8118";
         private  const int TORCONTROLPORT = 9050;
         //private const string TORSOCKSPORT = "8118";
         private const string TORSERVER = "127.0.0.1";
@@ -460,6 +462,7 @@ namespace BingRewardsBot
                 string[] authstr = str.Split('/');
                 this.accountNameTxtBox.Text = authstr[0];
 
+                this.chkbox_tor.Checked = BingRewardsBot.Properties.Settings.Default.set_tor == true ? true : false;
                 this.chkbox_mobile.Checked = BingRewardsBot.Properties.Settings.Default.set_mobile == true ? true : false;
                 this.chkbox_desktop.Checked = BingRewardsBot.Properties.Settings.Default.set_desktop == true ? true : false;
                 this.chkbox_autorotate.Checked = BingRewardsBot.Properties.Settings.Default.set_autorotate == true ? true : false;
@@ -828,12 +831,17 @@ namespace BingRewardsBot
                     }
                 }
 
+                //*********************
                 // Log in 
+                //*********************
             }
             else if (loaded.Document != null
              && loaded.Document.GetElementById("i0116") != null)
             {
+                //*********************
                 // user auth (log in)
+                //*********************
+
                 try
                 {
                     loaded.Document.GetElementById("i0116").SetAttribute("value", this.username);
@@ -844,7 +852,9 @@ namespace BingRewardsBot
                 {
                 }
 
+                //*********************
                 // continue searches 
+                //*********************
             }
             else if (loaded.Document != null
               && this.checkaccount == false
@@ -854,6 +864,13 @@ namespace BingRewardsBot
                   || this.clicklist == true)
              )
             {
+                HtmlElement head = browser.Document.GetElementsByTagName("head")[0];
+                HtmlElement scriptEl = browser.Document.CreateElement("script");
+                IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
+                string alertBlocker = "window.alert = function () { }; window.confirm=function () { };";
+                element.text = alertBlocker;
+                head.AppendChild(scriptEl);
+
                 this.altSearch = false;
 
                 // callback search bot
@@ -1093,7 +1110,9 @@ namespace BingRewardsBot
                     browser.Navigate(new Uri("https://www.bing.com/rewards"));
                 }
 
+                //*********************
                 // Init searches
+                //*********************
             }
             else if (loaded.Document != null
               && !loaded.Url.ToString().Contains(@"https://www.bing.com/rewards")
@@ -1112,7 +1131,7 @@ namespace BingRewardsBot
                 HtmlElement head = browser.Document.GetElementsByTagName("head")[0];
                 HtmlElement scriptEl = browser.Document.CreateElement("script");
                 IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
-                string alertBlocker = "window.alert = function () { }";
+                string alertBlocker = "window.alert = function () { }; window.confirm=function () { };";
                 element.text = alertBlocker;
                 head.AppendChild(scriptEl);
 
@@ -1127,7 +1146,9 @@ namespace BingRewardsBot
                 this.timer_searches.Enabled = true;                         // Enable the timer
                 this.timer_searches.Start();
 
+                //*******************************
                 // log out (check & autorotate)
+                //*******************************
             }
             else if (loaded.Document != null
               && (loaded.Url.ToString().Contains(@"http://login.live.com/logout.srf")
@@ -1326,14 +1347,19 @@ namespace BingRewardsBot
 
                                 if (autorotate == true)
                                 {
-                                    try
-                                    {
-                                        RefreshTor(0);
-                                    }
-                                    catch
-                                    {
 
+                                    if (chkbox_tor.Checked == true)
+                                    {
+                                        try
+                                        {
+                                            RefreshTor(0);
+                                        }
+                                        catch
+                                        {
+
+                                        }
                                     }
+
                                     this.ip = this.GetIP().Replace("\r\n", "");
                                     try
                                     {
@@ -1429,6 +1455,13 @@ namespace BingRewardsBot
             bool mobile = BingRewardsBot.Properties.Settings.Default.set_mobile;
             bool desktop = BingRewardsBot.Properties.Settings.Default.set_desktop;
 
+            HtmlElement head = browser.Document.GetElementsByTagName("head")[0];
+            HtmlElement scriptEl = browser.Document.CreateElement("script");
+            IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
+            string alertBlocker = "window.alert = function () { }; window.confirm=function () { };";
+            element.text = alertBlocker;
+            head.AppendChild(scriptEl);
+
             // trial version
             if ((this.trialCountDownReg - (this.trialCountUp * DIVIDE)) < 0 && this.trialstopped == false)
             {
@@ -1455,13 +1488,16 @@ namespace BingRewardsBot
                     this.qpage = 0;
 
                     // only when autorotate
-                    try
+                    if (chkbox_autorotate.Checked == true)
                     {
-                        RefreshTor(0);
-                    }
-                    catch
-                    {
+                        try
+                        {
+                            RefreshTor(0);
+                        }
+                        catch
+                        {
 
+                        }
                     }
                     this.ip = this.GetIP().Replace("\r\n", "");
                     try
@@ -2065,13 +2101,16 @@ namespace BingRewardsBot
                     this.authLock = false;
 
                     // only when autorotate
-                    try
+                    if (chkbox_autorotate.Checked == true)
                     {
-                        RefreshTor(0);
-                    }
-                    catch
-                    {
+                        try
+                        {
+                            RefreshTor(0);
+                        }
+                        catch
+                        {
 
+                        }
                     }
                     this.ip = this.GetIP().Replace("\r\n", "");
                     try
@@ -2105,7 +2144,8 @@ namespace BingRewardsBot
 
         private void settingsSaveBtn_Click(object sender, EventArgs e)
         {
-            BingRewardsBot.Properties.Settings.Default.set_autorotate = chkbox_autorotate.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_autorotate = chkbox_tor.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_tor = chkbox_autorotate.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.set_mobile = chkbox_mobile.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.set_desktop = chkbox_desktop.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.set_counter = txtbox_counter.Text;
@@ -2113,6 +2153,12 @@ namespace BingRewardsBot
             BingRewardsBot.Properties.Settings.Default.set_waitauth = txtbox_waitauth.Text;
             BingRewardsBot.Properties.Settings.Default.set_autostart = txtbox_autostart.Text;
             BingRewardsBot.Properties.Settings.Default.Save();
+
+            if (BingRewardsBot.Properties.Settings.Default.set_tor == true)
+            {
+                //setProxy("127.0.0.1:8118", true);
+                WinInetInterop.SetConnectionProxy("localhost:" + TORSOCKSPORT);
+            }
         }
 
         private void prev_button_Click(object sender, EventArgs e)
@@ -2156,7 +2202,7 @@ namespace BingRewardsBot
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-
+            BingRewardsBot.Properties.Settings.Default.set_tor = chkbox_tor.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.set_autorotate = chkbox_autorotate.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.set_mobile = chkbox_mobile.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.set_desktop = chkbox_desktop.Checked == true ? true : false;
@@ -2226,13 +2272,16 @@ namespace BingRewardsBot
 
         private void button3_Click(object sender, EventArgs e)
         {
-            try
+            if (chkbox_tor.Checked == true)
             {
-                RefreshTor(0);
-            }
-            catch
-            {
+                try
+                {
+                    RefreshTor(0);
+                }
+                catch
+                {
 
+                }
             }
             this.ip = this.GetIP().Replace("\r\n", "");
             try

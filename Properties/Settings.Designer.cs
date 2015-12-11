@@ -106,5 +106,17 @@ namespace BingRewardsBot.Properties {
                 this["set_autostart"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool set_tor {
+            get {
+                return ((bool)(this["set_tor"]));
+            }
+            set {
+                this["set_tor"] = value;
+            }
+        }
     }
 }

@@ -54,7 +54,7 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.txtbox_proxy = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
-            this.chkbox_forceus = new System.Windows.Forms.CheckBox();
+            this.chkbox_tor = new System.Windows.Forms.CheckBox();
             this.label16 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -337,7 +337,7 @@
             this.tabPage2.BackColor = System.Drawing.Color.WhiteSmoke;
             this.tabPage2.Controls.Add(this.txtbox_proxy);
             this.tabPage2.Controls.Add(this.label15);
-            this.tabPage2.Controls.Add(this.chkbox_forceus);
+            this.tabPage2.Controls.Add(this.chkbox_tor);
             this.tabPage2.Controls.Add(this.label16);
             this.tabPage2.Controls.Add(this.label14);
             this.tabPage2.Controls.Add(this.label3);
@@ -381,16 +381,16 @@
             this.label15.TabIndex = 28;
             this.label15.Text = "Proxy settings";
             // 
-            // chkbox_forceus
+            // chkbox_tor
             // 
-            this.chkbox_forceus.AutoSize = true;
-            this.chkbox_forceus.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.chkbox_forceus.Location = new System.Drawing.Point(355, 301);
-            this.chkbox_forceus.Name = "chkbox_forceus";
-            this.chkbox_forceus.Size = new System.Drawing.Size(46, 18);
-            this.chkbox_forceus.TabIndex = 27;
-            this.chkbox_forceus.Text = "Yes";
-            this.chkbox_forceus.UseVisualStyleBackColor = true;
+            this.chkbox_tor.AutoSize = true;
+            this.chkbox_tor.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.chkbox_tor.Location = new System.Drawing.Point(355, 301);
+            this.chkbox_tor.Name = "chkbox_tor";
+            this.chkbox_tor.Size = new System.Drawing.Size(46, 18);
+            this.chkbox_tor.TabIndex = 27;
+            this.chkbox_tor.Text = "Yes";
+            this.chkbox_tor.UseVisualStyleBackColor = true;
             // 
             // label16
             // 
@@ -398,9 +398,9 @@
             this.label16.Font = new System.Drawing.Font("Tahoma", 9F);
             this.label16.Location = new System.Drawing.Point(8, 302);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(228, 14);
+            this.label16.Size = new System.Drawing.Size(187, 14);
             this.label16.TabIndex = 26;
-            this.label16.Text = "Force US IP (needs Tor and Iplocation)?";
+            this.label16.Text = "Tor  (needs Tor and Iplocation)?";
             // 
             // label14
             // 
@@ -726,7 +726,7 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.TextBox pts_txtbox;
-        private System.Windows.Forms.CheckBox chkbox_forceus;
+        private System.Windows.Forms.CheckBox chkbox_tor;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Button btn_cache;
         private System.Windows.Forms.Button button4;

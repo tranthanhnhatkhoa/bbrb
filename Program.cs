@@ -53,8 +53,11 @@ namespace BingRewardsBot
             string appPath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
             SetDllDirectory(System.IO.Path.Combine(appPath, libdir));
 
-            //setProxy("127.0.0.1:8118", true);
-            WinInetInterop.SetConnectionProxy("localhost:"+TORSOCKSPORT);
+            if (BingRewardsBot.Properties.Settings.Default.set_tor == true)
+            {
+                //setProxy("127.0.0.1:8118", true);
+                WinInetInterop.SetConnectionProxy("localhost:" + TORSOCKSPORT);
+            }
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
