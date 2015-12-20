@@ -61,7 +61,7 @@ namespace BingRewardsBot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("45-55")]
+        [global::System.Configuration.DefaultSettingValueAttribute("30-45")]
         public string set_counter {
             get {
                 return ((string)(this["set_counter"]));
@@ -73,7 +73,7 @@ namespace BingRewardsBot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("5-9")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1-3")]
         public string set_waitauth {
             get {
                 return ((string)(this["set_waitauth"]));

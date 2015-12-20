@@ -377,9 +377,9 @@
             this.label15.Font = new System.Drawing.Font("Tahoma", 9F);
             this.label15.Location = new System.Drawing.Point(9, 330);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(84, 14);
+            this.label15.Size = new System.Drawing.Size(88, 14);
             this.label15.TabIndex = 28;
-            this.label15.Text = "Proxy settings";
+            this.label15.Text = "Proxy settings:";
             // 
             // chkbox_tor
             // 
@@ -398,9 +398,9 @@
             this.label16.Font = new System.Drawing.Font("Tahoma", 9F);
             this.label16.Location = new System.Drawing.Point(8, 302);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(187, 14);
+            this.label16.Size = new System.Drawing.Size(183, 14);
             this.label16.TabIndex = 26;
-            this.label16.Text = "Tor  (needs Tor and Iplocation)?";
+            this.label16.Text = "Tor (needs Tor and Iplocation)?";
             // 
             // label14
             // 
@@ -554,7 +554,7 @@
             this.txtbox_waitauth.Name = "txtbox_waitauth";
             this.txtbox_waitauth.Size = new System.Drawing.Size(61, 20);
             this.txtbox_waitauth.TabIndex = 5;
-            this.txtbox_waitauth.Text = "1-6";
+            this.txtbox_waitauth.Text = "1-3";
             // 
             // txtbox_counter
             // 

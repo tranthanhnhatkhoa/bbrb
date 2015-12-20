@@ -12,10 +12,10 @@
       <Value Profile="(Default)">4-10</Value>
     </Setting>
     <Setting Name="set_counter" Type="System.String" Scope="User">
-      <Value Profile="(Default)">45-55</Value>
+      <Value Profile="(Default)">30-45</Value>
     </Setting>
     <Setting Name="set_waitauth" Type="System.String" Scope="User">
-      <Value Profile="(Default)">5-9</Value>
+      <Value Profile="(Default)">1-3</Value>
     </Setting>
     <Setting Name="set_autorotate" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

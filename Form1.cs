@@ -33,6 +33,7 @@ namespace BingRewardsBot
         private const int MAXLOOPS = 2;
         private string clicklink = "";
         private bool clicklist = false;
+        private bool tokens = false;
         private string clickref = "";
         private string siguid = "";
         //private const string MSCONNECT = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2frewards%2fdashboard%3fwlexpsignin%3d1&src=EXPLICIT&sig=53EAA11DBE6142C68B829049F399A1F2";
@@ -40,7 +41,7 @@ namespace BingRewardsBot
         private const string MSCONNECT = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2frewards%2fdashboard%3fwlexpsignin%3d1&src=EXPLICIT&sig=";
 
         private const string MAXACCOUNTSPERIPLIMIT = "Not a valid IP. Maximum number of accounts per IP limit reached!";
-        private const int DOCUMENTLOADED = 3;
+        private const int DOCUMENTLOADED = 2;
         private int logtries = 0;
         private int Ilogtries = 0;
         private int startbtn = 0;
@@ -72,7 +73,7 @@ namespace BingRewardsBot
         private bool checkaccount = false;
         private string trialRegKey;
         private const int FREEX = 2000000;
-        private const int DIVIDE = 1000;
+        private const int DIVIDE = 600;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
         private int authCounterX = 0;
@@ -129,6 +130,19 @@ namespace BingRewardsBot
         {
             UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, Agent, Agent.Length, 0);
         }
+
+        //http://stackoverflow.com/questions/8306839/how-to-clear-browser-cache-programatically
+       /*
+            public static void DisablePageCaching()
+        {
+            //Used for disabling page caching
+            HttpContext.Current.Response.Cache.SetExpires(DateTime.UtcNow.AddDays(-1));
+            HttpContext.Current.Response.Cache.SetValidUntilExpires(false);
+            HttpContext.Current.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            HttpContext.Current.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            HttpContext.Current.Response.Cache.SetNoStore();
+        }
+        */
 
         //to activate use like this strProxy="85.45.66.25:3633"
         //to deactivate use like this strProxy=":"
@@ -356,7 +370,13 @@ namespace BingRewardsBot
 
             browser.ScriptErrorsSuppressed = true;
             this.ChangeUserAgent(EDGEUA);
-            
+
+            this.checkaccount = false;
+
+            // clear cache & cookies
+            WebBrowserHelper.ClearCache();
+
+            //https://github.com/erfg12/BingRewards
             try
             {
                 string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
@@ -373,6 +393,8 @@ namespace BingRewardsBot
 
             //DeleteCache o = new DeleteCache();
             //DeleteCache.work(null);
+
+
 
             //System.Uri uri = new Uri(myUrl);
             //byte[] authData = System.Text.UnicodeEncoding.UTF8.GetBytes("user: passwd");
@@ -514,9 +536,7 @@ namespace BingRewardsBot
                         this.timer_auth.Stop();
                     }
                     catch { }
-
                 }
-
 
                 // Database  
                 if (!File.Exists(Application.StartupPath + Path.DirectorySeparatorChar + "points.sqlite"))
@@ -761,6 +781,20 @@ namespace BingRewardsBot
 
         void browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
+            /*
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetExpires(DateTime.Now);
+            Response.Cache.SetNoServerCaching();
+            Response.Cache.SetNoStore();
+
+              //Clear cookies
+               string[] cookies = Request.Cookies.AllKeys;
+               foreach (string cookie in cookies)
+               {
+                   Response.Cookies[cookie].Expires = DateTime.Now.AddDays(-1);
+               }
+            */
+
             if (this.timer_searches != null)
             {
                 this.timer_searches.Enabled = false;
@@ -768,20 +802,31 @@ namespace BingRewardsBot
 
             string url = e.Url.ToString();
             var loaded = (WebBrowser)sender;
-
-            // https://www.bing.com/rewards/dashboard
-            // loaded.Document.GetElementById("b_idProviders") != null
-            //string text = loaded.Document.GetElementById("id_n").InnerText;
-            //if (!String.IsNullOrEmpty(text) && !String.IsNullOrWhiteSpace(text))
-
+            
+            // loaded.Url.ToString().Contains(@"https://www.bing.com/rewards/dashboard?wlexpsignin=1")
             if (loaded.Document != null
-            && loaded.Url.ToString().Contains(@"https://www.bing.com/rewards/dashboard")
-            && (String.IsNullOrEmpty(loaded.Document.GetElementById("id_n").InnerText) || String.IsNullOrWhiteSpace(loaded.Document.GetElementById("id_n").InnerText))
+                && loaded.Url.ToString().Contains(@"https://www.bing.com/rewards/dashboard")
+                && !String.IsNullOrEmpty(this.siguid) && !String.IsNullOrWhiteSpace(this.siguid)
+            ) {
+
+                browser.Navigate(new Uri("https://www.bing.com/"));
+                
+                // https://www.bing.com/rewards/dashboard
+                // loaded.Document.GetElementById("b_idProviders") != null
+                //string text = loaded.Document.GetElementById("id_n").InnerText;
+                //if (!String.IsNullOrEmpty(text) && !String.IsNullOrWhiteSpace(text))
+            }
+            else if (loaded.Document != null
+                && loaded.Url.ToString().Contains(@"https://www.bing.com/rewards/dashboard")
+                && (String.IsNullOrEmpty(loaded.Document.GetElementById("id_n").InnerText) || String.IsNullOrWhiteSpace(loaded.Document.GetElementById("id_n").InnerText)
+                && String.IsNullOrEmpty(this.siguid) && String.IsNullOrWhiteSpace(this.siguid)
+            )
            )
             {
                 ++this.logtries;
                 if (this.logtries > DOCUMENTLOADED)
                 {
+                    //MessageBox.Show("test");
                     this.logtries = 0;
                     try
                     {
@@ -792,15 +837,19 @@ namespace BingRewardsBot
                         {
                             try
                             {
-                                if ((ele.GetAttribute("href") != null
-                                    && ele.GetAttribute("h") == "ID=rewards,5049.1")
+                                //if ((ele.GetAttribute("href") != null
+                                //   && ele.GetAttribute("h") == "ID=rewards,5049.1")
+                                //   && ele.GetAttribute("href").Contains(@"sig=")
+                                //   )
+
+                                    if ((ele.GetAttribute("href") != null) 
                                     && ele.GetAttribute("href").Contains(@"sig=")
                                     )
                                 {
-                                    ++this.Ilogtries;
+                                    //++this.Ilogtries;
 
-                                    if (this.Ilogtries > DOCUMENTLOADED)
-                                    {
+                                    //if (this.Ilogtries > DOCUMENTLOADED)
+                                    //{
                                         this.Ilogtries = 0;
                                         string text = ele.GetAttribute("href");
                                         string[] substring = text.Split('&');
@@ -810,15 +859,19 @@ namespace BingRewardsBot
                                             if (sig.Contains(@"sig="))
                                             {
                                                 this.siguid = sig.Replace("sig=", "");
+                                                this.tokens = true;
+                                                //MessageBox.Show(this.siguid);
                                                 browser.Navigate(new Uri(MSCONNECT + this.siguid));
-                                                //MessageBox.Show(uid);
+
+                                                //System.Threading.Thread.Sleep(1 * 1000);
+                                                //browser.Navigate(new Uri("https://www.bing.com/rewards"));                                                
                                             }
                                         }
                                         //MessageBox.Show(ele.GetAttribute("href"));
                                         //string myurl = ele.GetAttribute("href");
                                         //browser.Navigate(new Uri(myurl));
                                         //break;
-                                    }
+                                    //}
                                 }
                             }
                             catch
@@ -832,14 +885,14 @@ namespace BingRewardsBot
                 }
 
                 //*********************
-                // Log in 
+                // Sign-in
                 //*********************
             }
             else if (loaded.Document != null
              && loaded.Document.GetElementById("i0116") != null)
             {
                 //*********************
-                // user auth (log in)
+                // user auth (Sign-in)
                 //*********************
 
                 try
@@ -871,11 +924,31 @@ namespace BingRewardsBot
                 element.text = alertBlocker;
                 head.AppendChild(scriptEl);
 
+                bool autorotate = chkbox_autorotate.Checked == true ? true : false;
+
                 this.altSearch = false;
 
                 // callback search bot
 
-                if (this.pts >= 25)
+                if (this.pts >= 25 && autorotate == true)
+                {
+                    this.counterDx = 0;
+                    this.counterMx = 0;
+                    this.dxloops = 0;
+                    this.mxloops = 0;
+                    this.logtries = 0;
+                    this.Ilogtries = 0;
+
+                    this.timer_searches = new System.Windows.Forms.Timer();
+                    this.timer_searches.Tick += new EventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
+                    string temp = Properties.Settings.Default.set_waitsearches.ToString();
+                    string[] wait = temp.Split('-');
+                    this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1])) * 1000;
+                    this.timer_searches.Enabled = true;
+                    this.timer_searches.Start();
+                    this.searchesLock = false;
+
+                } else if (this.pts >= 25 && autorotate == false)
                 {
                     this.checkaccount = false;
                     this.searchesLock = true;
@@ -972,142 +1045,161 @@ namespace BingRewardsBot
             else if (loaded.Document != null
                 && loaded.Url.ToString().Contains(@"https://account.microsoft.com/"))
             {
-                bool autorotate = chkbox_autorotate.Checked == true ? true : false;
 
-                // User authentifcation succesful
-                if (this.accountVisited[this.accountNum] == false && autorotate == true && this.checkaccount == false)
+                ++this.logtries;
+                if (this.logtries > DOCUMENTLOADED)
                 {
-                    this.prevpts = 0;
-                    this.pts = 0;
-                    this.pts_txtbox.Text = Convert.ToString(this.pts);
+                    //MessageBox.Show("test2");
+                    this.logtries = 0;
 
-                    this.accountVisited[this.accountNum] = true;
-                    ++this.accountVisitedX;
+                    bool autorotate = chkbox_autorotate.Checked == true ? true : false;
 
-                    this.searchesLock = false;
-                    this.authLock = false;
+                    // Sign in succesful
 
-                    if (timer_auth != null)
+                    //this.accountVisited[this.accountNum] == false &&
+                    if (this.accountVisited[this.accountNum] == false && autorotate == true && this.checkaccount == false)
                     {
-                        this.timer_auth.Enabled = false;
-                        this.timer_auth.Stop();
-                    }
+                        this.prevpts = 0;
+                        this.pts = 0;
+                        this.pts_txtbox.Text = Convert.ToString(this.pts);
 
-                    accountNameTxtBox.Text = this.username;
-                    accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
+                        this.accountVisited[this.accountNum] = true;
+                        ++this.accountVisitedX;
 
-                    statusTxtBox.Text = "Ready";
-                    counterTxtBox.Text = "0/0";
+                        this.searchesLock = false;
+                        this.authLock = false;
 
-                    SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                    m_dbConnection.Open();
-                    DateTime dateTime = DateTime.UtcNow.Date;
-
-                    string sql = "select count(*) from searches where account='" + this.accountNameTxtBox.Text + "' and ip='" + this.ip + "' and date='" + dateTime.ToString("yyyyMMdd") + "';";
-                    SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-                    SQLiteDataReader reader = command.ExecuteReader();
-
-                    int count = 0;
-                    while (reader.Read())
-                    {
-                        count = Convert.ToInt32(reader["count(*)"]);
-                    }
-
-                    if (count == 0)
-                    {
-                        sql = "insert into searches (date, ip, account, points) values ('" + dateTime.ToString("yyyyMMdd") + "','" + this.ip + "','" + this.accountNameTxtBox.Text + "','0')";
-                        command = new SQLiteCommand(sql, m_dbConnection);
-                        command.ExecuteNonQuery();
-                    }
-                    m_dbConnection.Close();
-
-                    m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                    m_dbConnection.Open();
-                    dateTime = DateTime.UtcNow.Date;
-                    //string sql = "select * from searches where date='"+ dateTime.ToString("yyyyMMdd") + "' group by ip, account order by ip desc";
-                    sql = "select * from searches where date='" + dateTime + " and 'account='" + this.username + "' order by ip points";
-                    command = new SQLiteCommand(sql, m_dbConnection);
-                    reader = command.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        if (reader["points"] != null)
+                        if (timer_auth != null)
                         {
-                            this.pts += Convert.ToInt32(reader["points"]);
+                            this.timer_auth.Enabled = false;
+                            this.timer_auth.Stop();
                         }
-                    }
-                    m_dbConnection.Close();
 
-                    this.pts_txtbox.Text = Convert.ToString(this.pts);
+                        accountNameTxtBox.Text = this.username;
+                        accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
 
-                    // first step after user auth (very important) navigate bing.com
-                    browser.Navigate(new Uri("https://www.bing.com/rewards"));
-                }
-                else if (autorotate == false || this.checkaccount == true)
-                {
-                    this.prevpts = 0;
-                    this.pts = 0;
-                    this.pts_txtbox.Text = Convert.ToString(this.pts);
+                        statusTxtBox.Text = "Ready";
+                        counterTxtBox.Text = "0/0";
 
-                    this.searchesLock = false;
-                    this.authLock = false;
-
-                    if (timer_auth != null)
-                    {
-                        this.timer_auth.Enabled = false;
-                        this.timer_auth.Stop();
-                    }
-
-                    accountNameTxtBox.Text = this.username;
-                    accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
-
-                    statusTxtBox.Text = "Ready";
-                    counterTxtBox.Text = "0/0";
-
-                    SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                    m_dbConnection.Open();
-                    DateTime dateTime = DateTime.UtcNow.Date;
-
-                    string sql = "select count(*) from searches where account='" + this.accountNameTxtBox.Text + "' and ip='" + this.ip + "' and date='" + dateTime.ToString("yyyyMMdd") + "';";
-                    SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-                    SQLiteDataReader reader = command.ExecuteReader();
-
-                    int count = 0;
-                    while (reader.Read())
-                    {
-                        count = Convert.ToInt32(reader["count(*)"]);
-                    }
-
-                    if (count == 0)
-                    {
-                        sql = "insert into searches (date, ip, account, points) values ('" + dateTime.ToString("yyyyMMdd") + "','" + this.ip + "','" + this.accountNameTxtBox.Text + "','0')";
-                        command = new SQLiteCommand(sql, m_dbConnection);
-                        command.ExecuteNonQuery();
-                    }
-                    else
-                    {
-                        m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                        SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                         m_dbConnection.Open();
-                        dateTime = DateTime.UtcNow.Date;
-                        //string sql = "select * from searches where date='"+ dateTime.ToString("yyyyMMdd") + "' group by ip, account order by ip desc";
-                        sql = "select * from searches where date='" + dateTime.ToString("yyyyMMdd") + "' and 'account='" + this.username + "' order by ip,points";
-                        command = new SQLiteCommand(sql, m_dbConnection);
-                        reader = command.ExecuteReader();
+                        DateTime dateTime = DateTime.UtcNow.Date;
 
+                        string sql = "select count(*) from searches where account='" + this.accountNameTxtBox.Text + "' and ip='" + this.ip + "' and date='" + dateTime.ToString("yyyyMMdd") + "';";
+                        SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                        SQLiteDataReader reader = command.ExecuteReader();
+
+                        int count = 0;
                         while (reader.Read())
                         {
-                            if (reader["points"] != null)
-                            {
-                                this.pts += Convert.ToInt32(reader["points"]);
-                            }
+                            count = Convert.ToInt32(reader["count(*)"]);
                         }
 
-                        this.pts_txtbox.Text = Convert.ToString(this.pts);
-                    }
-                    m_dbConnection.Close();
+                        if (count == 0)
+                        {
+                            sql = "insert into searches (date, ip, account, points) values ('" + dateTime.ToString("yyyyMMdd") + "','" + this.ip + "','" + this.accountNameTxtBox.Text + "','0')";
+                            command = new SQLiteCommand(sql, m_dbConnection);
+                            command.ExecuteNonQuery();
+                        }
+                        else
+                        {
+                            m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                            m_dbConnection.Open();
+                            dateTime = DateTime.UtcNow.Date;
+                            //string sql = "select * from searches where date='"+ dateTime.ToString("yyyyMMdd") + "' group by ip, account order by ip desc";
+                            sql = "select * from searches where date='" + dateTime.ToString("yyyyMMdd") + "' and 'account='" + this.username + "' order by ip,points";
+                            command = new SQLiteCommand(sql, m_dbConnection);
+                            reader = command.ExecuteReader();
 
-                    // first step after user auth (very important) navigate bing.com or bing.com/rewards
-                    browser.Navigate(new Uri("https://www.bing.com/rewards"));
+                            while (reader.Read())
+                            {
+                                if (reader["points"] != null)
+                                {
+                                    this.pts += Convert.ToInt32(reader["points"]);
+                                }
+                            }
+
+                            this.pts_txtbox.Text = Convert.ToString(this.pts);
+                        }
+                        m_dbConnection.Close();
+
+                        // first step after user auth (very important) navigate bing.com
+                        browser.Navigate(new Uri("https://www.bing.com/rewards"));
+                    }
+                    else if (autorotate == false || this.checkaccount == true)
+                    {
+                        this.prevpts = 0;
+                        this.pts = 0;
+                        this.pts_txtbox.Text = Convert.ToString(this.pts);
+
+                        this.searchesLock = false;
+                        this.authLock = false;
+
+                        if (timer_auth != null)
+                        {
+                            this.timer_auth.Enabled = false;
+                            this.timer_auth.Stop();
+                        }
+
+                        accountNameTxtBox.Text = this.username;
+                        accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
+
+                        statusTxtBox.Text = "Ready";
+                        counterTxtBox.Text = "0/0";
+
+                        SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                        m_dbConnection.Open();
+                        DateTime dateTime = DateTime.UtcNow.Date;
+
+                        string sql = "select count(*) from searches where account='" + this.accountNameTxtBox.Text + "' and ip='" + this.ip + "' and date='" + dateTime.ToString("yyyyMMdd") + "';";
+                        SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                        SQLiteDataReader reader = command.ExecuteReader();
+
+                        int count = 0;
+                        while (reader.Read())
+                        {
+                            count = Convert.ToInt32(reader["count(*)"]);
+                        }
+
+                        if (count == 0)
+                        {
+                            sql = "insert into searches (date, ip, account, points) values ('" + dateTime.ToString("yyyyMMdd") + "','" + this.ip + "','" + this.accountNameTxtBox.Text + "','0')";
+                            command = new SQLiteCommand(sql, m_dbConnection);
+                            command.ExecuteNonQuery();
+                        }
+                        else
+                        {
+                            m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                            m_dbConnection.Open();
+                            dateTime = DateTime.UtcNow.Date;
+                            //string sql = "select * from searches where date='"+ dateTime.ToString("yyyyMMdd") + "' group by ip, account order by ip desc";
+                            sql = "select * from searches where date='" + dateTime.ToString("yyyyMMdd") + "' and 'account='" + this.username + "' order by ip,points";
+                            command = new SQLiteCommand(sql, m_dbConnection);
+                            reader = command.ExecuteReader();
+
+                            while (reader.Read())
+                            {
+                                if (reader["points"] != null)
+                                {
+                                    this.pts += Convert.ToInt32(reader["points"]);
+                                }
+                            }
+
+                            this.pts_txtbox.Text = Convert.ToString(this.pts);
+                        }
+                        m_dbConnection.Close();
+
+                        // first step after user auth (very important) navigate bing.com or bing.com/rewards
+                        browser.Navigate(new Uri("https://www.bing.com/rewards"));
+                    }
+
+                    /*
+                    else
+                    {
+                        // first step after user auth (very important) navigate bing.com or bing.com/rewards
+                        browser.Navigate(new Uri("https://www.bing.com/rewards"));
+                    }
+                    */
                 }
 
                 //*********************
@@ -1147,7 +1239,7 @@ namespace BingRewardsBot
                 this.timer_searches.Start();
 
                 //*******************************
-                // log out (check & autorotate)
+                // sign out (check & autorotate)
                 //*******************************
             }
             else if (loaded.Document != null
@@ -1157,6 +1249,8 @@ namespace BingRewardsBot
               || loaded.Url.ToString().Contains(@"https://login.live.com/logout.srf")
               ))
             {
+                bool autorotate = chkbox_autorotate.Checked == true ? true : false;
+
                 SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                 m_dbConnection.Open();
                 DateTime dateTime = DateTime.UtcNow.Date;
@@ -1177,6 +1271,9 @@ namespace BingRewardsBot
                 {
                     this.toolStripStatusLabel1.Text = MAXACCOUNTSPERIPLIMIT + " (" + MYIP + this.ip + " Country:" + this.country + ")";
 
+                    this.authCallback(null, null);
+
+                    /*
                     try
                     {
                         this.authLock = false;
@@ -1184,12 +1281,13 @@ namespace BingRewardsBot
                         this.timer_auth.Stop();
                     }
                     catch { }
+                    */
                 }
                 else
                 {
-                    if (this.country == "US")
+                    if (this.country == "US" || chkbox_tor.Checked == false)
                     {
-                        // first step before user auth (log out) 
+                        // first step before sign-in (sign out) 
                         browser.Navigate(new Uri("https://login.live.com"));
                     }
                     else
@@ -1215,14 +1313,20 @@ namespace BingRewardsBot
                         }
                         m_dbConnection.Close();
 
-                        try
+                        if (autorotate == false)
                         {
-                            this.authLock = false;
-                            this.timer_auth.Enabled = false;
-                            this.timer_auth.Stop();
-                        }
-                        catch { }
+                            try
+                            {
+                                this.authLock = false;
+                                this.timer_auth.Enabled = false;
+                                this.timer_auth.Stop();
+                            }
+                            catch { }
 
+                        } else
+                        {
+                            this.authCallback(null, null);
+                        }
                     }
                 }
             }
@@ -1241,17 +1345,14 @@ namespace BingRewardsBot
         {
             string[] authstr;
 
+            --this.authCounterX;
             if (this.authCounterX > 0 && this.authCounterX != 1)
-            {
-                --this.authCounterX;
+            {                
                 counterTxtBox.Text = this.authCounterX.ToString() + " min.";
 
-            }
-            else if (this.authCounterX == 1)
+            } else if (this.authCounterX == 1)
             {
-                --this.authCounterX;
                 counterTxtBox.Text = "60 sec.";
-
             }
             else
             {
@@ -1276,6 +1377,11 @@ namespace BingRewardsBot
                                 this.timer_auth.Stop();
                             }
 
+
+                            // clear cache & cookies
+                            WebBrowserHelper.ClearCache();
+
+                            //https://github.com/erfg12/BingRewards
                             try
                             {
                                 string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
@@ -1304,6 +1410,8 @@ namespace BingRewardsBot
                             authstr = str.Split('/');
                             this.username = authstr[0]; this.password = authstr[1];
 
+                            this.ChangeUserAgent(EDGEUA);
+
                             // first step log out
                             browser.Navigate(new Uri("http://login.live.com/logout.srf"));
 
@@ -1329,6 +1437,11 @@ namespace BingRewardsBot
                                     this.timer_auth.Stop();
                                 }
 
+
+                                // clear cache & cookies
+                                WebBrowserHelper.ClearCache();
+
+                                //https://github.com/erfg12/BingRewards
                                 try
                                 {
                                     string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
@@ -1347,7 +1460,6 @@ namespace BingRewardsBot
 
                                 if (autorotate == true)
                                 {
-
                                     if (chkbox_tor.Checked == true)
                                     {
                                         try
@@ -1384,6 +1496,8 @@ namespace BingRewardsBot
                                 authstr = str.Split('/');
                                 this.username = authstr[0]; this.password = authstr[1];
 
+                                this.ChangeUserAgent(EDGEUA);
+
                                 // first step log out
                                 browser.Navigate(new Uri("http://login.live.com/logout.srf"));
                             }
@@ -1416,6 +1530,10 @@ namespace BingRewardsBot
                             this.timer_auth.Stop();
                         }
 
+                        // clear cache & cookies
+                        WebBrowserHelper.ClearCache();
+
+                        //https://github.com/erfg12/BingRewards
                         try
                         {
                             string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
@@ -1441,6 +1559,8 @@ namespace BingRewardsBot
                         string str = this.accounts[this.accountNum];
                         authstr = str.Split('/');
                         this.username = authstr[0]; this.password = authstr[1];
+
+                        this.ChangeUserAgent(EDGEUA);
 
                         // first step log out
                         browser.Navigate(new Uri("http://login.live.com/logout.srf"));
@@ -1488,7 +1608,7 @@ namespace BingRewardsBot
                     this.qpage = 0;
 
                     // only when autorotate
-                    if (chkbox_autorotate.Checked == true)
+                    if (chkbox_autorotate.Checked == true && chkbox_tor.Checked == true)
                     {
                         try
                         {
@@ -1521,13 +1641,13 @@ namespace BingRewardsBot
                     int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), Convert.ToInt32(auth[1]));
                     if (z > 1)
                     {
-                        this.timer_auth.Interval = 1 * 60 * 1000;
+                        this.timer_auth.Interval = z * 60 * 1000;
                         counterTxtBox.Text = z.ToString() + " min.";
                     }
                     else
                     {
                         this.timer_auth.Interval = 1 * 60 * 1000;
-                        counterTxtBox.Text = z.ToString() + " sec.";
+                        counterTxtBox.Text = z.ToString() + " min.";
                     }
                     this.timer_auth.Enabled = true;
                     this.timer_auth.Start();
@@ -2321,6 +2441,10 @@ namespace BingRewardsBot
 
         private void btn_cache_Click(object sender, EventArgs e)
         {
+            // clear cache & cookies
+            WebBrowserHelper.ClearCache();
+
+            //https://github.com/erfg12/BingRewards
             try
             {
                 string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
@@ -2414,6 +2538,176 @@ namespace BingRewardsBot
             MessageBox.Show("Accounts:" + string.Join("\r\n", aarr) + "\r\nIPs:" + string.Join("\r\n", iparr) + string.Join("\r\n", score));
         }
 
+    }
+
+    //http://www.waytocoding.com/2014/08/how-to-clear-cache-in-web-browser.html
+    public class WebBrowserHelper
+    {
+        #region Definitions/DLL Imports
+        /// 
+
+        /// For PInvoke: Contains information about an entry in the Internet cache
+        /// 
+
+        [StructLayout(LayoutKind.Explicit)]
+        public struct ExemptDeltaOrReserverd
+        {
+            [FieldOffset(0)]
+            public UInt32 dwReserved;
+            [FieldOffset(0)]
+            public UInt32 dwExemptDelta;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct INTERNET_CACHE_ENTRY_INFOA
+        {
+            public UInt32 dwStructSize;
+            public IntPtr lpszSourceUrlName;
+            public IntPtr lpszLocalFileName;
+            public UInt32 CacheEntryType;
+            public UInt32 dwUseCount;
+            public UInt32 dwHitRate;
+            public UInt32 dwSizeLow;
+            public UInt32 dwSizeHigh;
+            public FILETIME LastModifiedTime;
+            public FILETIME ExpireTime;
+            public FILETIME LastAccessTime;
+            public FILETIME LastSyncTime;
+            public IntPtr lpHeaderInfo;
+            public UInt32 dwHeaderInfoSize;
+            public IntPtr lpszFileExtension;
+            public ExemptDeltaOrReserverd dwExemptDeltaOrReserved;
+        }
+
+        // For PInvoke: Initiates the enumeration of the cache groups in the Internet cache
+        [DllImport(@"wininet",
+            SetLastError = true,
+            CharSet = CharSet.Auto,
+            EntryPoint = "FindFirstUrlCacheGroup",
+            CallingConvention = CallingConvention.StdCall)]
+        public static extern IntPtr FindFirstUrlCacheGroup(
+            int dwFlags,
+            int dwFilter,
+            IntPtr lpSearchCondition,
+        int dwSearchCondition,
+        ref long lpGroupId,
+        IntPtr lpReserved);
+
+        // For PInvoke: Retrieves the next cache group in a cache group enumeration
+        [DllImport(@"wininet",
+        SetLastError = true,
+            CharSet = CharSet.Auto,
+        EntryPoint = "FindNextUrlCacheGroup",
+            CallingConvention = CallingConvention.StdCall)]
+        public static extern bool FindNextUrlCacheGroup(
+            IntPtr hFind,
+            ref long lpGroupId,
+            IntPtr lpReserved);
+
+        // For PInvoke: Releases the specified GROUPID and any associated state in the cache index file
+        [DllImport(@"wininet",
+            SetLastError = true,
+            CharSet = CharSet.Auto,
+            EntryPoint = "DeleteUrlCacheGroup",
+            CallingConvention = CallingConvention.StdCall)]
+        public static extern bool DeleteUrlCacheGroup(
+            long GroupId,
+            int dwFlags,
+            IntPtr lpReserved);
+
+        // For PInvoke: Begins the enumeration of the Internet cache
+        [DllImport(@"wininet",
+            SetLastError = true,
+            CharSet = CharSet.Auto,
+            EntryPoint = "FindFirstUrlCacheEntryA",
+            CallingConvention = CallingConvention.StdCall)]
+        public static extern IntPtr FindFirstUrlCacheEntry(
+            [MarshalAs(UnmanagedType.LPTStr)] string lpszUrlSearchPattern,
+            IntPtr lpFirstCacheEntryInfo,
+            ref int lpdwFirstCacheEntryInfoBufferSize);
+
+        // For PInvoke: Retrieves the next entry in the Internet cache
+        [DllImport(@"wininet",
+            SetLastError = true,
+            CharSet = CharSet.Auto,
+            EntryPoint = "FindNextUrlCacheEntryA",
+            CallingConvention = CallingConvention.StdCall)]
+        public static extern bool FindNextUrlCacheEntry(
+            IntPtr hFind,
+            IntPtr lpNextCacheEntryInfo,
+            ref int lpdwNextCacheEntryInfoBufferSize);
+
+        // For PInvoke: Removes the file that is associated with the source name from the cache, if the file exists
+        [DllImport(@"wininet",
+            SetLastError = true,
+            CharSet = CharSet.Auto,
+            EntryPoint = "DeleteUrlCacheEntryA",
+            CallingConvention = CallingConvention.StdCall)]
+        public static extern bool DeleteUrlCacheEntry(
+            IntPtr lpszUrlName);
+        #endregion
+
+        /// 
+
+        /// Clears the cache of the web browser
+        /// 
+
+        public static void ClearCache()
+        {
+            // Indicates that all of the cache groups in the user's system should be enumerated
+            const int CACHEGROUP_SEARCH_ALL = 0x0;
+            // Indicates that all the cache entries that are associated with the cache group
+            // should be deleted, unless the entry belongs to another cache group.
+            const int CACHEGROUP_FLAG_FLUSHURL_ONDELETE = 0x2;
+            const int ERROR_INSUFFICIENT_BUFFER = 0x7A;
+
+            // Delete the groups first.
+            // Groups may not always exist on the system.
+            // For more information, visit the following Microsoft Web site:
+            // http://msdn.microsoft.com/library/?url=/workshop/networking/wininet/overview/cache.asp            
+            // By default, a URL does not belong to any group. Therefore, that cache may become
+            // empty even when the CacheGroup APIs are not used because the existing URL does not belong to any group.            
+            long groupId = 0;
+            IntPtr enumHandle = FindFirstUrlCacheGroup(0, CACHEGROUP_SEARCH_ALL, IntPtr.Zero, 0, ref groupId, IntPtr.Zero);
+            if (enumHandle != IntPtr.Zero)
+            {
+                bool more;
+                do
+                {
+                    // Delete a particular Cache Group.
+                    DeleteUrlCacheGroup(groupId, CACHEGROUP_FLAG_FLUSHURL_ONDELETE, IntPtr.Zero);
+                    more = FindNextUrlCacheGroup(enumHandle, ref groupId, IntPtr.Zero);
+                } while (more);
+            }
+
+            // Start to delete URLs that do not belong to any group.
+            int cacheEntryInfoBufferSizeInitial = 0;
+            FindFirstUrlCacheEntry(null, IntPtr.Zero, ref cacheEntryInfoBufferSizeInitial);  // should always fail because buffer is too small
+            if (Marshal.GetLastWin32Error() == ERROR_INSUFFICIENT_BUFFER)
+            {
+                int cacheEntryInfoBufferSize = cacheEntryInfoBufferSizeInitial;
+                IntPtr cacheEntryInfoBuffer = Marshal.AllocHGlobal(cacheEntryInfoBufferSize);
+                enumHandle = FindFirstUrlCacheEntry(null, cacheEntryInfoBuffer, ref cacheEntryInfoBufferSizeInitial);
+                if (enumHandle != IntPtr.Zero)
+                {
+                    bool more;
+                    do
+                    {
+                        INTERNET_CACHE_ENTRY_INFOA internetCacheEntry = (INTERNET_CACHE_ENTRY_INFOA)Marshal.PtrToStructure(cacheEntryInfoBuffer, typeof(INTERNET_CACHE_ENTRY_INFOA));
+                        cacheEntryInfoBufferSizeInitial = cacheEntryInfoBufferSize;
+                        DeleteUrlCacheEntry(internetCacheEntry.lpszSourceUrlName);
+                        more = FindNextUrlCacheEntry(enumHandle, cacheEntryInfoBuffer, ref cacheEntryInfoBufferSizeInitial);
+                        if (!more && Marshal.GetLastWin32Error() == ERROR_INSUFFICIENT_BUFFER)
+                        {
+                            cacheEntryInfoBufferSize = cacheEntryInfoBufferSizeInitial;
+                            cacheEntryInfoBuffer = Marshal.ReAllocHGlobal(cacheEntryInfoBuffer, (IntPtr)cacheEntryInfoBufferSize);
+                            more = FindNextUrlCacheEntry(enumHandle, cacheEntryInfoBuffer, ref cacheEntryInfoBufferSizeInitial);
+                        }
+                    } while (more);
+                }
+                Marshal.FreeHGlobal(cacheEntryInfoBuffer);
+            }
+        }
     }
 
     // Class for deleting the cache.
