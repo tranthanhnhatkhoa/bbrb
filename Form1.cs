@@ -73,7 +73,7 @@ namespace BingRewardsBot
         private bool checkaccount = false;
         private string trialRegKey;
         private const int FREEX = 2000000;
-        private const int DIVIDE = 600;
+        private const int DIVIDE = 100;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
         private int authCounterX = 0;
@@ -102,6 +102,10 @@ namespace BingRewardsBot
         [DllImport("wininet.dll", SetLastError = true)]
         public static extern bool InternetSetOption(IntPtr hInternet, int dwOption, IntPtr lpBuffer, int lpdwBufferLength);
 
+        //http://www.nullskull.com/q/10387873/clear-temporary-internet-files-via-c-winforms.aspx
+        private const int INTERNET_OPTION_END_BROWSER_SESSION = 42;
+
+
         /*
         private void InjectAlertBlocker()
         {
@@ -125,6 +129,97 @@ namespace BingRewardsBot
             public IntPtr proxy;
             public IntPtr proxyBypass;
         };
+
+
+ /*
+ echo Clear Temporary Internet Files:
+RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 8
+
+echo Clear Cookies:
+RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 2
+
+echo Clear History:
+RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 1
+
+echo Clear Form Data:
+RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 16
+
+echo Clear Saved Passwords:
+RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 32
+
+echo Delete All:
+RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 255
+
+echo Delete All w/Clear Add-ons Settings:
+RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
+*/
+
+        // http://www.thepicketts.org/2012/04/clearing-temporary-internet-files-in-c/
+        /// <summary>
+        /// Clears the Internet Explorer cache folder (Temporary Internet Files)
+        /// </summary>
+        void clearIECache()
+        {
+            // Clear the special cache folder
+            ClearFolder(new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache)));
+        }
+
+        /// <summary>
+        /// Deletes all the files within the specified folder
+        /// </summary>
+        /// The folder from which we wish to delete all of the files
+        void ClearFolder(DirectoryInfo folder)
+        {
+            // Iterate each file
+            foreach (FileInfo file in folder.GetFiles())
+            {
+                try
+                {
+                    // Delete the file, ignoring any exceptions
+                    file.Delete();
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            // For each folder in the specified folder
+            foreach (DirectoryInfo subfolder in folder.GetDirectories())
+            {
+                // Clear all the files in the folder
+                ClearFolder(subfolder);
+            }
+        }
+
+        void ClearCache()
+        {
+            InternetSetOption(IntPtr.Zero, INTERNET_OPTION_END_BROWSER_SESSION, IntPtr.Zero, 0);
+            //browser.Navigate(new Uri("https://www.bing.com/"));
+
+            // clear cache & cookies
+            WebBrowserHelper.ClearCache();
+            //http://www.experts-exchange.com/questions/28462189/How-can-I-clear-the-WebBrowser-Cache-from-C.html
+            browser.Refresh(WebBrowserRefreshOption.Completely);
+            //clearIECache();
+
+            //https://github.com/erfg12/BingRewards
+            try
+            {
+                string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
+                foreach (string currentFile in theCookies)
+                {
+                    System.IO.File.Delete(currentFile);
+                }
+            }
+            catch
+            {
+                //happens sometimes on first bootup
+                //MessageBox.Show("IE Cache error!");
+            }
+
+            //DeleteCache o = new DeleteCache();
+            //DeleteCache.work(null);
+        }
 
         public void ChangeUserAgent(string Agent)
         {
@@ -373,28 +468,7 @@ namespace BingRewardsBot
 
             this.checkaccount = false;
 
-            // clear cache & cookies
-            WebBrowserHelper.ClearCache();
-
-            //https://github.com/erfg12/BingRewards
-            try
-            {
-                string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
-                foreach (string currentFile in theCookies)
-                {
-                    System.IO.File.Delete(currentFile);
-                }
-            }
-            catch
-            {
-                //happens sometimes on first bootup
-                //MessageBox.Show("IE Cache error!");
-            }
-
-            //DeleteCache o = new DeleteCache();
-            //DeleteCache.work(null);
-
-
+            this.ClearCache();
 
             //System.Uri uri = new Uri(myUrl);
             //byte[] authData = System.Text.UnicodeEncoding.UTF8.GetBytes("user: passwd");
@@ -1377,26 +1451,7 @@ namespace BingRewardsBot
                                 this.timer_auth.Stop();
                             }
 
-
-                            // clear cache & cookies
-                            WebBrowserHelper.ClearCache();
-
-                            //https://github.com/erfg12/BingRewards
-                            try
-                            {
-                                string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
-                                foreach (string currentFile in theCookies)
-                                {
-                                    System.IO.File.Delete(currentFile);
-                                }
-                            }
-                            catch
-                            {
-                                //happens sometimes on first bootup
-                                //MessageBox.Show("IE Cache error!");
-                            }
-
-                            //DeleteCache.work(null);
+                            this.ClearCache();
 
                             // use global variable 
                             this.authLock = true;
@@ -1437,24 +1492,7 @@ namespace BingRewardsBot
                                     this.timer_auth.Stop();
                                 }
 
-
-                                // clear cache & cookies
-                                WebBrowserHelper.ClearCache();
-
-                                //https://github.com/erfg12/BingRewards
-                                try
-                                {
-                                    string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
-                                    foreach (string currentFile in theCookies)
-                                    {
-                                        System.IO.File.Delete(currentFile);
-                                    }
-                                }
-                                catch
-                                {
-                                    //happens sometimes on first bootup
-                                   // MessageBox.Show("IE Cache error!");
-                                }
+                                this.ClearCache();
 
                                 bool autorotate = BingRewardsBot.Properties.Settings.Default.set_autorotate;
 
@@ -1530,23 +1568,7 @@ namespace BingRewardsBot
                             this.timer_auth.Stop();
                         }
 
-                        // clear cache & cookies
-                        WebBrowserHelper.ClearCache();
-
-                        //https://github.com/erfg12/BingRewards
-                        try
-                        {
-                            string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
-                            foreach (string currentFile in theCookies)
-                            {
-                                System.IO.File.Delete(currentFile);
-                            }
-                        }
-                        catch
-                        {
-                            //happens sometimes on first bootup
-                            MessageBox.Show("IE Cache error!");
-                        }
+                        this.ClearCache();
 
                         // use global variable 
                         this.authLock = true;
@@ -2441,24 +2463,7 @@ namespace BingRewardsBot
 
         private void btn_cache_Click(object sender, EventArgs e)
         {
-            // clear cache & cookies
-            WebBrowserHelper.ClearCache();
-
-            //https://github.com/erfg12/BingRewards
-            try
-            {
-                string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
-                foreach (string currentFile in theCookies)
-                {
-                    System.IO.File.Delete(currentFile);
-                }
-            }
-            catch
-            {
-                //happens sometimes on first bootup
-                MessageBox.Show("IE Cache error!");
-            }
-            //DeleteCache.work(null);
+            this.ClearCache();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -2539,6 +2544,25 @@ namespace BingRewardsBot
         }
 
     }
+
+
+    //http://dotnetshri.blogspot.fr/2009/10/how-to-clear-cookiescache-for-browser.html
+    /*
+    void clearIECache()
+    {
+        ClearFolder(new DirectoryInfo(Environment.GetFolderPath
+        (Environment.SpecialFolder.InternetCache)));
+    }
+
+    void ClearFolder(DirectoryInfo folder)
+    {
+        foreach (FileInfo file in folder.GetFiles())
+        { file.Delete(); }
+        foreach (DirectoryInfo subfolder in folder.GetDirectories())
+        { ClearFolder(subfolder); }
+    }
+    */
+
 
     //http://www.waytocoding.com/2014/08/how-to-clear-cache-in-web-browser.html
     public class WebBrowserHelper

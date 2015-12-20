@@ -61,7 +61,7 @@ namespace BingRewardsBot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("30-45")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10-15")]
         public string set_counter {
             get {
                 return ((string)(this["set_counter"]));
