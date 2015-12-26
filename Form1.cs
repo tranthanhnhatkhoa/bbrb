@@ -24,6 +24,7 @@ namespace BingRewardsBot
 {
     public partial class Form1 : Form
     {
+        private const int MAXTOKEN = 20;
         private const string TORSOCKSPORT = "8118";
         private  const int TORCONTROLPORT = 9050;
         //private const string TORSOCKSPORT = "8118";
@@ -33,15 +34,27 @@ namespace BingRewardsBot
         private const int MAXLOOPS = 2;
         private string clicklink = "";
         private bool clicklist = false;
-        private bool tokens = false;
+        private int tokens = MAXTOKEN;
         private string clickref = "";
         private string siguid = "";
-        //private const string MSCONNECT = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2frewards%2fdashboard%3fwlexpsignin%3d1&src=EXPLICIT&sig=53EAA11DBE6142C68B829049F399A1F2";
 
-        private const string MSCONNECT = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2frewards%2fdashboard%3fwlexpsignin%3d1&src=EXPLICIT&sig=";
+        //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2f%3fwlsso%3d1%26wlexpsignin%3d1&src=EXPLICIT&sig=1B21E427B7E04B439542F3680AF98691
+        //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2frewards%2fsignin%3fFORM%3dMI0GMI%26PUBL%3dMUIDTrial%26CREA%3dMI0GMI%26wlsso%3d1%26wlexpsignin%3d1&src=EXPLICIT&sig=0348B174ED8666FA3E84B9FDEC01679C
+
+        //https://account.live.com/identity/confirm?ru=https://login.live.com/login.srf%3flc%3d1033%26sf%3d1%26id%3d38936%26ru%3dhttps://account.live.com%253fmkt%253dEN-US%2526lc%253d1033%2526id%253d38936%26tw%3d20%26fs%3d0%26ts%3d0%26sec%3d%26mspp_share
+        //https://login.live.com/login.srf?wa=wsignin1.0&amp;rpsnv=12&amp;ct=1451077233&amp;rver=6.5.6509.0&amp;wp=MBI_SSL&amp;wreply=https:%2F%2Faccount.microsoft.com%2Fauth%2Fcomplete-signin%3Fru%3Dhttps%253a%252f%252faccount.microsoft.com%252f%253frefd%253dlogin.live.com&amp;lc=1033&amp;id=292666"
+        //private const string BRSIGNIN = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2frewards%2fdashboard%3fwlexpsignin%3d1&src=EXPLICIT&sig=53EAA11DBE6142C68B829049F399A1F2";
+        ///fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&sig=05116B5A81F46BD83CAA63D280186ADD&return_url=https://www.bing.com\rewards\dashboard&Token=1
+        //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&sig=27BCFAE69AA86D76381CF26E9B2F6CB6&return_url=https%3a%2f%2fwww.bing.com%3a443%2frewards%2fsignin%3fFORM%3dMI0GMI%26PUBL%3dMUIDTrial%26CREA%3dMI0GMI&Token=1
+        //private const string BRSIGNIN = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&return_url=https://www.bing.com&Token=1&sig=";
+        //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&sig=217B4DD1E3E46AEB169A4558E2086B86&return_url=https%3a%2f%2fwww.bing.com%3a443%2frewards%2fdashboard&Token=1
+        private const string BRSIGNIN = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&return_url=https://www.bing.com/rewards/dashboard&Token=1&sig=";
+        //private const string BRS2 = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https://www.bing.com/rewards/signin?FORM=MI0GMI&PUBL=MUIDTrial&CREA=MI0GMI&wlsso=1&wlexpsignin=1&src=EXPLICIT&sig=";
+        //private const string BRS2 = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&return_url=https://www.bing.com&Token=1&sig=";
+        private const string BRS2 = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https://www.bing.com/?wlsso=1%26wlexpsignin=1%26src=EXPLICIT&sig=";
 
         private const string MAXACCOUNTSPERIPLIMIT = "Not a valid IP. Maximum number of accounts per IP limit reached!";
-        private const int DOCUMENTLOADED = 2;
+        private const int DOCUMENTLOADED = 4;
         private int logtries = 0;
         private int Ilogtries = 0;
         private int startbtn = 0;
@@ -62,7 +75,7 @@ namespace BingRewardsBot
         private const int SLEEPTOR = 5 * 1000;
         private const int SLEEPPTS = 5 * 1000;
         private const int MAXIPSLEEP = 5 * 1000;
-        private const int ARNDTRIES = 100;
+        private const int ARNDTRIES = 200;
         private int accountsRndtry = 0;
         private int accountVisitedX = 0;
         private List<bool> accountVisited;
@@ -73,7 +86,7 @@ namespace BingRewardsBot
         private bool checkaccount = false;
         private string trialRegKey;
         private const int FREEX = 2000000;
-        private const int DIVIDE = 2;
+        private const int DIVIDE = 300;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
         private int authCounterX = 0;
@@ -95,6 +108,11 @@ namespace BingRewardsBot
         private List<string> accounts = new List<string>();
         private List<string> words = new List<string>();
 
+        //http://mdb-blog.blogspot.fr/2013/02/c-winforms-webbrowser-clear-all-cookies.html
+        [System.Runtime.InteropServices.DllImport("wininet.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
+        public static extern bool InternetSetOption(int hInternet, int dwOption, IntPtr lpBuffer, int dwBufferLength);
+
+
         [DllImport("urlmon.dll", CharSet = CharSet.Ansi)]
         private static extern int UrlMkSetSessionOption(int dwOption, string pBuffer, int dwBufferLength, int dwReserved);
         const int URLMON_OPTION_USERAGENT = 0x10000001;
@@ -104,20 +122,7 @@ namespace BingRewardsBot
 
         //http://www.nullskull.com/q/10387873/clear-temporary-internet-files-via-c-winforms.aspx
         private const int INTERNET_OPTION_END_BROWSER_SESSION = 42;
-
-
-        /*
-        private void InjectAlertBlocker()
-        {
-            HtmlElement head = webBrowser1.Document.GetElementsByTagName("head")[0];
-            HtmlElement scriptEl = webBrowser1.Document.CreateElement("script");
-            IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
-            string alertBlocker = "window.alert = function () { }";
-            element.text = alertBlocker;
-            head.AppendChild(scriptEl);
-        }
-        */
-
+        
         public Form1()
         {
             InitializeComponent();
@@ -130,6 +135,73 @@ namespace BingRewardsBot
             public IntPtr proxyBypass;
         };
 
+        //http://mdb-blog.blogspot.fr/2013/02/c-winforms-webbrowser-clear-all-cookies.html
+        //private static unsafe void SuppressWininetBehavior()
+        //{
+        //    /* SOURCE: http://msdn.microsoft.com/en-us/library/windows/desktop/aa385328%28v=vs.85%29.aspx
+        //        * INTERNET_OPTION_SUPPRESS_BEHAVIOR (81):
+        //        *      A general purpose option that is used to suppress behaviors on a process-wide basis. 
+        //        *      The lpBuffer parameter of the function must be a pointer to a DWORD containing the specific behavior to suppress. 
+        //        *      This option cannot be queried with InternetQueryOption. 
+        //        *      
+        //        * INTERNET_SUPPRESS_COOKIE_PERSIST (3):
+        //        *      Suppresses the persistence of cookies, even if the server has specified them as persistent.
+        //        *      Version:  Requires Internet Explorer 8.0 or later.
+        //        */
+
+        //    int option = (int)3/* INTERNET_SUPPRESS_COOKIE_PERSIST*/;
+        //    int* optionPtr = &option;
+
+        //    bool success = InternetSetOption(0, 81/*INTERNET_OPTION_SUPPRESS_BEHAVIOR*/, new IntPtr(optionPtr), sizeof(int));
+        //    if (!success)
+        //    {
+        //        MessageBox.Show("Something went wrong !>?");
+        //    }
+        //}
+
+        void subgetip()
+        {
+            try
+            {
+                this.ip = this.GetIP().Replace("\r\n", "");
+            } catch { }
+            
+            try
+            {
+                this.country = this.QueryGeo(this.ip);
+                this.toolStripStatusLabel1.Text = MYIP + this.ip + " Country:" + this.country;
+            }
+            catch
+            {
+                this.toolStripStatusLabel1.Text = MYIP + this.ip;
+            }
+        }
+
+        void toridswitcher()
+        {
+            if (chkbox_tor.Checked == true)
+            {
+                try
+                {
+                    RefreshTor(0);
+                }
+                catch
+                {
+
+                }
+            }
+
+            this.ip = this.GetIP().Replace("\r\n", "");
+            try
+            {
+                this.country = this.QueryGeo(this.ip);
+                this.toolStripStatusLabel1.Text = MYIP + this.ip + " Country:" + this.country;
+            }
+            catch
+            {
+                this.toolStripStatusLabel1.Text = MYIP + this.ip;
+            }
+        }
 
  /*
  echo Clear Temporary Internet Files:
@@ -193,13 +265,17 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
         void ClearCache()
         {
+            //browser.Document.ExecCommand("ClearAuthenticationCache", false, null);
+
             InternetSetOption(IntPtr.Zero, INTERNET_OPTION_END_BROWSER_SESSION, IntPtr.Zero, 0);
             //browser.Navigate(new Uri("https://www.bing.com/"));
 
             // clear cache & cookies
             WebBrowserHelper.ClearCache();
+            
             //http://www.experts-exchange.com/questions/28462189/How-can-I-clear-the-WebBrowser-Cache-from-C.html
             browser.Refresh(WebBrowserRefreshOption.Completely);
+
             //clearIECache();
 
             //https://github.com/erfg12/BingRewards
@@ -217,8 +293,8 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 //MessageBox.Show("IE Cache error!");
             }
 
-            //DeleteCache o = new DeleteCache();
-            //DeleteCache.work(null);
+            //browser.Navigate("javascript:void((function(){var a,b,c,e,f;f=0;a=document.cookie.split('; ');for(e=0;e<a.length&&a[e];e++){f++;for(b='.'+location.host;b;b=b.replace(/^(?:%5C.|[^%5C.]+)/,'')){for(c=location.pathname;c;c=c.replace(/.$/,'')){document.cookie=(a[e]+'; domain='+b+'; path='+c+'; expires='+new Date((new Date()).getTime()-1e11).toGMTString());}}}})())");
+          
         }
 
         public void ChangeUserAgent(string Agent)
@@ -397,8 +473,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
             // replace everything and keep only IP
             return ipAddress.Replace("<html><head><title>Current IP Check</title></head><body>Current IP Address: ", string.Empty).Replace("</body></html>", string.Empty);
         }
-
-
+        
         //http://www.csharphelp.com/2007/08/redirect-web-visitors-by-country-using-net-framework-in-c/
         private string QueryGeo(string strIPAddress)
         {
@@ -465,8 +540,6 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
             browser.ScriptErrorsSuppressed = true;
             this.ChangeUserAgent(EDGEUA);
-
-            this.checkaccount = false;
 
             this.ClearCache();
 
@@ -568,16 +641,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 this.txtbox_waitauth.Text = BingRewardsBot.Properties.Settings.Default.set_waitauth;
 
                 // Get IP
-                this.ip = this.GetIP().Replace("\r\n", "");
-                try
-                {
-                    this.country = this.QueryGeo(this.ip);
-                    this.toolStripStatusLabel1.Text = MYIP + this.ip + " Country:" + this.country;
-                }
-                catch
-                {
-                    this.toolStripStatusLabel1.Text = MYIP + this.ip;
-                }
+                this.subgetip();
 
                 // new us ip
                 if (this.country == "US")
@@ -623,29 +687,6 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                     SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
                     command.ExecuteNonQuery();
                     m_dbConnection.Close();
-
-                    //SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                    //m_dbConnection.Open();
-
-                    /*
-                    int d = (int)System.DateTime.Now.DayOfWeek;
-
-                    sql = "insert into searches (day, ip, account, points) values (" + d + ",'" + this.ip + "','" + this.accountNameTxtBox.Text + "','0')";
-
-                    command = new SQLiteCommand(sql, m_dbConnection);
-                    command.ExecuteNonQuery();
-                    */
-                }
-                else
-                {
-                    /*
-                    SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=MyDatabase.sqlite;Version=3;");
-                    m_dbConnection.Open();
-
-                    string sql = "insert into highscores (name, score) values ('Me', 3000)";
-                    SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-                    command.ExecuteNonQuery();
-                    */
                 }
 
                 // Autostart
@@ -705,59 +746,12 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                     this.Ilogtries = 0;
                 }
             }
-
-            /*
-            SQLiteConnection conn = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-            conn.Open();
-            DateTime dateTime = DateTime.UtcNow.Date;
-
-            //string query = "select count(*) from searches where account='" + this.accountNameTxtBox.Text + "' and ip='" + this.ip + "' and date='" + dateTime.ToString("yyyyMMdd") + "';";
-            string query = "select count(*) from searches where account='" + this.accountNameTxtBox.Text + "' and ip='" + this.ip + "';";
-            SQLiteCommand exe = new SQLiteCommand(query, conn);
-            SQLiteDataReader reader = exe.ExecuteReader();
-
-            int count = 0;
-            while (reader.Read()) { 
-                count = Convert.ToInt32(reader["count(*)"]);
-            }
-
-            if (count == 0)
-            {
-                query = "insert  into searches (date, ip, account, points) values ('" + dateTime.ToString("yyyyMMdd") + "','" + this.ip + "','" + this.accountNameTxtBox.Text + "','0')";
-                exe = new SQLiteCommand(query, conn);
-                exe.ExecuteNonQuery();
-            }
-            conn.Close();
-            */
-            /*
-             SQLiteConnection m_dbConnection2 = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                m_dbConnection2.Open();
-                DateTime dateTime = DateTime.UtcNow.Date;
-            //string sql2 = "select * from searches where date='"+ dateTime.ToString("yyyyMMdd") + "' group by ip, account order by ip desc";
-            this.ip = "107.181.174.84";
-            string sql2 = "select * from searches group by ip, account order by ip desc";
-            SQLiteCommand command2 = new SQLiteCommand(sql2, m_dbConnection2);
-                SQLiteDataReader reader = command2.ExecuteReader();
-                int c = 0;
-                while (reader.Read())
-                {
-                    if (this.ip == Convert.ToString(reader["ip"]) && this.accountNameTxtBox.Text != reader["account"])
-                    {
-                        ++c;
-                    }
-                }
-                m_dbConnection2.Close();
-                if (c>=MAXACCOUNTPERIP)
-                {
-                    MessageBox.Show("Max. accounts per IP!");
-                }
-                else
-                {
-                    // first step before user auth (log out) 
-                    browser.Navigate(new Uri("https://login.live.com"));
-                }
-              */
         }
+
+
+        //**********************
+        // Url bar
+        //**********************
 
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
@@ -778,7 +772,6 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 else if (url.StartsWith("bingr"))
                 {
                     browser.Navigate(new Uri("http://www.bing.com/rewards"));
-
                 }
                 else if (url.StartsWith("svenja"))
                 {
@@ -799,13 +792,11 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 {
                     this.ChangeUserAgent(APPLEMOBILEUA);
                     browser.Navigate("https://www.bing.com/rewards/redeem/all");
-
                 }
                 else if (url.StartsWith("amazon"))
                 {
                     this.ChangeUserAgent(APPLEMOBILEUA);
                     browser.Navigate("https://www.bing.com/rewards/redeem/000100000004");
-
                 }
                 else if (url.StartsWith("bing"))
                 {
@@ -853,21 +844,14 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
         }
         */
 
+
+        //**********************
+        // Main webbrowser loop
+        //**********************
+
         void browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            /*
-            Response.Cache.SetCacheability(HttpCacheability.NoCache);
-            Response.Cache.SetExpires(DateTime.Now);
-            Response.Cache.SetNoServerCaching();
-            Response.Cache.SetNoStore();
-
-              //Clear cookies
-               string[] cookies = Request.Cookies.AllKeys;
-               foreach (string cookie in cookies)
-               {
-                   Response.Cookies[cookie].Expires = DateTime.Now.AddDays(-1);
-               }
-            */
+            --this.tokens;
 
             if (this.timer_searches != null)
             {
@@ -876,29 +860,39 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
             string url = e.Url.ToString();
             var loaded = (WebBrowser)sender;
-            
-            // loaded.Url.ToString().Contains(@"https://www.bing.com/rewards/dashboard?wlexpsignin=1")
-            if (loaded.Document != null
-                && loaded.Url.ToString().Contains(@"https://www.bing.com/rewards/dashboard")
-                && !String.IsNullOrEmpty(this.siguid) && !String.IsNullOrWhiteSpace(this.siguid)
-            ) {
 
-                browser.Navigate(new Uri("https://www.bing.com/"));
-                
-                // https://www.bing.com/rewards/dashboard
-                // loaded.Document.GetElementById("b_idProviders") != null
-                //string text = loaded.Document.GetElementById("id_n").InnerText;
-                //if (!String.IsNullOrEmpty(text) && !String.IsNullOrWhiteSpace(text))
-            }
-            else if (loaded.Document != null
+            if (loaded.Document != null
+                && loaded.Url.ToString().Contains(@"https://account.live.com/identity/confirm")
+                )
+            {
+                this.tokens = MAXTOKEN;
+                this.toridswitcher();
+                try
+                {
+                    this.authLock = false;
+                    this.timer_auth.Enabled = false;
+                    this.timer_auth.Stop();
+                }
+                catch { }
+
+                this.authCallback(null, null);
+
+            } else if (loaded.Document != null
                 && loaded.Url.ToString().Contains(@"https://www.bing.com/rewards/dashboard")
                 && (String.IsNullOrEmpty(loaded.Document.GetElementById("id_n").InnerText) || String.IsNullOrWhiteSpace(loaded.Document.GetElementById("id_n").InnerText)
                 && String.IsNullOrEmpty(this.siguid) && String.IsNullOrWhiteSpace(this.siguid)
+                && !loaded.Url.ToString().Contains(@"login.live.com")
             )
            )
             {
+                this.tokens = MAXTOKEN;
                 ++this.logtries;
-                if (this.logtries > DOCUMENTLOADED)
+                int tries = DOCUMENTLOADED;
+                if (chkbox_autorotate.Checked == true)
+                {
+                    tries -= 2;
+                }
+                if (this.logtries > tries)
                 {
                     //MessageBox.Show("test");
                     this.logtries = 0;
@@ -906,6 +900,8 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                     {
                         //HtmlElement connect = loaded.Document.GetElementById("id_ns");
                         //HtmlElement connect = loaded.Document.GetElementById("identityStatus");
+
+                        bool a = false;
                         HtmlElementCollection links = loaded.Document.Links;
                         foreach (HtmlElement ele in links)
                         {
@@ -916,35 +912,35 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                                 //   && ele.GetAttribute("href").Contains(@"sig=")
                                 //   )
 
-                                    if ((ele.GetAttribute("href") != null) 
-                                    && ele.GetAttribute("href").Contains(@"sig=")
-                                    )
+                                if ((ele.GetAttribute("href") != null)
+                                && ele.GetAttribute("href").Contains(@"sig=")
+                                )
                                 {
                                     //++this.Ilogtries;
 
                                     //if (this.Ilogtries > DOCUMENTLOADED)
                                     //{
-                                        this.Ilogtries = 0;
-                                        string text = ele.GetAttribute("href");
-                                        string[] substring = text.Split('&');
+                                    this.Ilogtries = 0;
+                                    string text = ele.GetAttribute("href");
+                                    string[] substring = text.Split('&');
 
-                                        foreach (string sig in substring)
+                                    foreach (string sig in substring)
+                                    {
+                                        if (sig.Contains(@"sig="))
                                         {
-                                            if (sig.Contains(@"sig="))
-                                            {
-                                                this.siguid = sig.Replace("sig=", "");
-                                                this.tokens = true;
-                                                //MessageBox.Show(this.siguid);
-                                                browser.Navigate(new Uri(MSCONNECT + this.siguid));
-
-                                                //System.Threading.Thread.Sleep(1 * 1000);
-                                                //browser.Navigate(new Uri("https://www.bing.com/rewards"));                                                
-                                            }
+                                            this.siguid = sig.Replace("sig=", "");
+                                            //MessageBox.Show(this.siguid);
+                                            browser.Navigate(new Uri(BRSIGNIN + this.siguid));
+                                            //System.Threading.Thread.Sleep(5 * 1000);
+                                            a = true;
+                                            break;
+                                            //browser.Navigate(new Uri("https://www.bing.com/rewards"));                                                
                                         }
-                                        //MessageBox.Show(ele.GetAttribute("href"));
-                                        //string myurl = ele.GetAttribute("href");
-                                        //browser.Navigate(new Uri(myurl));
-                                        //break;
+                                    }
+                                    //MessageBox.Show(ele.GetAttribute("href"));
+                                    //string myurl = ele.GetAttribute("href");
+                                    //browser.Navigate(new Uri(myurl));
+                                    //break;
                                     //}
                                 }
                             }
@@ -952,23 +948,47 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                             {
                             }
                         }
+                        if (a == false)
+                        {
+                            browser.Navigate(new Uri("https://www.bing.com/rewards"));
+                        }
                     }
                     catch
                     {
                     }
+                } else
+                {
+                    browser.Navigate(new Uri("https://www.bing.com/rewards"));
                 }
 
-                //*********************
-                // Sign-in
-                //*********************
+                // loaded.Url.ToString().Contains(@"https://www.bing.com/rewards/dashboard?wlexpsignin=1")
             }
+            else if (loaded.Document != null
+                && loaded.Url.ToString().Contains(@"https://www.bing.com/rewards/dashboard")
+                && !String.IsNullOrEmpty(this.siguid) && !String.IsNullOrWhiteSpace(this.siguid)
+                && !loaded.Url.ToString().Contains(@"login.live.com")
+                && chkbox_autorotate.Checked == true               
+            )
+            {
+                this.tokens = MAXTOKEN;
+
+                //MessageBox.Show(BRS2 + this.siguid);
+                browser.Navigate(new Uri(BRS2 + this.siguid));
+                //browser.Navigate(new Uri("https://www.bing.com/"));
+
+                    // https://www.bing.com/rewards/dashboard
+                    // loaded.Document.GetElementById("b_idProviders") != null
+                    //string text = loaded.Document.GetElementById("id_n").InnerText;
+                    //if (!String.IsNullOrEmpty(text) && !String.IsNullOrWhiteSpace(text))
+
+
+            //*********************
+            // Sign-in
+            //*********************
+        }
             else if (loaded.Document != null
              && loaded.Document.GetElementById("i0116") != null)
             {
-                //*********************
-                // user auth (Sign-in)
-                //*********************
-
                 try
                 {
                     loaded.Document.GetElementById("i0116").SetAttribute("value", this.username);
@@ -991,10 +1011,12 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                   || this.clicklist == true)
              )
             {
+                this.tokens = MAXTOKEN;
                 HtmlElement head = browser.Document.GetElementsByTagName("head")[0];
                 HtmlElement scriptEl = browser.Document.CreateElement("script");
                 IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
                 string alertBlocker = "window.alert = function () { }; window.confirm=function () { };";
+                //alertBlocker += "Cache - Control: no - cache, no - store, must - revalidate\r\nPragma: no - cache\r\nExpires: 0\r\n";
                 element.text = alertBlocker;
                 head.AppendChild(scriptEl);
 
@@ -1024,7 +1046,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                 } else if (this.pts >= 25 && autorotate == false)
                 {
-                    this.checkaccount = false;
+                    //this.checkaccount = false;
                     this.searchesLock = true;
 
                     try
@@ -1088,7 +1110,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                             this.prevpts = pts;
                             this.pts += delta;
 
-                            if (delta >= 1)
+                            if (delta >= 1 && delta < 2)
                             {
                                 SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                                 m_dbConnection.Open();
@@ -1113,25 +1135,60 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 //loaded.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
                 //loaded.Document.GetElementById("sb_form_go").InvokeMember("click");
 
-                // Authentification
+                //****************************************************
+                // Sign in succesful
                 // @"https://account.microsoft.com/?lang=en-US"
+                //****************************************************
             }
             else if (loaded.Document != null
                 && loaded.Url.ToString().Contains(@"https://account.microsoft.com/"))
             {
-
+                this.tokens = MAXTOKEN;
                 ++this.logtries;
+
                 if (this.logtries > DOCUMENTLOADED)
-                {
+                {                    
                     //MessageBox.Show("test2");
                     this.logtries = 0;
-
                     bool autorotate = chkbox_autorotate.Checked == true ? true : false;
 
-                    // Sign in succesful
+                    //MessageBox.Show(this.checkaccount == true ? "true" : "false");
+                    //MessageBox.Show(autorotate == true ? "true" : "false");
 
-                    //this.accountVisited[this.accountNum] == false &&
-                    if (this.accountVisited[this.accountNum] == false && autorotate == true && this.checkaccount == false)
+                    bool a = false;
+                    try
+                    {
+                        HtmlElementCollection links = loaded.Document.Links;
+                        foreach (HtmlElement ele in links)
+                        {
+                            try
+                            {
+                                if ((ele.GetAttribute("href") != null)
+                                && ele.GetAttribute("href").Contains(@"id=")
+                                && ele.GetAttribute("href").Contains(@"login.live.com")
+                                && !ele.GetAttribute("href").Contains(@"signup.live.com")
+                                )
+                                {
+                                    string text = ele.GetAttribute("href");
+                                    browser.Navigate(new Uri(text));
+                                    a = true;
+                                }
+                            }
+                            catch
+                            {
+                            }
+                        }
+                    }
+                    catch
+                    {
+                    }
+                
+                //this.accountVisited[this.accountNum] == false &&
+                if (this.accountVisited[this.accountNum] == false 
+                    && autorotate == true 
+                    && this.checkaccount == false
+                    && a == false
+                    )
                     {
                         this.prevpts = 0;
                         this.pts = 0;
@@ -1197,10 +1254,12 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                         }
                         m_dbConnection.Close();
 
-                        // first step after user auth (very important) navigate bing.com
+                        // first step after user auth (very important) navigate bing.com or bing.com/rewards
                         browser.Navigate(new Uri("https://www.bing.com/rewards"));
                     }
-                    else if (autorotate == false || this.checkaccount == true)
+                    else if (a == false 
+                        && (autorotate == false || this.checkaccount == true)
+                       )
                     {
                         this.prevpts = 0;
                         this.pts = 0;
@@ -1263,17 +1322,17 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                         }
                         m_dbConnection.Close();
 
-                        // first step after user auth (very important) navigate bing.com or bing.com/rewards
+                        // first step after sign in (very important) navigate bing.com or bing.com/rewards
                         browser.Navigate(new Uri("https://www.bing.com/rewards"));
                     }
 
-                    /*
+                   
                     else
                     {
-                        // first step after user auth (very important) navigate bing.com or bing.com/rewards
-                        browser.Navigate(new Uri("https://www.bing.com/rewards"));
+                        // retry
+                        browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
                     }
-                    */
+                   
                 }
 
                 //*********************
@@ -1288,6 +1347,8 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
               && this.checkaccount == false
               && this.searchesLock == false)
             {
+                this.tokens = MAXTOKEN;
+
                 if (randomNumber(0, 11) > randomNumber(0, 3))
                 {
                     BingRewardsBot.Properties.Settings.Default.set_mobile = randomNumber(0, 11) > randomNumber(0, 3) ? true : false;
@@ -1323,6 +1384,8 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
               || loaded.Url.ToString().Contains(@"https://login.live.com/logout.srf")
               ))
             {
+                this.tokens = MAXTOKEN;
+
                 bool autorotate = chkbox_autorotate.Checked == true ? true : false;
 
                 SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
@@ -1344,10 +1407,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 if (c >= MAXACCOUNTPERIP)
                 {
                     this.toolStripStatusLabel1.Text = MAXACCOUNTSPERIPLIMIT + " (" + MYIP + this.ip + " Country:" + this.country + ")";
-
-                    this.authCallback(null, null);
-
-                    /*
+                    
                     try
                     {
                         this.authLock = false;
@@ -1355,12 +1415,33 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                         this.timer_auth.Stop();
                     }
                     catch { }
-                    */
+                    this.toridswitcher();
+                    this.authCallback(null, null);
                 }
                 else
                 {
                     if (this.country == "US" || chkbox_tor.Checked == false)
                     {
+
+                        // clear cookie & cache
+                        InternetSetOption(IntPtr.Zero, INTERNET_OPTION_END_BROWSER_SESSION, IntPtr.Zero, 0);
+
+                        //browser.Navigate("javascript:void((function(){var a,b,c,e,f;f=0;a=document.cookie.split('; ');for(e=0;e<a.length&&a[e];e++){f++;for(b='.'+location.host;b;b=b.replace(/^(?:%5C.|[^%5C.]+)/,'')){for(c=location.pathname;c;c=c.replace(/.$/,'')){document.cookie=(a[e]+'; domain='+b+'; path='+c+'; expires='+new Date((new Date()).getTime()-1e11).toGMTString());}}}})())");
+
+                        string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
+                        foreach (string currentFile in theCookies)
+                        {
+                            try
+                            {
+                                System.IO.File.Delete(currentFile);
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+                        }
+
+                        //this.clearIECache();
+
                         // first step before sign-in (sign out) 
                         browser.Navigate(new Uri("https://login.live.com"));
                     }
@@ -1399,11 +1480,33 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                         } else
                         {
+                            try
+                            {
+                                this.authLock = false;
+                                this.timer_auth.Enabled = false;
+                                this.timer_auth.Stop();
+                            }
+                            catch { }
+                            this.toridswitcher();
                             this.authCallback(null, null);
                         }
                     }
                 }
-            }
+            } else if (this.tokens < 0 && chkbox_autorotate.Checked == true)
+            {
+                //MessageBox.Show(this.tokens.ToString());
+                this.tokens = MAXTOKEN;
+                this.toridswitcher();
+                try
+                {
+                    this.authLock = false;
+                    this.timer_auth.Enabled = false;
+                    this.timer_auth.Stop();
+                }
+                catch { }
+
+                this.authCallback(null, null);
+           }
         }
 
         private void browser_ProgressChanged(object sender, WebBrowserProgressChangedEventArgs e)
@@ -1467,7 +1570,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                             this.ChangeUserAgent(EDGEUA);
 
-                            // first step log out
+                            // first step sign out
                             browser.Navigate(new Uri("http://login.live.com/logout.srf"));
 
                             stop = true;
@@ -1492,35 +1595,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                                     this.timer_auth.Stop();
                                 }
 
-                                this.ClearCache();
-
-                                bool autorotate = BingRewardsBot.Properties.Settings.Default.set_autorotate;
-
-                                if (autorotate == true)
-                                {
-                                    if (chkbox_tor.Checked == true)
-                                    {
-                                        try
-                                        {
-                                            RefreshTor(0);
-                                        }
-                                        catch
-                                        {
-
-                                        }
-                                    }
-
-                                    this.ip = this.GetIP().Replace("\r\n", "");
-                                    try
-                                    {
-                                        this.country = this.QueryGeo(this.ip);
-                                        this.toolStripStatusLabel1.Text = MYIP + this.ip + " Country:" + this.country;
-                                    }
-                                    catch
-                                    {
-                                        this.toolStripStatusLabel1.Text = MYIP + this.ip;
-                                    }
-                                }
+                                this.ClearCache();                              
 
                                 // use global variable 
                                 this.authLock = true;
@@ -1536,7 +1611,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                                 this.ChangeUserAgent(EDGEUA);
 
-                                // first step log out
+                                // first step sign out
                                 browser.Navigate(new Uri("http://login.live.com/logout.srf"));
                             }
                         }
@@ -1584,12 +1659,18 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                         this.ChangeUserAgent(EDGEUA);
 
-                        // first step log out
+                        //MessageBox.Show(this.checkaccount == true ? "true" : "false");
+
+                        // first step sign out
                         browser.Navigate(new Uri("http://login.live.com/logout.srf"));
                     }
                 }
             }
         }
+
+        //*******************
+        // Mainsearch loop
+        //*******************
 
         private void searchCallback(object sender, EventArgs e)
         {
@@ -1629,7 +1710,13 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 {
                     this.qpage = 0;
 
-                    // only when autorotate
+                    // autorotate
+                    //bool autorotate = BingRewardsBot.Properties.Settings.Default.set_autorotate;
+
+                    //if (autorotate == true)
+                    //{
+                    //    this.toridswitcher();
+                    //}
                     if (chkbox_autorotate.Checked == true && chkbox_tor.Checked == true)
                     {
                         try
@@ -1641,18 +1728,9 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                         }
                     }
-                    this.ip = this.GetIP().Replace("\r\n", "");
-                    try
-                    {
-                        this.country = this.QueryGeo(this.ip);
-                        this.toolStripStatusLabel1.Text = MYIP + this.ip + " Country:" + this.country;
-                    }
-                    catch
-                    {
-                        this.toolStripStatusLabel1.Text = MYIP + this.ip;
-                    }
+                    this.subgetip();
 
-                    statusTxtBox.Text = "Authenticate";
+                    statusTxtBox.Text = "Authenticating";
 
                     //this.timer_auth = new Timer();
                     //this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
@@ -2238,7 +2316,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                     this.dxloops = 0;
                     this.mxloops = 0;
 
-                    statusTxtBox.Text = "Authenticate";
+                    statusTxtBox.Text = "Authenticating";
                     this.checkaccount = false;
                     this.authLock = false;
 
@@ -2254,16 +2332,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                         }
                     }
-                    this.ip = this.GetIP().Replace("\r\n", "");
-                    try
-                    {
-                        this.country = this.QueryGeo(this.ip);
-                        this.toolStripStatusLabel1.Text = MYIP + this.ip + " Country:" + this.country;
-                    }
-                    catch
-                    {
-                        this.toolStripStatusLabel1.Text = MYIP + this.ip;
-                    }
+                    this.subgetip();
 
                     this.authCallback(null, null);
 
@@ -2338,6 +2407,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
         private void check_button_Click(object sender, EventArgs e)
         {
             this.checkaccount = true;
+            //MessageBox.Show(this.checkaccount == true ? "true" : "false");
             this.authLock = false;
             this.authCallback(null, null);
         }
@@ -2425,16 +2495,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                 }
             }
-            this.ip = this.GetIP().Replace("\r\n", "");
-            try
-            {
-                this.country = this.QueryGeo(this.ip);
-                this.toolStripStatusLabel1.Text = MYIP + this.ip + " Country:" + this.country;
-            }
-            catch
-            {
-                this.toolStripStatusLabel1.Text = MYIP + this.ip;
-            }
+            this.subgetip();
 
             if (this.country != "US")
             {
@@ -2731,198 +2792,6 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 }
                 Marshal.FreeHGlobal(cacheEntryInfoBuffer);
             }
-        }
-    }
-
-    // Class for deleting the cache.
-    class DeleteCache
-    {
-        // For PInvoke: Contains information about an entry in the Internet cache
-        [StructLayout(LayoutKind.Explicit, Size = 80)]
-        public struct INTERNET_CACHE_ENTRY_INFOA
-        {
-            [FieldOffset(0)]
-            public uint dwStructSize;
-            [FieldOffset(4)]
-            public IntPtr lpszSourceUrlName;
-            [FieldOffset(8)]
-            public IntPtr lpszLocalFileName;
-            [FieldOffset(12)]
-            public uint CacheEntryType;
-            [FieldOffset(16)]
-            public uint dwUseCount;
-            [FieldOffset(20)]
-            public uint dwHitRate;
-            [FieldOffset(24)]
-            public uint dwSizeLow;
-            [FieldOffset(28)]
-            public uint dwSizeHigh;
-            [FieldOffset(32)]
-            public FILETIME LastModifiedTime;
-            [FieldOffset(40)]
-            public FILETIME ExpireTime;
-            [FieldOffset(48)]
-            public FILETIME LastAccessTime;
-            [FieldOffset(56)]
-            public FILETIME LastSyncTime;
-            [FieldOffset(64)]
-            public IntPtr lpHeaderInfo;
-            [FieldOffset(68)]
-            public uint dwHeaderInfoSize;
-            [FieldOffset(72)]
-            public IntPtr lpszFileExtension;
-            [FieldOffset(76)]
-            public uint dwReserved;
-            [FieldOffset(76)]
-            public uint dwExemptDelta;
-        }
-
-        // For PInvoke: Initiates the enumeration of the cache groups in the Internet cache
-        [DllImport(@"wininet",
-            SetLastError = true,
-            CharSet = CharSet.Auto,
-            EntryPoint = "FindFirstUrlCacheGroup",
-            CallingConvention = CallingConvention.StdCall)]
-        public static extern IntPtr FindFirstUrlCacheGroup(
-            int dwFlags,
-            int dwFilter,
-            IntPtr lpSearchCondition,
-            int dwSearchCondition,
-            ref long lpGroupId,
-            IntPtr lpReserved);
-
-        // For PInvoke: Retrieves the next cache group in a cache group enumeration
-        [DllImport(@"wininet",
-            SetLastError = true,
-            CharSet = CharSet.Auto,
-            EntryPoint = "FindNextUrlCacheGroup",
-            CallingConvention = CallingConvention.StdCall)]
-        public static extern bool FindNextUrlCacheGroup(
-            IntPtr hFind,
-            ref long lpGroupId,
-            IntPtr lpReserved);
-
-        // For PInvoke: Releases the specified GROUPID and any associated state in the cache index file
-        [DllImport(@"wininet",
-            SetLastError = true,
-            CharSet = CharSet.Auto,
-            EntryPoint = "DeleteUrlCacheGroup",
-            CallingConvention = CallingConvention.StdCall)]
-        public static extern bool DeleteUrlCacheGroup(
-            long GroupId,
-            int dwFlags,
-            IntPtr lpReserved);
-
-        // For PInvoke: Begins the enumeration of the Internet cache
-        [DllImport(@"wininet",
-            SetLastError = true,
-            CharSet = CharSet.Auto,
-            EntryPoint = "FindFirstUrlCacheEntryA",
-            CallingConvention = CallingConvention.StdCall)]
-        public static extern IntPtr FindFirstUrlCacheEntry(
-            [MarshalAs(UnmanagedType.LPTStr)] string lpszUrlSearchPattern,
-            IntPtr lpFirstCacheEntryInfo,
-            ref int lpdwFirstCacheEntryInfoBufferSize);
-
-        // For PInvoke: Retrieves the next entry in the Internet cache
-        [DllImport(@"wininet",
-            SetLastError = true,
-            CharSet = CharSet.Auto,
-            EntryPoint = "FindNextUrlCacheEntryA",
-            CallingConvention = CallingConvention.StdCall)]
-        public static extern bool FindNextUrlCacheEntry(
-            IntPtr hFind,
-            IntPtr lpNextCacheEntryInfo,
-            ref int lpdwNextCacheEntryInfoBufferSize);
-
-        // For PInvoke: Removes the file that is associated with the source name from the cache, if the file exists
-        [DllImport(@"wininet",
-            SetLastError = true,
-            CharSet = CharSet.Auto,
-            EntryPoint = "DeleteUrlCacheEntryA",
-            CallingConvention = CallingConvention.StdCall)]
-        public static extern bool DeleteUrlCacheEntry(
-            IntPtr lpszUrlName);
-
-        [STAThread]
-        public static void work(string[] args)
-        {
-            // Indicates that all of the cache groups in the user's system should be enumerated
-            const int CACHEGROUP_SEARCH_ALL = 0x0;
-            // Indicates that all the cache entries that are associated with the cache group
-            // should be deleted, unless the entry belongs to another cache group.
-            const int CACHEGROUP_FLAG_FLUSHURL_ONDELETE = 0x2;
-            // File not found.
-            const int ERROR_FILE_NOT_FOUND = 0x2;
-            // No more items have been found.
-            const int ERROR_NO_MORE_ITEMS = 259;
-            // Pointer to a GROUPID variable
-            long groupId = 0;
-
-            // Local variables
-            int cacheEntryInfoBufferSizeInitial = 0;
-            int cacheEntryInfoBufferSize = 0;
-            IntPtr cacheEntryInfoBuffer = IntPtr.Zero;
-            INTERNET_CACHE_ENTRY_INFOA internetCacheEntry;
-            IntPtr enumHandle = IntPtr.Zero;
-            bool returnValue = false;
-
-            // Delete the groups first.
-            // Groups may not always exist on the system.
-            // For more information, visit the following Microsoft Web site:
-            // http://msdn.microsoft.com/library/?url=/workshop/networking/wininet/overview/cache.asp			
-            // By default, a URL does not belong to any group. Therefore, that cache may become
-            // empty even when the CacheGroup APIs are not used because the existing URL does not belong to any group.			
-            enumHandle = FindFirstUrlCacheGroup(0, CACHEGROUP_SEARCH_ALL, IntPtr.Zero, 0, ref groupId, IntPtr.Zero);
-            // If there are no items in the Cache, you are finished.
-            if (enumHandle != IntPtr.Zero && ERROR_NO_MORE_ITEMS == Marshal.GetLastWin32Error())
-                return;
-
-            // Loop through Cache Group, and then delete entries.
-            while (true)
-            {
-                // Delete a particular Cache Group.
-                returnValue = DeleteUrlCacheGroup(groupId, CACHEGROUP_FLAG_FLUSHURL_ONDELETE, IntPtr.Zero);
-                if (!returnValue && ERROR_FILE_NOT_FOUND == Marshal.GetLastWin32Error())
-                {
-                    returnValue = FindNextUrlCacheGroup(enumHandle, ref groupId, IntPtr.Zero);
-                }
-
-                if (!returnValue && (ERROR_NO_MORE_ITEMS == Marshal.GetLastWin32Error() || ERROR_FILE_NOT_FOUND == Marshal.GetLastWin32Error()))
-                    break;
-            }
-
-            // Start to delete URLs that do not belong to any group.
-            enumHandle = FindFirstUrlCacheEntry(null, IntPtr.Zero, ref cacheEntryInfoBufferSizeInitial);
-            if (enumHandle == IntPtr.Zero && ERROR_NO_MORE_ITEMS == Marshal.GetLastWin32Error())
-                return;
-
-            cacheEntryInfoBufferSize = cacheEntryInfoBufferSizeInitial;
-            cacheEntryInfoBuffer = Marshal.AllocHGlobal(cacheEntryInfoBufferSize);
-            enumHandle = FindFirstUrlCacheEntry(null, cacheEntryInfoBuffer, ref cacheEntryInfoBufferSizeInitial);
-
-            while (true)
-            {
-                internetCacheEntry = (INTERNET_CACHE_ENTRY_INFOA)Marshal.PtrToStructure(cacheEntryInfoBuffer, typeof(INTERNET_CACHE_ENTRY_INFOA));
-
-                cacheEntryInfoBufferSizeInitial = cacheEntryInfoBufferSize;
-                returnValue = DeleteUrlCacheEntry(internetCacheEntry.lpszSourceUrlName);
-                if (!returnValue)
-                {
-                    returnValue = FindNextUrlCacheEntry(enumHandle, cacheEntryInfoBuffer, ref cacheEntryInfoBufferSizeInitial);
-                }
-                if (!returnValue && ERROR_NO_MORE_ITEMS == Marshal.GetLastWin32Error())
-                {
-                    break;
-                }
-                if (!returnValue && cacheEntryInfoBufferSizeInitial > cacheEntryInfoBufferSize)
-                {
-                    cacheEntryInfoBufferSize = cacheEntryInfoBufferSizeInitial;
-                    cacheEntryInfoBuffer = Marshal.ReAllocHGlobal(cacheEntryInfoBuffer, (IntPtr)cacheEntryInfoBufferSize);
-                    returnValue = FindNextUrlCacheEntry(enumHandle, cacheEntryInfoBuffer, ref cacheEntryInfoBufferSizeInitial);
-                }
-            }
-            Marshal.FreeHGlobal(cacheEntryInfoBuffer);
         }
     }
 }

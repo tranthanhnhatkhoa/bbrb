@@ -563,7 +563,7 @@
             this.txtbox_counter.Name = "txtbox_counter";
             this.txtbox_counter.Size = new System.Drawing.Size(61, 20);
             this.txtbox_counter.TabIndex = 3;
-            this.txtbox_counter.Text = "30-45";
+            this.txtbox_counter.Text = "10-15";
             // 
             // txtbox_waitsearches
             // 
