@@ -24,7 +24,7 @@ namespace BingRewardsBot
 {
     public partial class Form1 : Form
     {
-        private const int MAXTOKEN = 20;
+        private const int MAXTOKEN = 40;
         private const string TORSOCKSPORT = "8118";
         private  const int TORCONTROLPORT = 9050;
         //private const string TORSOCKSPORT = "8118";
@@ -38,6 +38,7 @@ namespace BingRewardsBot
         private string clickref = "";
         private string siguid = "";
 
+        //https://www.bing.com/
         //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2f%3fwlsso%3d1%26wlexpsignin%3d1&src=EXPLICIT&sig=1B21E427B7E04B439542F3680AF98691
         //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2frewards%2fsignin%3fFORM%3dMI0GMI%26PUBL%3dMUIDTrial%26CREA%3dMI0GMI%26wlsso%3d1%26wlexpsignin%3d1&src=EXPLICIT&sig=0348B174ED8666FA3E84B9FDEC01679C
 
@@ -973,8 +974,8 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 this.tokens = MAXTOKEN;
 
                 //MessageBox.Show(BRS2 + this.siguid);
-                browser.Navigate(new Uri(BRS2 + this.siguid));
-                //browser.Navigate(new Uri("https://www.bing.com/"));
+                //browser.Navigate(new Uri(BRS2 + this.siguid));
+                browser.Navigate(new Uri("https://www.bing.com/"));
 
                     // https://www.bing.com/rewards/dashboard
                     // loaded.Document.GetElementById("b_idProviders") != null
