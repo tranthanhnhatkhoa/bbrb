@@ -55,7 +55,7 @@ namespace BingRewardsBot
         private const string BRS2 = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https://www.bing.com/?wlsso=1%26wlexpsignin=1%26src=EXPLICIT&sig=";
 
         private const string MAXACCOUNTSPERIPLIMIT = "Not a valid IP. Maximum number of accounts per IP limit reached!";
-        private const int DOCUMENTLOADED = 4;
+        private const int DOCUMENTLOADED = 5;
         private int logtries = 0;
         private int Ilogtries = 0;
         private int startbtn = 0;
@@ -109,10 +109,19 @@ namespace BingRewardsBot
         private List<string> accounts = new List<string>();
         private List<string> words = new List<string>();
 
+        //http://stackoverflow.com/questions/9770522/how-to-handle-message-boxes-while-using-webbrowser-in-c
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+
+        [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true)]
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
+        
         //http://mdb-blog.blogspot.fr/2013/02/c-winforms-webbrowser-clear-all-cookies.html
         [System.Runtime.InteropServices.DllImport("wininet.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
         public static extern bool InternetSetOption(int hInternet, int dwOption, IntPtr lpBuffer, int dwBufferLength);
-
 
         [DllImport("urlmon.dll", CharSet = CharSet.Ansi)]
         private static extern int UrlMkSetSessionOption(int dwOption, string pBuffer, int dwBufferLength, int dwReserved);
@@ -304,17 +313,30 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
         }
 
         //http://stackoverflow.com/questions/8306839/how-to-clear-browser-cache-programatically
-       /*
-            public static void DisablePageCaching()
+        /*
+             public static void DisablePageCaching()
+         {
+             //Used for disabling page caching
+             HttpContext.Current.Response.Cache.SetExpires(DateTime.UtcNow.AddDays(-1));
+             HttpContext.Current.Response.Cache.SetValidUntilExpires(false);
+             HttpContext.Current.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+             HttpContext.Current.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+             HttpContext.Current.Response.Cache.SetNoStore();
+         }
+         */
+
+        //http://stackoverflow.com/questions/9770522/how-to-handle-message-boxes-while-using-webbrowser-in-c
+        private void ClickOKButton()
         {
-            //Used for disabling page caching
-            HttpContext.Current.Response.Cache.SetExpires(DateTime.UtcNow.AddDays(-1));
-            HttpContext.Current.Response.Cache.SetValidUntilExpires(false);
-            HttpContext.Current.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
-            HttpContext.Current.Response.Cache.SetCacheability(HttpCacheability.NoCache);
-            HttpContext.Current.Response.Cache.SetNoStore();
+            try
+            {
+                IntPtr hwnd = FindWindow("#32770", "Web Browser");
+                hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Retry");
+                uint message = 0xf5;
+                SendMessage(hwnd, message, IntPtr.Zero, IntPtr.Zero);
+            }
+            catch { }
         }
-        */
 
         //to activate use like this strProxy="85.45.66.25:3633"
         //to deactivate use like this strProxy=":"
@@ -764,7 +786,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 //string target = "";
                 //string authHeader = "User-Agent: Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543 Safari/419.3\r\n";
                 //string authHeader = "User-Agent: Mozilla/5.0(iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en) AppleWebKit / 534.46.0(KHTML, like Gecko) CriOS / 19.0.1084.60 Mobile / 9B206 Safari/ 7534.48.3\r\n";
-                //string authHeader = "User-Agent: Mozilla / 5.0(Linux; U; Android 4.0.3; ko - kr; LG - L160L Build / IML74K) AppleWebkit / 534.30(KHTML, like Gecko) Version / 4.0 Mobile Safari/ 534.30\r\n";
+                //string authHeader = "User-Agent: Mozilla/5.0(Linux; U; Android 4.0.3; ko - kr; LG - L160L Build / IML74K) AppleWebkit / 534.30(KHTML, like Gecko) Version / 4.0 Mobile Safari/ 534.30\r\n";
 
                 if (url.StartsWith("geoip"))
                 {
@@ -853,6 +875,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
         void browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             --this.tokens;
+            //this.ClickOKButton();
 
             if (this.timer_searches != null)
             {
@@ -863,11 +886,24 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
             var loaded = (WebBrowser)sender;
 
             if (loaded.Document != null
-                && loaded.Url.ToString().Contains(@"https://account.live.com/identity/confirm")
-                )
+                && (loaded.Url.ToString().Contains(@"https://account.live.com/identity/confirm")
+                 || loaded.Url.ToString().Contains(@"https://account.live.com/unsupportedmarket")
+                 || loaded.Url.ToString().Contains(@"https://account.live.com/recover")
+                 )
+                 && chkbox_autorotate.Checked == true
+                 )
             {
+                // double post problem
+                //browser.Navigate(new Uri("https://www.bing.com/"));
+                //Thread.Sleep(SLEEPPTS);
+                
                 this.tokens = MAXTOKEN;
-                this.toridswitcher();
+                //this.toridswitcher();
+
+                //this.ChangeUserAgent(APPLEMOBILEUA);
+                this.ClearCache();
+                browser.Navigate(new Uri("https://login.live.com/logout.srf"));
+
                 try
                 {
                     this.authLock = false;
@@ -899,28 +935,16 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                     this.logtries = 0;
                     try
                     {
-                        //HtmlElement connect = loaded.Document.GetElementById("id_ns");
-                        //HtmlElement connect = loaded.Document.GetElementById("identityStatus");
-
                         bool a = false;
                         HtmlElementCollection links = loaded.Document.Links;
                         foreach (HtmlElement ele in links)
                         {
                             try
                             {
-                                //if ((ele.GetAttribute("href") != null
-                                //   && ele.GetAttribute("h") == "ID=rewards,5049.1")
-                                //   && ele.GetAttribute("href").Contains(@"sig=")
-                                //   )
-
                                 if ((ele.GetAttribute("href") != null)
                                 && ele.GetAttribute("href").Contains(@"sig=")
                                 )
                                 {
-                                    //++this.Ilogtries;
-
-                                    //if (this.Ilogtries > DOCUMENTLOADED)
-                                    //{
                                     this.Ilogtries = 0;
                                     string text = ele.GetAttribute("href");
                                     string[] substring = text.Split('&');
@@ -938,11 +962,6 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                                             //browser.Navigate(new Uri("https://www.bing.com/rewards"));                                                
                                         }
                                     }
-                                    //MessageBox.Show(ele.GetAttribute("href"));
-                                    //string myurl = ele.GetAttribute("href");
-                                    //browser.Navigate(new Uri(myurl));
-                                    //break;
-                                    //}
                                 }
                             }
                             catch
@@ -1239,7 +1258,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                             m_dbConnection.Open();
                             dateTime = DateTime.UtcNow.Date;
                             //string sql = "select * from searches where date='"+ dateTime.ToString("yyyyMMdd") + "' group by ip, account order by ip desc";
-                            sql = "select * from searches where date='" + dateTime.ToString("yyyyMMdd") + "' and 'account='" + this.username + "' order by ip,points";
+                            sql = "select * from searches where date='" + dateTime.ToString("yyyyMMdd") + "' and account='" + this.username + "' order by ip,points";
                             command = new SQLiteCommand(sql, m_dbConnection);
                             reader = command.ExecuteReader();
 
@@ -1307,7 +1326,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                             m_dbConnection.Open();
                             dateTime = DateTime.UtcNow.Date;
                             //string sql = "select * from searches where date='"+ dateTime.ToString("yyyyMMdd") + "' group by ip, account order by ip desc";
-                            sql = "select * from searches where date='" + dateTime.ToString("yyyyMMdd") + "' and 'account='" + this.username + "' order by ip,points";
+                            sql = "select * from searches where date='" + dateTime.ToString("yyyyMMdd") + "' and account='" + this.username + "' order by ip,points";
                             command = new SQLiteCommand(sql, m_dbConnection);
                             reader = command.ExecuteReader();
 
@@ -1325,15 +1344,12 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                         // first step after sign in (very important) navigate bing.com or bing.com/rewards
                         browser.Navigate(new Uri("https://www.bing.com/rewards"));
-                    }
-
-                   
+                    }                   
                     else
                     {
                         // retry
                         browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
-                    }
-                   
+                    }                   
                 }
 
                 //*********************
@@ -1423,27 +1439,10 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 {
                     if (this.country == "US" || chkbox_tor.Checked == false)
                     {
-
-                        // clear cookie & cache
-                        InternetSetOption(IntPtr.Zero, INTERNET_OPTION_END_BROWSER_SESSION, IntPtr.Zero, 0);
-
-                        //browser.Navigate("javascript:void((function(){var a,b,c,e,f;f=0;a=document.cookie.split('; ');for(e=0;e<a.length&&a[e];e++){f++;for(b='.'+location.host;b;b=b.replace(/^(?:%5C.|[^%5C.]+)/,'')){for(c=location.pathname;c;c=c.replace(/.$/,'')){document.cookie=(a[e]+'; domain='+b+'; path='+c+'; expires='+new Date((new Date()).getTime()-1e11).toGMTString());}}}})())");
-
-                        string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
-                        foreach (string currentFile in theCookies)
-                        {
-                            try
-                            {
-                                System.IO.File.Delete(currentFile);
-                            }
-                            catch (Exception ex)
-                            {
-                            }
-                        }
-
+                        this.ClearCache();
                         //this.clearIECache();
 
-                        // first step before sign-in (sign out) 
+                        // first step before sign-in
                         browser.Navigate(new Uri("https://login.live.com"));
                     }
                     else
@@ -1493,21 +1492,22 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                         }
                     }
                 }
-            } else if (this.tokens < 0 && chkbox_autorotate.Checked == true)
-            {
-                //MessageBox.Show(this.tokens.ToString());
-                this.tokens = MAXTOKEN;
-                this.toridswitcher();
-                try
-                {
-                    this.authLock = false;
-                    this.timer_auth.Enabled = false;
-                    this.timer_auth.Stop();
-                }
-                catch { }
+            }
+           // else if (this.tokens < 0 && chkbox_autorotate.Checked == true)
+           // {
+           //     //MessageBox.Show(this.tokens.ToString());
+           //     this.tokens = MAXTOKEN;
+           //     this.toridswitcher();
+           //     try
+           //     {
+           //         this.authLock = false;
+           //         this.timer_auth.Enabled = false;
+           //         this.timer_auth.Stop();
+           //     }
+           //     catch { }
 
-                this.authCallback(null, null);
-           }
+           //     this.authCallback(null, null);
+           //}
         }
 
         private void browser_ProgressChanged(object sender, WebBrowserProgressChangedEventArgs e)
@@ -1555,11 +1555,6 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                                 this.timer_auth.Stop();
                             }
 
-                            this.ClearCache();
-
-                            // use global variable 
-                            this.authLock = true;
-
                             string temp = Properties.Settings.Default.set_counter.ToString();
                             string[] wait = temp.Split('-');
                             this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1]));
@@ -1569,12 +1564,52 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                             authstr = str.Split('/');
                             this.username = authstr[0]; this.password = authstr[1];
 
-                            this.ChangeUserAgent(EDGEUA);
+                            //MessageBox.Show(this.username);
+                            int pts = 0;
+                            SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                            m_dbConnection.Open();
+                            DateTime dateTime = DateTime.UtcNow.Date;
+                            string sql = "select * from searches where date='" + dateTime.ToString("yyyyMMdd") + "' and account='" + this.username + "' order by ip,points";
+                            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                            SQLiteDataReader reader = command.ExecuteReader();
 
-                            // first step sign out
-                            browser.Navigate(new Uri("http://login.live.com/logout.srf"));
+                            while (reader.Read())
+                            {
+                                if (reader["points"] != null)
+                                {
+                                    pts += Convert.ToInt32(reader["points"]);
+                                }
+                            } 
 
-                            stop = true;
+                            sql = "select * from searches group by account, ip order by ip desc";
+                            command = new SQLiteCommand(sql, m_dbConnection);
+                            reader = command.ExecuteReader();
+                            int c = 0;
+                            while (reader.Read())
+                            {
+                                if (this.ip == Convert.ToString(reader["ip"]) && this.accountNameTxtBox.Text != Convert.ToString(reader["account"]))
+                                {
+                                    ++c;
+                                }
+                            }
+                            m_dbConnection.Close();
+
+                            if (pts < 35 && c > 0 && c < MAXACCOUNTPERIP)
+                            {
+                                // use global variable 
+                                this.authLock = true;
+
+                                this.ChangeUserAgent(EDGEUA);
+                                this.ClearCache();
+
+                                // double post problem
+                                //browser.Navigate(new Uri("https://www.msn.com/"));
+
+                                // first step before sign-in
+                                browser.Navigate(new Uri("https://login.live.com/logout.srf"));
+
+                                stop = true;
+                            }
                         }
                     }
                 }
@@ -1595,12 +1630,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                                     this.timer_auth.Enabled = false;
                                     this.timer_auth.Stop();
                                 }
-
-                                this.ClearCache();                              
-
-                                // use global variable 
-                                this.authLock = true;
-
+                                
                                 string temp = Properties.Settings.Default.set_counter.ToString();
                                 string[] wait = temp.Split('-');
                                 this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1]));
@@ -1610,10 +1640,54 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                                 authstr = str.Split('/');
                                 this.username = authstr[0]; this.password = authstr[1];
 
-                                this.ChangeUserAgent(EDGEUA);
+                                //MessageBox.Show(this.username);
+                                int pts = 0;
+                                SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                                m_dbConnection.Open();
+                                DateTime dateTime = DateTime.UtcNow.Date;
+                                //string sql = "select * from searches where date='"+ dateTime.ToString("yyyyMMdd") + "' group by ip, account order by ip desc";
+                                string sql = "select * from searches where date='" + dateTime.ToString("yyyyMMdd") + "' and account='" + this.username + "' order by ip,points";
+                                SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                                SQLiteDataReader reader = command.ExecuteReader();
 
-                                // first step sign out
-                                browser.Navigate(new Uri("http://login.live.com/logout.srf"));
+                                while (reader.Read())
+                                {
+                                    if (reader["points"] != null)
+                                    {
+                                        pts += Convert.ToInt32(reader["points"]);
+                                    }
+                                }
+                                
+                                sql = "select * from searches group by account, ip order by ip desc";
+                                command = new SQLiteCommand(sql, m_dbConnection);
+                                reader = command.ExecuteReader();
+                                int c = 0;
+                                while (reader.Read())
+                                {
+                                    if (this.ip == Convert.ToString(reader["ip"]) && this.accountNameTxtBox.Text != Convert.ToString(reader["account"]))
+                                    {
+                                        ++c;
+                                    }
+                                }
+                                m_dbConnection.Close();
+
+                                if (pts < 35 && c > 0 && c < MAXACCOUNTPERIP)
+                                {                        
+                                    // use global variable 
+                                    this.authLock = true;
+
+                                    this.ChangeUserAgent(EDGEUA);
+                                    this.ClearCache();
+
+                                    // double post problem
+                                    //browser.Navigate(new Uri("https://www.msn.com/"));
+
+                                    // first step sign out
+                                    // browser.Navigate(new Uri("http://login.live.com/logout.srf"));
+
+                                    // first step before sign-in
+                                    browser.Navigate(new Uri("https://login.live.com/logout.srf"));
+                                }
                             }
                         }
                     }
@@ -1642,12 +1716,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                         {
                             this.timer_auth.Enabled = false;
                             this.timer_auth.Stop();
-                        }
-
-                        this.ClearCache();
-
-                        // use global variable 
-                        this.authLock = true;
+                        }                        
 
                         string temp = Properties.Settings.Default.set_counter.ToString();
                         string[] wait = temp.Split('-');
@@ -1657,13 +1726,20 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                         string str = this.accounts[this.accountNum];
                         authstr = str.Split('/');
                         this.username = authstr[0]; this.password = authstr[1];
+                        
+                        // use global variable 
+                        this.authLock = true;
 
                         this.ChangeUserAgent(EDGEUA);
+                        this.ClearCache();
 
                         //MessageBox.Show(this.checkaccount == true ? "true" : "false");
 
                         // first step sign out
-                        browser.Navigate(new Uri("http://login.live.com/logout.srf"));
+                        //browser.Navigate(new Uri("http://login.live.com/logout.srf"));
+
+                        // first step before sign-in
+                        browser.Navigate(new Uri("https://login.live.com/logout.srf"));
                     }
                 }
             }
@@ -2539,7 +2615,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
             string[] aarr = new string[5];
 
             int i = 0;
-            while (reader.Read())
+            while (reader.Read() && i < 5)
             {
                 aarr[i++] = Convert.ToString(reader["account"]);
             }
@@ -2567,7 +2643,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
             string[] uarr = new string[40];
 
             i = 0;
-            while (reader.Read())
+            while (reader.Read() && i < 40)
             {
                 uarr[i++] = Convert.ToString(reader["account"]);
             }
