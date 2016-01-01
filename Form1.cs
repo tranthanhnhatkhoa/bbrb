@@ -24,9 +24,10 @@ namespace BingRewardsBot
 {
     public partial class Form1 : Form
     {
+        private static bool toriddone = false;
         private const int MAXTOKEN = 40;
         private const string TORSOCKSPORT = "8118";
-        private  const int TORCONTROLPORT = 9050;
+        private const int TORCONTROLPORT = 9050;
         //private const string TORSOCKSPORT = "8118";
         private const string TORSERVER = "127.0.0.1";
         private int dxloops = 0;
@@ -38,6 +39,8 @@ namespace BingRewardsBot
         private string clickref = "";
         private string siguid = "";
 
+        //https://www.bing.com/account/action?scope=web&setmkt=en-US&setplang=en-us&setlang=en-us&FORM=W5WA&uid=FC9008F2&sid=2E3761AF1D0966A7110269211C0E671C
+        //https://www.bing.com/account/general
         //https://www.bing.com/
         //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2f%3fwlsso%3d1%26wlexpsignin%3d1&src=EXPLICIT&sig=1B21E427B7E04B439542F3680AF98691
         //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2frewards%2fsignin%3fFORM%3dMI0GMI%26PUBL%3dMUIDTrial%26CREA%3dMI0GMI%26wlsso%3d1%26wlexpsignin%3d1&src=EXPLICIT&sig=0348B174ED8666FA3E84B9FDEC01679C
@@ -76,7 +79,8 @@ namespace BingRewardsBot
         private const int SLEEPTOR = 5 * 1000;
         private const int SLEEPPTS = 5 * 1000;
         private const int MAXIPSLEEP = 5 * 1000;
-        private const int ARNDTRIES = 200;
+        private const int SLEEPDP = 10 * 1000;
+        private const int ARNDTRIES = 10;
         private int accountsRndtry = 0;
         private int accountVisitedX = 0;
         private List<bool> accountVisited;
@@ -87,7 +91,7 @@ namespace BingRewardsBot
         private bool checkaccount = false;
         private string trialRegKey;
         private const int FREEX = 2000000;
-        private const int DIVIDE = 300;
+        private const int DIVIDE = 50;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
         private int authCounterX = 0;
@@ -96,6 +100,7 @@ namespace BingRewardsBot
         private bool loaded = false;
         private System.Windows.Forms.Timer timer_auth;
         private System.Windows.Forms.Timer timer_searches;
+        private System.Windows.Forms.Timer timer_tor;
         private int countDownDesktop;
         private int countDownMobile;
         private int counterMx;
@@ -133,11 +138,6 @@ namespace BingRewardsBot
         //http://www.nullskull.com/q/10387873/clear-temporary-internet-files-via-c-winforms.aspx
         private const int INTERNET_OPTION_END_BROWSER_SESSION = 42;
         
-        public Form1()
-        {
-            InitializeComponent();
-        }
-
         public struct Struct_INTERNET_PROXY_INFO
         {
             public int dwAccessType;
@@ -145,426 +145,25 @@ namespace BingRewardsBot
             public IntPtr proxyBypass;
         };
 
-        //http://mdb-blog.blogspot.fr/2013/02/c-winforms-webbrowser-clear-all-cookies.html
-        //private static unsafe void SuppressWininetBehavior()
-        //{
-        //    /* SOURCE: http://msdn.microsoft.com/en-us/library/windows/desktop/aa385328%28v=vs.85%29.aspx
-        //        * INTERNET_OPTION_SUPPRESS_BEHAVIOR (81):
-        //        *      A general purpose option that is used to suppress behaviors on a process-wide basis. 
-        //        *      The lpBuffer parameter of the function must be a pointer to a DWORD containing the specific behavior to suppress. 
-        //        *      This option cannot be queried with InternetQueryOption. 
-        //        *      
-        //        * INTERNET_SUPPRESS_COOKIE_PERSIST (3):
-        //        *      Suppresses the persistence of cookies, even if the server has specified them as persistent.
-        //        *      Version:  Requires Internet Explorer 8.0 or later.
-        //        */
+        Thread myThread;
+        //Thread myTorID;
 
-        //    int option = (int)3/* INTERNET_SUPPRESS_COOKIE_PERSIST*/;
-        //    int* optionPtr = &option;
-
-        //    bool success = InternetSetOption(0, 81/*INTERNET_OPTION_SUPPRESS_BEHAVIOR*/, new IntPtr(optionPtr), sizeof(int));
-        //    if (!success)
-        //    {
-        //        MessageBox.Show("Something went wrong !>?");
-        //    }
-        //}
-
-        void subgetip()
+        public Form1()
         {
-            try
-            {
-                this.ip = this.GetIP().Replace("\r\n", "");
-            } catch { }
+            InitializeComponent();
+            myThread = new Thread(new ThreadStart(ClickOKButton));
+            myThread.IsBackground = true;
+            myThread.Start();
+
+            //myTorID = new Thread(delegate() {RefreshTor();});
+            //myTorID = new Thread(new ThreadStart(RefreshTor));
+            //myTorID.IsBackground = true;
             
-            try
-            {
-                this.country = this.QueryGeo(this.ip);
-                this.toolStripStatusLabel1.Text = MYIP + this.ip + " Country:" + this.country;
-            }
-            catch
-            {
-                this.toolStripStatusLabel1.Text = MYIP + this.ip;
-            }
-        }
-
-        void toridswitcher()
-        {
-            if (chkbox_tor.Checked == true)
-            {
-                try
-                {
-                    RefreshTor(0);
-                }
-                catch
-                {
-
-                }
-            }
-
-            this.ip = this.GetIP().Replace("\r\n", "");
-            try
-            {
-                this.country = this.QueryGeo(this.ip);
-                this.toolStripStatusLabel1.Text = MYIP + this.ip + " Country:" + this.country;
-            }
-            catch
-            {
-                this.toolStripStatusLabel1.Text = MYIP + this.ip;
-            }
-        }
-
- /*
- echo Clear Temporary Internet Files:
-RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 8
-
-echo Clear Cookies:
-RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 2
-
-echo Clear History:
-RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 1
-
-echo Clear Form Data:
-RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 16
-
-echo Clear Saved Passwords:
-RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 32
-
-echo Delete All:
-RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 255
-
-echo Delete All w/Clear Add-ons Settings:
-RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
-*/
-
-        // http://www.thepicketts.org/2012/04/clearing-temporary-internet-files-in-c/
-        /// <summary>
-        /// Clears the Internet Explorer cache folder (Temporary Internet Files)
-        /// </summary>
-        void clearIECache()
-        {
-            // Clear the special cache folder
-            ClearFolder(new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache)));
-        }
-
-        /// <summary>
-        /// Deletes all the files within the specified folder
-        /// </summary>
-        /// The folder from which we wish to delete all of the files
-        void ClearFolder(DirectoryInfo folder)
-        {
-            // Iterate each file
-            foreach (FileInfo file in folder.GetFiles())
-            {
-                try
-                {
-                    // Delete the file, ignoring any exceptions
-                    file.Delete();
-                }
-                catch (Exception)
-                {
-                }
-            }
-
-            // For each folder in the specified folder
-            foreach (DirectoryInfo subfolder in folder.GetDirectories())
-            {
-                // Clear all the files in the folder
-                ClearFolder(subfolder);
-            }
-        }
-
-        void ClearCache()
-        {
-            //browser.Document.ExecCommand("ClearAuthenticationCache", false, null);
-
-            InternetSetOption(IntPtr.Zero, INTERNET_OPTION_END_BROWSER_SESSION, IntPtr.Zero, 0);
-            //browser.Navigate(new Uri("https://www.bing.com/"));
-
-            // clear cache & cookies
-            WebBrowserHelper.ClearCache();
-            
-            //http://www.experts-exchange.com/questions/28462189/How-can-I-clear-the-WebBrowser-Cache-from-C.html
-            browser.Refresh(WebBrowserRefreshOption.Completely);
-
-            //clearIECache();
-
-            //https://github.com/erfg12/BingRewards
-            try
-            {
-                string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
-                foreach (string currentFile in theCookies)
-                {
-                    System.IO.File.Delete(currentFile);
-                }
-            }
-            catch
-            {
-                //happens sometimes on first bootup
-                //MessageBox.Show("IE Cache error!");
-            }
-
-            //browser.Navigate("javascript:void((function(){var a,b,c,e,f;f=0;a=document.cookie.split('; ');for(e=0;e<a.length&&a[e];e++){f++;for(b='.'+location.host;b;b=b.replace(/^(?:%5C.|[^%5C.]+)/,'')){for(c=location.pathname;c;c=c.replace(/.$/,'')){document.cookie=(a[e]+'; domain='+b+'; path='+c+'; expires='+new Date((new Date()).getTime()-1e11).toGMTString());}}}})())");
-          
-        }
-
-        public void ChangeUserAgent(string Agent)
-        {
-            UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, Agent, Agent.Length, 0);
-        }
-
-        //http://stackoverflow.com/questions/8306839/how-to-clear-browser-cache-programatically
-        /*
-             public static void DisablePageCaching()
-         {
-             //Used for disabling page caching
-             HttpContext.Current.Response.Cache.SetExpires(DateTime.UtcNow.AddDays(-1));
-             HttpContext.Current.Response.Cache.SetValidUntilExpires(false);
-             HttpContext.Current.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
-             HttpContext.Current.Response.Cache.SetCacheability(HttpCacheability.NoCache);
-             HttpContext.Current.Response.Cache.SetNoStore();
-         }
-         */
-
-        //http://stackoverflow.com/questions/9770522/how-to-handle-message-boxes-while-using-webbrowser-in-c
-        private void ClickOKButton()
-        {
-            try
-            {
-                IntPtr hwnd = FindWindow("#32770", "Web Browser");
-                hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Retry");
-                uint message = 0xf5;
-                SendMessage(hwnd, message, IntPtr.Zero, IntPtr.Zero);
-            }
-            catch { }
-        }
-
-        //to activate use like this strProxy="85.45.66.25:3633"
-        //to deactivate use like this strProxy=":"
-        public static void RefreshIESettings(string strProxy)
-        {
-            try
-            {
-                const int INTERNET_OPTION_PROXY = 38;
-                const int INTERNET_OPEN_TYPE_PROXY = 3;
-
-                Struct_INTERNET_PROXY_INFO struct_IPI;
-
-                // Filling in structure 
-                struct_IPI.dwAccessType = INTERNET_OPEN_TYPE_PROXY;
-                struct_IPI.proxy = Marshal.StringToHGlobalAnsi(strProxy);
-                struct_IPI.proxyBypass = Marshal.StringToHGlobalAnsi("local");
-
-                // Allocating memory 
-                IntPtr intptrStruct = Marshal.AllocCoTaskMem(Marshal.SizeOf(struct_IPI));
-
-                // Converting structure to IntPtr 
-                Marshal.StructureToPtr(struct_IPI, intptrStruct, true);
-
-                bool iReturn = InternetSetOption(IntPtr.Zero, INTERNET_OPTION_PROXY, intptrStruct, Marshal.SizeOf(struct_IPI));
-            }
-            catch (Exception ex)
-            {
-                //TB.ErrorLog(ex);
-            }
-        }
-
-        // http://stackoverflow.com/questions/2745268/how-to-use-tor-control-protocol-in-c
-        public static void RefreshTor(int torcount)
-        {
-            IPEndPoint ip = new IPEndPoint(IPAddress.Parse("127.0.0.1"), TORCONTROLPORT);
-            Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            try
-            {
-                server.Connect(ip);
-            }
-            catch (SocketException e)
-            {
-                //Console.WriteLine("Unable to connect to server.");
-                System.Threading.Thread.Sleep(SLEEPTOR);
-                if (torcount < TORTRIES)
-                {
-                    System.Threading.Thread.Sleep(SLEEPTOR);
-                    RefreshTor(++torcount);
-                    return;
-                }
-            }
-
-            //server.Send(Encoding.ASCII.GetBytes("AUTHENTICATE \"butt\"\r\n"));
-            server.Send(Encoding.ASCII.GetBytes("AUTHENTICATE\r\n"));
-            byte[] data = new byte[1024];
-            int receivedDataLength = server.Receive(data);
-            string stringData = Encoding.ASCII.GetString(data, 0, receivedDataLength);
-
-            if (stringData.Contains("250"))
-            {
-                //server.Send(Encoding.ASCII.GetBytes("SETCONF ExitNodes = {us}"));
-                //server.Send(Encoding.ASCII.GetBytes("SETCONF StrictNodes = 1"));
-                server.Send(Encoding.ASCII.GetBytes("SIGNAL NEWNYM\r\n"));
-                data = new byte[1024];
-                receivedDataLength = server.Receive(data);
-                stringData = Encoding.ASCII.GetString(data, 0, receivedDataLength);
-                if (!stringData.Contains("250"))
-                {
-                    //Console.WriteLine("Unable to signal new user to server.");
-                    server.Shutdown(SocketShutdown.Both);
-                    server.Close();
-                    if (torcount < TORTRIES)
-                    {
-                        System.Threading.Thread.Sleep(SLEEPTOR);
-                        RefreshTor(++torcount);
-                        return;
-                    }
-                }
-            }
-            else
-            {
-                //Console.WriteLine("Unable to authenticate to server.");
-                server.Shutdown(SocketShutdown.Both);
-                server.Close();
-                if (torcount < TORTRIES)
-                {
-                    System.Threading.Thread.Sleep(SLEEPTOR);
-                    RefreshTor(++torcount);
-                    return;
-                }
-            }
-            server.Shutdown(SocketShutdown.Both);
-            server.Close();
-        }
-
-        //http://sharp-coders.com/microsoft-net/c-sharp/calculate-md5-hash-in-c-sharp
-        public string GetMd5Hash(string input)
-        {
-            MD5 md5Hash = MD5.Create();
-            // Convert the input string to a byte array and compute the hash.
-            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
-            // Create a new Stringbuilder to collect the bytes
-            // and create a string.
-            StringBuilder sBuilder = new StringBuilder();
-            // Loop through each byte of the hashed data 
-            // and format each one as a hexadecimal string.
-            for (int i = 0; i < data.Length; i++)
-            {
-                sBuilder.Append(data[i].ToString("x2"));
-            }
-            // Return the hexadecimal string.
-            return sBuilder.ToString();
-        }
-
-        private int randomNumber(int min, int max)
-        {
-            Random random = new Random(Guid.NewGuid().GetHashCode());
-            return random.Next(min, max);
-        }
-
-        private void ReadFile(string name, List<string> list)
-        {
-            try
-            {
-                using (StreamReader r = new StreamReader(name))
-                {
-                    string rLine;
-                    int i = 0;
-                    while ((rLine = r.ReadLine()) != null)
-                    {
-                        list.Add(rLine);
-                        ++i;
-                    }
-                }
-            }
-            catch
-            {
-                MessageBox.Show("Read error!");
-                Application.Exit();
-            }
-        }
-
-        //http://matijabozicevic.com/blog/wpf-winforms-development/csharp-get-computer-ip-address-lan-and-internet
-        private string GetIP()
-        {
-            // check IP using DynDNS's service
-            WebRequest request = WebRequest.Create("http://checkip.dyndns.org");
-            WebResponse response = request.GetResponse();
-            StreamReader stream = new StreamReader(response.GetResponseStream());
-
-            // IMPORTANT: set Proxy to null, to drastically INCREASE the speed of request
-            //request.Proxy = null;
-
-            // read complete response
-            string ipAddress = stream.ReadToEnd();
-
-            // replace everything and keep only IP
-            return ipAddress.Replace("<html><head><title>Current IP Check</title></head><body>Current IP Address: ", string.Empty).Replace("</body></html>", string.Empty);
-        }
-        
-        //http://www.csharphelp.com/2007/08/redirect-web-visitors-by-country-using-net-framework-in-c/
-        private string QueryGeo(string strIPAddress)
-        {
-            IPResult oIPResult = new IP2Location.IPResult();
-            IP2Location.Component oIP2Location = new IP2Location.Component();
-            try
-            {
-                //strIPAddress = "18.243.0.29";
-                //strIPAddress = "90.243.0.29";
-                if (strIPAddress != "")
-                {
-                    oIP2Location.IPDatabasePath = "geoip.bin";
-
-                    //Set License Path
-                    //oIP2Location.IPLicensePath = @"C:\Program Files\IP2Location\License.key";
-
-                    oIPResult = oIP2Location.IPQuery(strIPAddress);
-                    switch (oIPResult.Status.ToString())
-                    {
-                        case "OK":
-                            return oIPResult.CountryShort;
-                            /*
-                            if (oIPResult.CountryShort == "US")
-                            {
-                                return true;
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                            */
-                            break;
-                        case "EMPTY_IP_ADDRESS":
-                            //Response.Write("IP Address cannot be blank.");
-                            break;
-                        case "INVALID_IP_ADDRESS":
-                            //Response.Write("Invalid IP Address.");
-                            break;
-                        case "MISSING_FILE":
-                            //Response.Write("Invalid Database Path.");
-                            break;
-                    }
-                }
-                else
-                {
-                    //Response.Write("IP Address cannot be blank.");
-                }
-            }
-            catch
-            {
-                //Response.Write(ex.Message);
-            }
-            finally
-            {
-                oIPResult = null;
-            }
-            return null;
-        }
-
-        private void onLoadApp(object sender, EventArgs e)
-        {
             browser.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(browser_DocumentCompleted);
             browser.ProgressChanged += new WebBrowserProgressChangedEventHandler(browser_ProgressChanged);
 
             browser.ScriptErrorsSuppressed = true;
             this.ChangeUserAgent(EDGEUA);
-
-            this.ClearCache();
 
             //System.Uri uri = new Uri(myUrl);
             //byte[] authData = System.Text.UnicodeEncoding.UTF8.GetBytes("user: passwd");
@@ -665,41 +264,17 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                 // Get IP
                 this.subgetip();
-
-                // new us ip
-                if (this.country == "US")
+                
+                // init auth
+                try
                 {
-                    SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                    m_dbConnection.Open();
-
-                    string sql = "select count(*) from searches where ip='" + this.ip + "," + this.country + "';";
-                    SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-                    SQLiteDataReader reader = command.ExecuteReader();
-
-                    int count = 0;
-                    while (reader.Read())
-                    {
-                        count = Convert.ToInt32(reader["count(*)"]);
-                    }
-
-                    if (count == 0)
-                    {
-                        sql = "insert into searches (date, ip, account, points) values ('','" + this.ip + "," + this.country + "','','')";
-                        command = new SQLiteCommand(sql, m_dbConnection);
-                        command.ExecuteNonQuery();
-                    }
-                    m_dbConnection.Close();
-
-                    try
-                    {
-                        this.authLock = false;
-                        this.timer_auth.Enabled = false;
-                        this.timer_auth.Stop();
-                    }
-                    catch { }
+                    this.authLock = false;
+                    this.timer_auth.Enabled = false;
+                    this.timer_auth.Stop();
                 }
+                catch { }                
 
-                // Database  
+                // Database exists?  
                 if (!File.Exists(Application.StartupPath + Path.DirectorySeparatorChar + "points.sqlite"))
                 {
                     SQLiteConnection.CreateFile("points.sqlite");
@@ -710,7 +285,42 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                     SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
                     command.ExecuteNonQuery();
                     m_dbConnection.Close();
+
+                } else {
+                    
+                    // clean database
+                    SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                    m_dbConnection.Open();
+                    string sql = "delete from searches where points=0;";
+                    SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                    command.ExecuteNonQuery();
+                    m_dbConnection.Close();
+                    
+                    // new us ip?
+                    if (this.country == "US")
+                    {                       
+                        m_dbConnection.Open();
+
+                        sql = "select count(*) from searches where points='" + this.ip + "," + this.country + "';";
+                        command = new SQLiteCommand(sql, m_dbConnection);
+                        SQLiteDataReader reader = command.ExecuteReader();
+
+                        int count = 0;
+                        while (reader.Read())
+                        {
+                            count = Convert.ToInt32(reader["count(*)"]);
+                        }
+
+                        if (count == 0)
+                        {
+                            sql = "insert into searches (date, ip, account, points) values ('','" + this.ip + "," + this.country + "','','')";
+                            command = new SQLiteCommand(sql, m_dbConnection);
+                            command.ExecuteNonQuery();
+                        }
+                        m_dbConnection.Close();
+                    }
                 }
+
 
                 // Autostart
                 string autostart = txtbox_autostart.Text = BingRewardsBot.Properties.Settings.Default.set_autostart.ToString();
@@ -771,103 +381,16 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
             }
         }
 
-
-        //**********************
-        // Url bar
-        //**********************
-
-        private void OnKeyUp(object sender, KeyEventArgs e)
-        {
-            TextBox tb = (TextBox)sender;
-            string url = tb.Text;
-
-            if (e.KeyCode == Keys.Enter)
-            {
-                //string target = "";
-                //string authHeader = "User-Agent: Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543 Safari/419.3\r\n";
-                //string authHeader = "User-Agent: Mozilla/5.0(iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en) AppleWebKit / 534.46.0(KHTML, like Gecko) CriOS / 19.0.1084.60 Mobile / 9B206 Safari/ 7534.48.3\r\n";
-                //string authHeader = "User-Agent: Mozilla/5.0(Linux; U; Android 4.0.3; ko - kr; LG - L160L Build / IML74K) AppleWebkit / 534.30(KHTML, like Gecko) Version / 4.0 Mobile Safari/ 534.30\r\n";
-
-                if (url.StartsWith("geoip"))
-                {
-                    browser.Navigate(new Uri("http://www.iplocation.net"));
-                }
-                else if (url.StartsWith("bingr"))
-                {
-                    browser.Navigate(new Uri("http://www.bing.com/rewards"));
-                }
-                else if (url.StartsWith("svenja"))
-                {
-                    var salt = System.Text.Encoding.UTF8.GetBytes("/Xp7P1TZevrkX+qzrILr0aGI4XM=");
-                    var hmacSHA1 = new HMACSHA1(salt);
-                    MessageBox.Show(Convert.ToBase64String(hmacSHA1.ComputeHash(System.Text.Encoding.UTF8.GetBytes(this.passwd_txtbox.Text))));
-                }
-                else if (url.StartsWith("mobile"))
-                {
-                    this.ChangeUserAgent(APPLEMOBILEUA);
-
-                }
-                else if (url.StartsWith("desktop"))
-                {
-                    this.ChangeUserAgent(EDGEUA);
-                }
-                else if (url.StartsWith("redeem"))
-                {
-                    this.ChangeUserAgent(APPLEMOBILEUA);
-                    browser.Navigate("https://www.bing.com/rewards/redeem/all");
-                }
-                else if (url.StartsWith("amazon"))
-                {
-                    this.ChangeUserAgent(APPLEMOBILEUA);
-                    browser.Navigate("https://www.bing.com/rewards/redeem/000100000004");
-                }
-                else if (url.StartsWith("bing"))
-                {
-                    browser.Navigate(new Uri("http://www.bing.com"));
-                }
-                else if (url.StartsWith("login"))
-                {
-                    browser.Navigate(new Uri("https://login.live.com"));
-                }
-                else if (url.StartsWith("checktor") || url.StartsWith("tor"))
-                {
-                    browser.Navigate(new Uri("https://check.torproject.org/"));
-                }
-                else if (url.StartsWith("http://"))
-                {
-                    browser.Navigate(new Uri(url));
-                }
-                else if (url.StartsWith("https://"))
-                {
-                    browser.Navigate(new Uri(url));
-                }
-                else if (url.StartsWith("www"))
-                {
-                    browser.Navigate(new Uri("http://" + url));
-                }
-                else
-                {
-                    browser.Navigate(new Uri("http://www.bing.com/search?q=" + url));
-                }
-
-                while (browser.ReadyState != WebBrowserReadyState.Complete)
-                {
-                    Application.DoEvents();
-                }
-            }
-        }
-
-        /*
-        void BeforeNavigate(object pDisp, ref object url, ref object flags, ref object targetFrameName, ref object postData, ref object headers, ref bool cancel)
-        {
-            // This alone is sufficient, because headers is a "Ref" parameters, and the browser seems to pick this back up.
-            if (this.mobile) { 
-                headers += string.Format("User-Agent: {0}\r\n", APPLEMOBILEUSERAGENT);
-            }
-        }
-        */
-
-
+        //private void onLoadApp(object sender, EventArgs e)
+        //{
+        //    if (!myThread.IsAlive)
+        //    {
+        //        myThread.Start();
+        //    }
+            
+        //    //this.ClearCache();
+        //}
+        
         //**********************
         // Main webbrowser loop
         //**********************
@@ -875,7 +398,10 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
         void browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             --this.tokens;
-            //this.ClickOKButton();
+            //if (!myThread.IsAlive)
+            //{
+            //    myThread.Start();
+            //}
 
             if (this.timer_searches != null)
             {
@@ -889,30 +415,59 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 && (loaded.Url.ToString().Contains(@"https://account.live.com/identity/confirm")
                  || loaded.Url.ToString().Contains(@"https://account.live.com/unsupportedmarket")
                  || loaded.Url.ToString().Contains(@"https://account.live.com/recover")
+                 || loaded.Url.ToString().Contains(@"https://account.live.com/Abuse")
                  )
+
                  && chkbox_autorotate.Checked == true
                  )
             {
+                //MessageBox.Show("test");
+                this.logtries++;
+                if (this.logtries > 1)
+                {
+                    this.logtries = 0;
+                    this.accountVisited[this.accountNum] = true;
+
+                    statusTxtBox.Text = "Authenticating";
+
+                    string temp = Properties.Settings.Default.set_waitauth.ToString();
+                    string[] auth = temp.Split('-');
+
+                    int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), Convert.ToInt32(auth[1]));
+                    if (z > 1)
+                    {
+                        this.timer_auth.Interval = z * 60 * 1000;
+                        counterTxtBox.Text = z.ToString() + " min.";
+                    }
+                    else
+                    {
+                        this.timer_auth.Interval = 1 * 60 * 1000;
+                        counterTxtBox.Text = z.ToString() + " min.";
+                    }
+                    this.timer_auth.Enabled = true;
+                    this.timer_auth.Start();
+
+                    browser.Navigate(new Uri("https://login.live.com/logout.srf"));                    
+                }
+
                 // double post problem
                 //browser.Navigate(new Uri("https://www.bing.com/"));
                 //Thread.Sleep(SLEEPPTS);
-                
+
                 this.tokens = MAXTOKEN;
-                //this.toridswitcher();
+                //this.toridswitcher();    
 
+                //this.authLock = false;
+                //this.timer_auth.Enabled = false;
+                //this.timer_auth.Stop();
+
+                //this.authCallback(null, null);
+                
                 //this.ChangeUserAgent(APPLEMOBILEUA);
-                this.ClearCache();
-                browser.Navigate(new Uri("https://login.live.com/logout.srf"));
-
-                try
-                {
-                    this.authLock = false;
-                    this.timer_auth.Enabled = false;
-                    this.timer_auth.Stop();
-                }
-                catch { }
-
-                this.authCallback(null, null);
+                //this.ClearCache();                
+                
+                //browser.Navigate(new Uri("https://account.microsoft.com/"));
+                //browser.Navigate("about:blank");
 
             } else if (loaded.Document != null
                 && loaded.Url.ToString().Contains(@"https://www.bing.com/rewards/dashboard")
@@ -924,13 +479,16 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
             {
                 this.tokens = MAXTOKEN;
                 ++this.logtries;
-                int tries = DOCUMENTLOADED;
-                if (chkbox_autorotate.Checked == true)
-                {
-                    tries -= 2;
-                }
-                if (this.logtries > tries)
-                {
+                //int tries = DOCUMENTLOADED;
+                //if (chkbox_autorotate.Checked == true)
+                //{
+                //    tries -= 2;
+                //}
+                //if (this.logtries > tries)
+                //{
+
+                    //browser.Navigate(new Uri("https://www.bing.com/"));
+                    
                     //MessageBox.Show("test");
                     this.logtries = 0;
                     try
@@ -966,24 +524,29 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                             }
                             catch
                             {
+                                //this.logtries = -10;
                             }
                         }
                         if (a == false)
                         {
-                            browser.Navigate(new Uri("https://www.bing.com/rewards"));
+                            //Thread.Sleep(SLEEPPTS);
+                            //Thread.Sleep(SLEEPPTS);
+                            //this.logtries = -20;
+                            //browser.Navigate(new Uri("https://www.bing.com/rewards"));
                         }
                     }
                     catch
                     {
+                        //Thread.Sleep(SLEEPPTS);
+                        //Thread.Sleep(SLEEPPTS);
+                        //this.logtries = -20;
+                        //browser.Navigate(new Uri("https://www.bing.com/rewards"));
                     }
-                } else
-                {
-                    browser.Navigate(new Uri("https://www.bing.com/rewards"));
-                }
-
-                // loaded.Url.ToString().Contains(@"https://www.bing.com/rewards/dashboard?wlexpsignin=1")
-            }
-            else if (loaded.Document != null
+                //} 
+                
+                    // loaded.Url.ToString().Contains(@"https://www.bing.com/rewards/dashboard?wlexpsignin=1")
+                
+           } else if (loaded.Document != null
                 && loaded.Url.ToString().Contains(@"https://www.bing.com/rewards/dashboard")
                 && !String.IsNullOrEmpty(this.siguid) && !String.IsNullOrWhiteSpace(this.siguid)
                 && !loaded.Url.ToString().Contains(@"login.live.com")
@@ -996,16 +559,15 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 //browser.Navigate(new Uri(BRS2 + this.siguid));
                 browser.Navigate(new Uri("https://www.bing.com/"));
 
-                    // https://www.bing.com/rewards/dashboard
-                    // loaded.Document.GetElementById("b_idProviders") != null
-                    //string text = loaded.Document.GetElementById("id_n").InnerText;
-                    //if (!String.IsNullOrEmpty(text) && !String.IsNullOrWhiteSpace(text))
-
-
-            //*********************
-            // Sign-in
-            //*********************
-        }
+                // https://www.bing.com/rewards/dashboard
+                // loaded.Document.GetElementById("b_idProviders") != null
+                //string text = loaded.Document.GetElementById("id_n").InnerText;
+                //if (!String.IsNullOrEmpty(text) && !String.IsNullOrWhiteSpace(text))
+                
+                //*********************
+                // Sign-in
+                //*********************
+            }
             else if (loaded.Document != null
              && loaded.Document.GetElementById("i0116") != null)
             {
@@ -1116,7 +678,10 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                             }
                         }
 
-                        if (Convert.ToInt32(this.pts_txtbox.Text) == 0 || this.prevpts == 0)
+                        //string[] str = this.pts_txtbox.Text.Split(' ');
+                        //if (Convert.ToInt32(str[0]) == 0 || Convert.ToInt32(this.pts_txtbox.Text) == 0 || this.prevpts == 0)
+                        if ((Convert.ToInt32(this.pts_txtbox.Text) == 0 || this.prevpts == 0))
+                        //if ((!this.pts_txtbox.Text.Contains(@"(") && !this.pts_txtbox.Text.Contains(@"-")) || this.prevpts == 0)
                         {
                             this.prevpts = pts;
                             //MessageBox.Show(string.Format("{0} Bing Points", this.prevpts), "Results", MessageBoxButtons.OK);
@@ -1143,6 +708,8 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                                 m_dbConnection.Close();
                             }
 
+                            //this.pts_txtbox.Text = Convert.ToString(this.prevpts+this.pts)+" ("+ Convert.ToString(this.pts)+")";
+                            //this.pts_txtbox.Text = Convert.ToString(this.pts) + " (" + Convert.ToString(this.prevpts + this.pts) + ")";
                             this.pts_txtbox.Text = Convert.ToString(this.pts);
                         }
                     }
@@ -1424,23 +991,41 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 if (c >= MAXACCOUNTPERIP)
                 {
                     this.toolStripStatusLabel1.Text = MAXACCOUNTSPERIPLIMIT + " (" + MYIP + this.ip + " Country:" + this.country + ")";
-                    
-                    try
+
+                    //try
+                    //{
+                    //    this.authLock = false;
+                    //    this.timer_auth.Enabled = false;
+                    //    this.timer_auth.Stop();
+                    //}
+                    //catch { }
+                    //this.toridswitcher();
+                    //this.authCallback(null, null);
+
+                    statusTxtBox.Text = "Authenticating";
+
+                    string temp = Properties.Settings.Default.set_waitauth.ToString();
+                    string[] auth = temp.Split('-');
+
+                    int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), Convert.ToInt32(auth[1]));
+                    if (z > 1)
                     {
-                        this.authLock = false;
-                        this.timer_auth.Enabled = false;
-                        this.timer_auth.Stop();
+                        this.timer_auth.Interval = z * 60 * 1000;
+                        counterTxtBox.Text = z.ToString() + " min.";
                     }
-                    catch { }
-                    this.toridswitcher();
-                    this.authCallback(null, null);
+                    else
+                    {
+                        this.timer_auth.Interval = 1 * 60 * 1000;
+                        counterTxtBox.Text = z.ToString() + " min.";
+                    }
+                    this.timer_auth.Enabled = true;
+                    this.timer_auth.Start();
                 }
                 else
                 {
                     if (this.country == "US" || chkbox_tor.Checked == false)
                     {
-                        this.ClearCache();
-                        //this.clearIECache();
+                        //this.ClearCache();
 
                         // first step before sign-in
                         browser.Navigate(new Uri("https://login.live.com"));
@@ -1480,15 +1065,24 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                         } else
                         {
-                            try
+                            statusTxtBox.Text = "Authenticating";
+
+                            string temp = Properties.Settings.Default.set_waitauth.ToString();
+                            string[] auth = temp.Split('-');
+
+                            int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), Convert.ToInt32(auth[1]));
+                            if (z > 1)
                             {
-                                this.authLock = false;
-                                this.timer_auth.Enabled = false;
-                                this.timer_auth.Stop();
+                                this.timer_auth.Interval = z * 60 * 1000;
+                                counterTxtBox.Text = z.ToString() + " min.";
                             }
-                            catch { }
-                            this.toridswitcher();
-                            this.authCallback(null, null);
+                            else
+                            {
+                                this.timer_auth.Interval = 1 * 60 * 1000;
+                                counterTxtBox.Text = z.ToString() + " min.";
+                            }
+                            this.timer_auth.Enabled = true;
+                            this.timer_auth.Start();
                         }
                     }
                 }
@@ -1519,10 +1113,15 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
             }
         }
 
+
+        //**********************
+        // Mainsearch Auth loop
+        //***********************
+
         private void authCallback(object sender, EventArgs e)
         {
             string[] authstr;
-
+            
             --this.authCounterX;
             if (this.authCounterX > 0 && this.authCounterX != 1)
             {                
@@ -1579,8 +1178,10 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                                 {
                                     pts += Convert.ToInt32(reader["points"]);
                                 }
-                            } 
+                            }
+                            m_dbConnection.Close();
 
+                            m_dbConnection.Open();
                             sql = "select * from searches group by account, ip order by ip desc";
                             command = new SQLiteCommand(sql, m_dbConnection);
                             reader = command.ExecuteReader();
@@ -1594,10 +1195,11 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                             }
                             m_dbConnection.Close();
 
-                            if (pts < 35 && c > 0 && c < MAXACCOUNTPERIP)
+                            if (pts < 25 && c >= 0 && c < MAXACCOUNTPERIP)
                             {
                                 // use global variable 
                                 this.authLock = true;
+                                stop = true;
 
                                 this.ChangeUserAgent(EDGEUA);
                                 this.ClearCache();
@@ -1607,8 +1209,13 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                                 // first step before sign-in
                                 browser.Navigate(new Uri("https://login.live.com/logout.srf"));
-
-                                stop = true;
+                                
+                            } else
+                            {
+                                if (randomNumber(0, 12) > (randomNumber(6, 10)))
+                                {
+                                    this.toridswitcher();
+                                }
                             }
                         }
                     }
@@ -1657,7 +1264,9 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                                         pts += Convert.ToInt32(reader["points"]);
                                     }
                                 }
-                                
+                                m_dbConnection.Close();
+
+                                m_dbConnection.Open();
                                 sql = "select * from searches group by account, ip order by ip desc";
                                 command = new SQLiteCommand(sql, m_dbConnection);
                                 reader = command.ExecuteReader();
@@ -1671,7 +1280,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                                 }
                                 m_dbConnection.Close();
 
-                                if (pts < 35 && c > 0 && c < MAXACCOUNTPERIP)
+                                if (pts < 25 && c >= 0 && c < MAXACCOUNTPERIP)
                                 {                        
                                     // use global variable 
                                     this.authLock = true;
@@ -1687,6 +1296,12 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                                     // first step before sign-in
                                     browser.Navigate(new Uri("https://login.live.com/logout.srf"));
+                                } else
+                                {
+                                    if (randomNumber(0, 12) > (randomNumber(6, 10)))
+                                    {
+                                        this.toridswitcher();
+                                    }
                                 }
                             }
                         }
@@ -1783,29 +1398,9 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 this.timer_searches.Stop();
 
                 // accounts visited
-                if (this.accountVisitedX <= this.accounts.Count())
+                if (this.accountVisitedX < this.accounts.Count())
                 {
                     this.qpage = 0;
-
-                    // autorotate
-                    //bool autorotate = BingRewardsBot.Properties.Settings.Default.set_autorotate;
-
-                    //if (autorotate == true)
-                    //{
-                    //    this.toridswitcher();
-                    //}
-                    if (chkbox_autorotate.Checked == true && chkbox_tor.Checked == true)
-                    {
-                        try
-                        {
-                            RefreshTor(0);
-                        }
-                        catch
-                        {
-
-                        }
-                    }
-                    this.subgetip();
 
                     statusTxtBox.Text = "Authenticating";
 
@@ -1976,7 +1571,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                     // desktop searches
                     }
-                    else if (this.counterDx >= 0 && desktop == true)
+                    else if (this.counterDx > 0 && desktop == true)
                     {
                         statusTxtBox.Text = "Desktopsearches";
                         --this.counterDx;
@@ -2043,75 +1638,76 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                         // Creates an HtmlDocument object from an URL
                         //HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                         //doc.LoadHtml(browser.Document.All);
-
+                        
                         int c = 0;
                         string[] links = new string[10];
-
+                                             
                         HtmlElementCollection elemColl = browser.Document.Links;
-
-                        foreach (HtmlElement ele in elemColl)
+                        if (elemColl.Count > 0)
                         {
-                            if (ele.Parent.TagName == "H2" && c < 10)
+                            foreach (HtmlElement ele in elemColl)
                             {
-                                links[c++] = ele.GetAttribute("href");
+                                if (ele.Parent.TagName == "H2" && c < 10)
+                                {
+                                    links[c++] = ele.GetAttribute("href");
+                                }
+                                //MessageBox.Show(ele.InnerText + ele.Parent.TagName);
                             }
-                            //MessageBox.Show(ele.InnerText + ele.Parent.TagName);
                         }
-
-                        if (c == 0)
-                        {
-                            this.qpage = 0;
-
-                            if (this.clicklist == true)
+                                                
+                            if (c == 0)
                             {
-                                this.clicklist = false;
-                                browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: " + this.clickref);
-                            }
-                            else if (statusTxtBox.Text == "Mobilesearches")
-                            {
-                                this.query = this.words[randomNumber(0, this.words.Count)];
-                                if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                                {
-                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                }
-                                if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                                {
-                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                }
+                                this.qpage = 0;
 
-                                try
+                                if (this.clicklist == true)
                                 {
-                                    browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-                                    browser.Document.GetElementById("sbBtn").InvokeMember("click");
+                                    this.clicklist = false;
+                                    browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: " + this.clickref);
                                 }
-                                catch
+                                else if (statusTxtBox.Text == "Mobilesearches")
                                 {
-                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-                                }
-                            }
-                            else
-                            {
-                                this.query = this.words[randomNumber(0, this.words.Count)];
-                                if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                                {
-                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                }
-                                if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                                {
-                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                }
+                                    this.query = this.words[randomNumber(0, this.words.Count)];
+                                    if (randomNumber(0, 12) > (randomNumber(0, 6)))
+                                    {
+                                        this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                    }
+                                    if (randomNumber(0, 12) > (randomNumber(0, 3)))
+                                    {
+                                        this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                    }
 
-                                try
-                                {
-                                    browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-                                    browser.Document.GetElementById("sb_form_go").InvokeMember("click");
+                                    try
+                                    {
+                                        browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
+                                        browser.Document.GetElementById("sbBtn").InvokeMember("click");
+                                    }
+                                    catch
+                                    {
+                                        browser.Navigate("http://bing.com/search?q=" + this.query);
+                                    }
                                 }
-                                catch
+                                else
                                 {
-                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-                                }
-                            }
+                                    this.query = this.words[randomNumber(0, this.words.Count)];
+                                    if (randomNumber(0, 12) > (randomNumber(0, 6)))
+                                    {
+                                        this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                    }
+                                    if (randomNumber(0, 12) > (randomNumber(0, 3)))
+                                    {
+                                        this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                    }
 
+                                    try
+                                    {
+                                        browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
+                                        browser.Document.GetElementById("sb_form_go").InvokeMember("click");
+                                    }
+                                    catch
+                                    {
+                                        browser.Navigate("http://bing.com/search?q=" + this.query);
+                                    }
+                                }                            
                         }
                         else if (c == 1)
                         {
@@ -2137,18 +1733,22 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                         int j = 0;
                         string[] links = new string[4];
 
-                        HtmlElementCollection elemColl = browser.Document.Links;
-                        foreach (HtmlElement ele in elemColl)
+                        try
                         {
-                            if (ele.Parent.TagName == "LI" && Int32.TryParse(ele.InnerText, out j))
+                            HtmlElementCollection elemColl = browser.Document.Links;
+                            foreach (HtmlElement ele in elemColl)
                             {
-                                //MessageBox.Show(ele.InnerText + ele.Parent.TagName);
-                                if (j >= 1 && j <= 10 && c < 4)
+                                if (ele.Parent.TagName == "LI" && Int32.TryParse(ele.InnerText, out j))
                                 {
-                                    links[c++] = ele.GetAttribute("href");
+                                    //MessageBox.Show(ele.InnerText + ele.Parent.TagName);
+                                    if (j >= 1 && j <= 10 && c < 4)
+                                    {
+                                        links[c++] = ele.GetAttribute("href");
+                                    }
                                 }
                             }
-                        }
+                        } catch { }
+                        
 
                         if (c == 0)
                         {
@@ -2267,6 +1867,101 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                 }
             }
         }
+
+        //**********************
+        // Url bar
+        //**********************
+
+        private void OnKeyUp(object sender, KeyEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            string url = tb.Text;
+
+            if (e.KeyCode == Keys.Enter)
+            {
+                //string target = "";
+                //string authHeader = "User-Agent: Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543 Safari/419.3\r\n";
+                //string authHeader = "User-Agent: Mozilla/5.0(iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en) AppleWebKit / 534.46.0(KHTML, like Gecko) CriOS / 19.0.1084.60 Mobile / 9B206 Safari/ 7534.48.3\r\n";
+                //string authHeader = "User-Agent: Mozilla/5.0(Linux; U; Android 4.0.3; ko - kr; LG - L160L Build / IML74K) AppleWebkit / 534.30(KHTML, like Gecko) Version / 4.0 Mobile Safari/ 534.30\r\n";
+
+                if (url.StartsWith("geoip"))
+                {
+                    browser.Navigate(new Uri("http://www.iplocation.net"));
+                }
+                else if (url.StartsWith("bingr"))
+                {
+                    browser.Navigate(new Uri("http://www.bing.com/rewards"));
+                }
+                else if (url.StartsWith("svenja"))
+                {
+                    var salt = System.Text.Encoding.UTF8.GetBytes("/Xp7P1TZevrkX+qzrILr0aGI4XM=");
+                    var hmacSHA1 = new HMACSHA1(salt);
+                    MessageBox.Show(Convert.ToBase64String(hmacSHA1.ComputeHash(System.Text.Encoding.UTF8.GetBytes(this.passwd_txtbox.Text))));
+                }
+                else if (url.StartsWith("mobile"))
+                {
+                    this.ChangeUserAgent(APPLEMOBILEUA);
+
+                }
+                else if (url.StartsWith("desktop"))
+                {
+                    this.ChangeUserAgent(EDGEUA);
+                }
+                else if (url.StartsWith("redeem"))
+                {
+                    this.ChangeUserAgent(APPLEMOBILEUA);
+                    browser.Navigate("https://www.bing.com/rewards/redeem/all");
+                }
+                else if (url.StartsWith("amazon"))
+                {
+                    this.ChangeUserAgent(APPLEMOBILEUA);
+                    browser.Navigate("https://www.bing.com/rewards/redeem/000100000004");
+                }
+                else if (url.StartsWith("bing"))
+                {
+                    browser.Navigate(new Uri("http://www.bing.com"));
+                }
+                else if (url.StartsWith("login"))
+                {
+                    browser.Navigate(new Uri("https://login.live.com"));
+                }
+                else if (url.StartsWith("checktor") || url.StartsWith("tor"))
+                {
+                    browser.Navigate(new Uri("https://check.torproject.org/"));
+                }
+                else if (url.StartsWith("http://"))
+                {
+                    browser.Navigate(new Uri(url));
+                }
+                else if (url.StartsWith("https://"))
+                {
+                    browser.Navigate(new Uri(url));
+                }
+                else if (url.StartsWith("www"))
+                {
+                    browser.Navigate(new Uri("http://" + url));
+                }
+                else
+                {
+                    browser.Navigate(new Uri("http://www.bing.com/search?q=" + url));
+                }
+
+                while (browser.ReadyState != WebBrowserReadyState.Complete)
+                {
+                    Application.DoEvents();
+                }
+            }
+        }
+
+        /*
+        void BeforeNavigate(object pDisp, ref object url, ref object flags, ref object targetFrameName, ref object postData, ref object headers, ref bool cancel)
+        {
+            // This alone is sufficient, because headers is a "Ref" parameters, and the browser seems to pick this back up.
+            if (this.mobile) { 
+                headers += string.Format("User-Agent: {0}\r\n", APPLEMOBILEUSERAGENT);
+            }
+        }
+        */
 
         /// <summary>
         /// 
@@ -2396,23 +2091,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
                     statusTxtBox.Text = "Authenticating";
                     this.checkaccount = false;
                     this.authLock = false;
-
-                    // only when autorotate
-                    if (chkbox_autorotate.Checked == true)
-                    {
-                        try
-                        {
-                            RefreshTor(0);
-                        }
-                        catch
-                        {
-
-                        }
-                    }
-                    this.subgetip();
-
-                    this.authCallback(null, null);
-
+                   
                     this.timer_auth = new System.Windows.Forms.Timer();
                     this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
 
@@ -2421,8 +2100,17 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
                     this.timer_auth.Interval = 1 * 60 * 1000;
                     //this.timer_auth.Interval = (120) * (1000);             // Timer will tick every 10 seconds
-                    this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), Convert.ToInt32(auth[1]));
-
+                    int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), Convert.ToInt32(auth[1]));
+                    if (z > 1)
+                    {
+                        this.timer_auth.Interval = z * 60 * 1000;
+                        counterTxtBox.Text = z.ToString() + " min.";
+                    }
+                    else
+                    {
+                        this.timer_auth.Interval = 1 * 60 * 1000;
+                        counterTxtBox.Text = z.ToString() + " min.";
+                    }
                     this.authLock = false;
                     this.timer_auth.Enabled = true;                       // Enable the timer
                     this.timer_auth.Start();                              // Start the timer
@@ -2483,6 +2171,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
         private void check_button_Click(object sender, EventArgs e)
         {
+            this.ClearCache();
             this.checkaccount = true;
             //MessageBox.Show(this.checkaccount == true ? "true" : "false");
             this.authLock = false;
@@ -2561,18 +2250,7 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (chkbox_tor.Checked == true)
-            {
-                try
-                {
-                    RefreshTor(0);
-                }
-                catch
-                {
-
-                }
-            }
-            this.subgetip();
+            this.toridswitcher();
 
             if (this.country != "US")
             {
@@ -2632,7 +2310,6 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
             }
             conn.Close();
 
-
             conn = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
             conn.Open();
             DateTime dateTime = DateTime.UtcNow.Date;
@@ -2681,8 +2358,359 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
             MessageBox.Show("Accounts:" + string.Join("\r\n", aarr) + "\r\nIPs:" + string.Join("\r\n", iparr) + string.Join("\r\n", score));
         }
 
-    }
+        //http://mdb-blog.blogspot.fr/2013/02/c-winforms-webbrowser-clear-all-cookies.html
+        //private static unsafe void SuppressWininetBehavior()
+        //{
+        //    /* SOURCE: http://msdn.microsoft.com/en-us/library/windows/desktop/aa385328%28v=vs.85%29.aspx
+        //        * INTERNET_OPTION_SUPPRESS_BEHAVIOR (81):
+        //        *      A general purpose option that is used to suppress behaviors on a process-wide basis. 
+        //        *      The lpBuffer parameter of the function must be a pointer to a DWORD containing the specific behavior to suppress. 
+        //        *      This option cannot be queried with InternetQueryOption. 
+        //        *      
+        //        * INTERNET_SUPPRESS_COOKIE_PERSIST (3):
+        //        *      Suppresses the persistence of cookies, even if the server has specified them as persistent.
+        //        *      Version:  Requires Internet Explorer 8.0 or later.
+        //        */
 
+        //    int option = (int)3/* INTERNET_SUPPRESS_COOKIE_PERSIST*/;
+        //    int* optionPtr = &option;
+
+        //    bool success = InternetSetOption(0, 81/*INTERNET_OPTION_SUPPRESS_BEHAVIOR*/, new IntPtr(optionPtr), sizeof(int));
+        //    if (!success)
+        //    {
+        //        MessageBox.Show("Something went wrong !>?");
+        //    }
+        //}
+
+        public void subgetip()
+        {
+            try
+            {
+                this.ip = this.GetIP().Replace("\r\n", "");
+            }
+            catch { }
+
+            try
+            {
+                this.country = this.QueryGeo(this.ip);
+                this.toolStripStatusLabel1.Text = MYIP + this.ip + " Country:" + this.country;
+            }
+            catch
+            {
+                this.toolStripStatusLabel1.Text = MYIP + this.ip;
+            }
+        }
+
+        public void toridswitcher()
+        {
+            if (chkbox_tor.Checked == true)
+            {
+                this.timer_tor = new System.Windows.Forms.Timer();
+                this.timer_tor.Tick += new EventHandler(RefreshTor); // Every time timer ticks, timer_Tick will be called
+
+                this.timer_tor.Interval = SLEEPTOR;
+                this.timer_tor.Enabled = true;
+                this.timer_tor.Start();
+
+                try
+                {
+                    toriddone = false;
+                    int c = 0;
+
+                    while(toriddone == false && c < 10)
+                    {
+                        Thread.Sleep(SLEEPTOR);
+                        ++c;                        
+                    }
+
+                    this.timer_tor.Enabled = false;
+                    this.timer_tor.Stop();
+
+                    subgetip();
+                }
+                catch (Exception e)
+                {
+                    this.timer_tor.Enabled = false;
+                    this.timer_tor.Stop();
+                    MessageBox.Show(e.Message);
+                } 
+            }
+        }
+
+        public void ClearCache()
+        {
+            //browser.Document.ExecCommand("ClearAuthenticationCache", false, null);
+
+            InternetSetOption(IntPtr.Zero, INTERNET_OPTION_END_BROWSER_SESSION, IntPtr.Zero, 0);
+            //browser.Navigate(new Uri("https://www.bing.com/"));
+
+            // clear cache & cookies
+            WebBrowserHelper.ClearCache();
+
+            //http://www.experts-exchange.com/questions/28462189/How-can-I-clear-the-WebBrowser-Cache-from-C.html
+            browser.Refresh(WebBrowserRefreshOption.Completely);
+
+            //clearIECache();
+
+            //https://github.com/erfg12/BingRewards
+            try
+            {
+                string[] theCookies = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Cookies));
+                foreach (string currentFile in theCookies)
+                {
+                    System.IO.File.Delete(currentFile);
+                }
+            }
+            catch
+            {
+                //happens sometimes on first bootup
+                //MessageBox.Show("IE Cache error!");
+            }
+
+            //browser.Navigate("javascript:void((function(){var a,b,c,e,f;f=0;a=document.cookie.split('; ');for(e=0;e<a.length&&a[e];e++){f++;for(b='.'+location.host;b;b=b.replace(/^(?:%5C.|[^%5C.]+)/,'')){for(c=location.pathname;c;c=c.replace(/.$/,'')){document.cookie=(a[e]+'; domain='+b+'; path='+c+'; expires='+new Date((new Date()).getTime()-1e11).toGMTString());}}}})())");
+
+            //Temporary Internet Files
+            System.Diagnostics.Process.Start("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess 8");
+            //Cookies()
+            System.Diagnostics.Process.Start("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess 2");
+            //History()
+            System.Diagnostics.Process.Start("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess 1");
+            //Form(Data)
+            System.Diagnostics.Process.Start("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess 16");
+            //Passwords
+            System.Diagnostics.Process.Start("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess 32");
+            //Delete(All)
+            //System.Diagnostics.Process.Start("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess 255");
+            //Delete All – Also delete files and settings stored by add-ons
+            //System.Diagnostics.Process.Start("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess 4351")
+        }
+
+        public void ChangeUserAgent(string Agent)
+        {
+            UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, Agent, Agent.Length, 0);
+        }
+
+        //http://stackoverflow.com/questions/9770522/how-to-handle-message-boxes-while-using-webbrowser-in-c
+        private void ClickOKButton()
+        {
+            while (true)
+            {
+                IntPtr hwnd = FindWindow("#32770", "Web Browser");
+                hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Retry");
+                uint message = 0xf5;
+                SendMessage(hwnd, message, IntPtr.Zero, IntPtr.Zero);
+                Thread.Sleep(SLEEPDP);
+                //MessageBox.Show("Click");
+            }
+        }
+
+        //to activate use like this strProxy="85.45.66.25:3633"
+        //to deactivate use like this strProxy=":"
+        public static void RefreshIESettings(string strProxy)
+        {
+            try
+            {
+                const int INTERNET_OPTION_PROXY = 38;
+                const int INTERNET_OPEN_TYPE_PROXY = 3;
+
+                Struct_INTERNET_PROXY_INFO struct_IPI;
+
+                // Filling in structure 
+                struct_IPI.dwAccessType = INTERNET_OPEN_TYPE_PROXY;
+                struct_IPI.proxy = Marshal.StringToHGlobalAnsi(strProxy);
+                struct_IPI.proxyBypass = Marshal.StringToHGlobalAnsi("local");
+
+                // Allocating memory 
+                IntPtr intptrStruct = Marshal.AllocCoTaskMem(Marshal.SizeOf(struct_IPI));
+
+                // Converting structure to IntPtr 
+                Marshal.StructureToPtr(struct_IPI, intptrStruct, true);
+
+                bool iReturn = InternetSetOption(IntPtr.Zero, INTERNET_OPTION_PROXY, intptrStruct, Marshal.SizeOf(struct_IPI));
+            }
+            catch (Exception ex)
+            {
+                //TB.ErrorLog(ex);
+            }
+        }
+
+        // http://stackoverflow.com/questions/2745268/how-to-use-tor-control-protocol-in-c
+        public static void RefreshTor(object sender, EventArgs e)
+        {
+            IPEndPoint ip = new IPEndPoint(IPAddress.Parse("127.0.0.1"), TORCONTROLPORT);
+            Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            try
+            {
+                server.Connect(ip);
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Unable to connect to server.");
+                //System.Threading.Thread.Sleep(SLEEPTOR);
+                server.Shutdown(SocketShutdown.Both);
+                server.Close();
+            }
+
+            //server.Send(Encoding.ASCII.GetBytes("AUTHENTICATE \"butt\"\r\n"));
+            server.Send(Encoding.ASCII.GetBytes("AUTHENTICATE\r\n"));
+            byte[] data = new byte[1024];
+            int receivedDataLength = server.Receive(data);
+            string stringData = Encoding.ASCII.GetString(data, 0, receivedDataLength);
+
+            if (stringData.Contains("250"))
+            {
+                //server.Send(Encoding.ASCII.GetBytes("SETCONF ExitNodes = {us}"));
+                //server.Send(Encoding.ASCII.GetBytes("SETCONF StrictNodes = 1"));
+                server.Send(Encoding.ASCII.GetBytes("SIGNAL NEWNYM\r\n"));
+                data = new byte[1024];
+                receivedDataLength = server.Receive(data);
+                stringData = Encoding.ASCII.GetString(data, 0, receivedDataLength);
+                if (stringData.Contains("250"))
+                {
+                    toriddone = true;
+                    server.Shutdown(SocketShutdown.Both);
+                    server.Close();
+                    
+                } else
+                {
+                    //Console.WriteLine("Unable to signal new user to server.");
+                    server.Shutdown(SocketShutdown.Both);
+                    server.Close();
+                }
+            }
+            else
+            {
+                //Console.WriteLine("Unable to authenticate to server.");
+                server.Shutdown(SocketShutdown.Both);
+                server.Close();
+            }
+            return;
+        }
+
+        //http://sharp-coders.com/microsoft-net/c-sharp/calculate-md5-hash-in-c-sharp
+        public string GetMd5Hash(string input)
+        {
+            MD5 md5Hash = MD5.Create();
+            // Convert the input string to a byte array and compute the hash.
+            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            // Create a new Stringbuilder to collect the bytes
+            // and create a string.
+            StringBuilder sBuilder = new StringBuilder();
+            // Loop through each byte of the hashed data 
+            // and format each one as a hexadecimal string.
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+            // Return the hexadecimal string.
+            return sBuilder.ToString();
+        }
+
+        private int randomNumber(int min, int max)
+        {
+            Random random = new Random(Guid.NewGuid().GetHashCode());
+            return random.Next(min, max);
+        }
+
+        private void ReadFile(string name, List<string> list)
+        {
+            try
+            {
+                using (StreamReader r = new StreamReader(name))
+                {
+                    string rLine;
+                    int i = 0;
+                    while ((rLine = r.ReadLine()) != null)
+                    {
+                        list.Add(rLine);
+                        ++i;
+                    }
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Read error!");
+                Application.Exit();
+            }
+        }
+
+        //http://matijabozicevic.com/blog/wpf-winforms-development/csharp-get-computer-ip-address-lan-and-internet
+        private string GetIP()
+        {
+            // check IP using DynDNS's service
+            WebRequest request = WebRequest.Create("http://checkip.dyndns.org");
+            WebResponse response = request.GetResponse();
+            StreamReader stream = new StreamReader(response.GetResponseStream());
+
+            // IMPORTANT: set Proxy to null, to drastically INCREASE the speed of request
+            //request.Proxy = null;
+
+            // read complete response
+            string ipAddress = stream.ReadToEnd();
+
+            // replace everything and keep only IP
+            return ipAddress.Replace("<html><head><title>Current IP Check</title></head><body>Current IP Address: ", string.Empty).Replace("</body></html>", string.Empty);
+        }
+
+        //http://www.csharphelp.com/2007/08/redirect-web-visitors-by-country-using-net-framework-in-c/
+        private string QueryGeo(string strIPAddress)
+        {
+            IPResult oIPResult = new IP2Location.IPResult();
+            IP2Location.Component oIP2Location = new IP2Location.Component();
+            try
+            {
+                //strIPAddress = "18.243.0.29";
+                //strIPAddress = "90.243.0.29";
+                if (strIPAddress != "")
+                {
+                    oIP2Location.IPDatabasePath = "geoip.bin";
+
+                    //Set License Path
+                    //oIP2Location.IPLicensePath = @"C:\Program Files\IP2Location\License.key";
+
+                    oIPResult = oIP2Location.IPQuery(strIPAddress);
+                    switch (oIPResult.Status.ToString())
+                    {
+                        case "OK":
+                            return oIPResult.CountryShort;
+                            /*
+                            if (oIPResult.CountryShort == "US")
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                            */
+                            break;
+                        case "EMPTY_IP_ADDRESS":
+                            //Response.Write("IP Address cannot be blank.");
+                            break;
+                        case "INVALID_IP_ADDRESS":
+                            //Response.Write("Invalid IP Address.");
+                            break;
+                        case "MISSING_FILE":
+                            //Response.Write("Invalid Database Path.");
+                            break;
+                    }
+                }
+                else
+                {
+                    //Response.Write("IP Address cannot be blank.");
+                }
+            }
+            catch
+            {
+                //Response.Write(ex.Message);
+            }
+            finally
+            {
+                oIPResult = null;
+            }
+            return null;
+        }
+    }
 
     //http://dotnetshri.blogspot.fr/2009/10/how-to-clear-cookiescache-for-browser.html
     /*
@@ -2700,7 +2728,6 @@ RunDll32.exe InetCpl.cpl, ClearMyTracksByProcess 4351
         { ClearFolder(subfolder); }
     }
     */
-
 
     //http://www.waytocoding.com/2014/08/how-to-clear-cache-in-web-browser.html
     public class WebBrowserHelper

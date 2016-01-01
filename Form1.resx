@@ -130,28 +130,26 @@
 Better Bing Rewards Bot is an automation tool to search Bing to earn Microsoft points.
 
 1.2. Features
-- Tiny installer &amp; progam file size
-- Created with Visual Studio and program in C#
-- Supports Windows 10
 - Supports multiple accounts: Auto rotate through all accounts. A text file with the credentials is required.
-- Supports auto and manual mode to do semi-automatical searches and/or verify &amp; check an account.
+- Supports auto and manual mode for auto and semi-automatical searches.
 - Supports an individual wordlist. A text file is required.
-- Supports Tor (Identity switcher)
-- Supports Ip2location database (to restrict the IP to US IP and US country) 
+- Supports multiple proxies (requires multiple Windows users).
+- Supports Tor (Proxy settings and Identity switcher).
+- Supports Ip2location database (IP geolocation and to force US IP and US country). 
 - Support individual and parallel searches in desktop and mobile version of Bing. 
-   In addition the parallel mode switches between desktop and mobile version or simulate individual searches  
-   (harder to detect).
+In addition the parallel mode switches between desktop and mobile version (harder to detect).
 - Logs the IP and restrict the searches per IP to max. 5 accounts (harder to detect).
 - Random sleep delay: Set a random time delay "5-10" to wait between searches (harder to detect).
 - Random searches count: Set a random number of searches "30-50" for searches (harder to detect).
 - Random sleep between authentification "2-5" minutes to wait between accounts (harder to detect).
-- Random order of account searches (harder to detect)
-- Random click in searches (harder to detect)
-- Supports a scheduled task to auto start at a specific day &amp; hour.
-- Simulate real user and real key strokes and real mouse button clicks (harder to detect)
+- In auto mode random order of account (harder to detect).
+- In all searches random click in searches (harder to detect).
+- Supports auto start through a scheduled task.
+- Simulate real user and real key strokes and real mouse button clicks (harder to detect).
 - Shows earned Microsoft points for each searches.
-- Stop searches when all points earned but search counter not at the end.  
-- Max out points: searches until all points are earned even when search counter is at the end.
+- Ignore search counter and stop searches when max points earned. 
+- Max out points: Ignores search counter up to 2 times and continues searches until max points are earned.
+- Surpress JavaScript errors and alerts.
 
 2. Requirements
 -Windows 10 x32 and x64
@@ -160,13 +158,13 @@ Better Bing Rewards Bot is an automation tool to search Bing to earn Microsoft p
 -Microsoft Bing Rewards accounts
 
 3. Installation
-Download Better Bing Rewards Bot. Double-click setup.exe and install. Run the bot. Enjoy!
+Download Better Bing Rewards Bot. Double-click setup.exe and install. Run the bot. Have fun!
 
 4. Tutorial
 4.1 Create accounts.txt file to match your accounts. New accounts are separated by newline. 
-       For instance user@mail.com/password.
+For instance user@mail.com/password.
 4.2 Create or edit words.txt file to match your searches. New words are separated by newline. 
-      Words.txt file is required.
+Words.txt file is required.
 4.3 Copy accounts.txt and words.txt file to the main folder of the progam 
 4.4 Start program
 4.5. Go to "Settings" tab and edit the default settings in "Settings" tab to match your searches.
@@ -177,27 +175,24 @@ Download Better Bing Rewards Bot. Double-click setup.exe and install. Run the bo
 
 4.9. Browser url bar
 4.9.1 The browser url bar supports some commands. Type the following commands:
-4.9.2 "geolocation":  Finds the users geolocation (navigate to iplocation.net)
+4.9.2 "geolocation": Finds the users geolocation (navigate to iplocation.net)
 4.9.3 "bingr": Navigate to Bing rewards homepage
 4.9.4 "mobile": Change user agent to mobile bing version
 4.9.5 "desktop:" Change user agent to desktop bing version
-4.9.6 "bing": Navigate to Bing homepage  version
+4.9.6 "bing": Navigate to Bing homepage version
 4.9.7 "login": Navigate to Microsoft Live login 
 
 4.10 Autorotate
-Better Bing rewards bot supports multiple accounts. Tick the checkbox  to allow auto rotate between 
+Better Bing rewards bot supports multiple accounts. Tick the checkbox to allow auto rotate between 
 all accounts during the searches. In addition untick this when you want to start searches for a specific account.
 
 4.11 Check
 The "-" and "+" button lets you specify an account and the "Check" button let you automatically log in Bing rewards. 
-In addtion untick the "Autorotate" button and start a manual search with this account. You may change the
-search options in "Settings" tab before.
-
-5. Changelog
-Initial release
+In addtion untick the "Autorotate" button and start a manual search with this account. 
+You may change the search options in "Settings" tab before.
 
 6. If my bot is helpful please consider to donate to support the developement. Please don't forget 
-to send me the registration code with your e-mail address elephpant7 -a-t- gmail -.- com.</value>
+to send me the registration code with your e-mail address to rebrobates -a-t- gmail -.- com.</value>
   </data>
   <metadata name="notifyIcon1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

@@ -2,6 +2,7 @@
 {
     partial class Form1
     {
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -157,7 +158,7 @@
             // button4
             // 
             this.button4.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(431, 2);
+            this.button4.Location = new System.Drawing.Point(450, 2);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(36, 21);
             this.button4.TabIndex = 18;
@@ -168,7 +169,7 @@
             // btn_cache
             // 
             this.btn_cache.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.btn_cache.Location = new System.Drawing.Point(406, 2);
+            this.btn_cache.Location = new System.Drawing.Point(425, 2);
             this.btn_cache.Name = "btn_cache";
             this.btn_cache.Size = new System.Drawing.Size(21, 21);
             this.btn_cache.TabIndex = 17;
@@ -182,13 +183,13 @@
             this.pts_txtbox.Font = new System.Drawing.Font("Tahoma", 8F);
             this.pts_txtbox.Location = new System.Drawing.Point(129, 2);
             this.pts_txtbox.Name = "pts_txtbox";
-            this.pts_txtbox.Size = new System.Drawing.Size(33, 20);
+            this.pts_txtbox.Size = new System.Drawing.Size(49, 20);
             this.pts_txtbox.TabIndex = 16;
             // 
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.button3.Location = new System.Drawing.Point(380, 2);
+            this.button3.Location = new System.Drawing.Point(399, 2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(22, 21);
             this.button3.TabIndex = 15;
@@ -215,7 +216,7 @@
             // next_button
             // 
             this.next_button.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.next_button.Location = new System.Drawing.Point(331, 2);
+            this.next_button.Location = new System.Drawing.Point(350, 2);
             this.next_button.Name = "next_button";
             this.next_button.Size = new System.Drawing.Size(21, 21);
             this.next_button.TabIndex = 14;
@@ -250,7 +251,7 @@
             // check_button
             // 
             this.check_button.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.check_button.Location = new System.Drawing.Point(356, 2);
+            this.check_button.Location = new System.Drawing.Point(375, 2);
             this.check_button.Name = "check_button";
             this.check_button.Size = new System.Drawing.Size(20, 21);
             this.check_button.TabIndex = 11;
@@ -315,7 +316,7 @@
             // 
             this.accountNameTxtBox.BackColor = System.Drawing.SystemColors.Window;
             this.accountNameTxtBox.Font = new System.Drawing.Font("Tahoma", 8F);
-            this.accountNameTxtBox.Location = new System.Drawing.Point(165, 2);
+            this.accountNameTxtBox.Location = new System.Drawing.Point(184, 2);
             this.accountNameTxtBox.Name = "accountNameTxtBox";
             this.accountNameTxtBox.ReadOnly = true;
             this.accountNameTxtBox.Size = new System.Drawing.Size(161, 20);
@@ -662,7 +663,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
-            this.LocationChanged += new System.EventHandler(this.onLoadApp);
             this.tabControl1.ResumeLayout(false);
             this.btn_ip.ResumeLayout(false);
             this.btn_ip.PerformLayout();
