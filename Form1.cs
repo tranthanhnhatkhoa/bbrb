@@ -1,4 +1,12 @@
-﻿using System;
+﻿/* * ************************************************************* 
+ * Copyright notice 
+ * 
+ * (c) 2015 Chi Hoang (rebrobates@gmail.com) 
+ *  All rights reserved 
+ * 
+ * **************************************************************/
+ 
+using System;
 using System.Collections.Generic;
 //using System.ComponentModel;
 using System.Data;
@@ -291,11 +299,49 @@ namespace BingRewardsBot
                     // clean database
                     SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                     m_dbConnection.Open();
-                    string sql = "delete from searches where points=0;";
+                    string sql = "delete from searches where points=0 or points>25;";
                     SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
                     command.ExecuteNonQuery();
                     m_dbConnection.Close();
-                    
+
+                    m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                    m_dbConnection.Open();
+                    DateTime dateTime = DateTime.UtcNow.Date;
+                    sql = "select * from searches group by account, ip order by ip,date desc";
+                    command = new SQLiteCommand(sql, m_dbConnection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    int c = 0;
+                    string curr ="";
+                    int[] arr = new int [40];
+
+                    while (reader.Read())
+                    {
+                        if (curr == Convert.ToString(reader["ip"]) )
+                        {
+                            arr[c++] = Convert.ToInt32(reader["uid"]);
+                        } else if (c==0)
+                        {
+                            curr = Convert.ToString(reader["ip"]);
+                            arr[c++] = Convert.ToInt32(reader["uid"]);
+                            
+                        } else if (c>4)
+                        {
+                            for (int i = 0; i < (c - 4);i++)
+                            {
+                                sql = "delete from searches where uid="+arr[i];
+                                command = new SQLiteCommand(sql, m_dbConnection);
+                                command.ExecuteNonQuery();
+                            }
+                            c = 0;
+                            curr = "";
+                        } else
+                        {
+                            c = 0;
+                            curr = "";
+                        }
+                    }
+                    m_dbConnection.Close();
+
                     // new us ip?
                     if (this.country == "US")
                     {                       
@@ -303,7 +349,7 @@ namespace BingRewardsBot
 
                         sql = "select count(*) from searches where points='" + this.ip + "," + this.country + "';";
                         command = new SQLiteCommand(sql, m_dbConnection);
-                        SQLiteDataReader reader = command.ExecuteReader();
+                        reader = command.ExecuteReader();
 
                         int count = 0;
                         while (reader.Read())
@@ -486,9 +532,7 @@ namespace BingRewardsBot
                 //}
                 //if (this.logtries > tries)
                 //{
-
-                    //browser.Navigate(new Uri("https://www.bing.com/"));
-                    
+                    //browser.Navigate(new Uri("https://www.bing.com/"));                    
                     //MessageBox.Show("test");
                     this.logtries = 0;
                     try
@@ -594,13 +638,13 @@ namespace BingRewardsBot
              )
             {
                 this.tokens = MAXTOKEN;
-                HtmlElement head = browser.Document.GetElementsByTagName("head")[0];
-                HtmlElement scriptEl = browser.Document.CreateElement("script");
-                IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
-                string alertBlocker = "window.alert = function () { }; window.confirm=function () { };";
-                //alertBlocker += "Cache - Control: no - cache, no - store, must - revalidate\r\nPragma: no - cache\r\nExpires: 0\r\n";
-                element.text = alertBlocker;
-                head.AppendChild(scriptEl);
+                //HtmlElement head = browser.Document.GetElementsByTagName("head")[0];
+                //HtmlElement scriptEl = browser.Document.CreateElement("script");
+                //IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
+                //string alertBlocker = "window.alert = function () { }; window.confirm=function () { };";
+                ////alertBlocker += "Cache - Control: no - cache, no - store, must - revalidate\r\nPragma: no - cache\r\nExpires: 0\r\n";
+                //element.text = alertBlocker;
+                //head.AppendChild(scriptEl);
 
                 bool autorotate = chkbox_autorotate.Checked == true ? true : false;
 
@@ -610,12 +654,12 @@ namespace BingRewardsBot
 
                 if (this.pts >= 25 && autorotate == true)
                 {
+                    counterTxtBox.Text = "0/0";
                     this.counterDx = 0;
                     this.counterMx = 0;
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.logtries = 0;
-                    this.Ilogtries = 0;
 
                     this.timer_searches = new System.Windows.Forms.Timer();
                     this.timer_searches.Tick += new EventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
@@ -644,7 +688,7 @@ namespace BingRewardsBot
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.logtries = 0;
-                    this.Ilogtries = 0;
+
                 }
                 else
                 {
@@ -695,7 +739,7 @@ namespace BingRewardsBot
                             this.prevpts = pts;
                             this.pts += delta;
 
-                            if (delta >= 1 && delta < 2)
+                            if (delta >= 1 && delta < 2 && this.pts <= 25)
                             {
                                 SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                                 m_dbConnection.Open();
@@ -798,6 +842,9 @@ namespace BingRewardsBot
 
                         statusTxtBox.Text = "Ready";
                         counterTxtBox.Text = "0/0";
+                        this.dxloops = 0;
+                        this.mxloops = 0;
+                        this.logtries = 0;
 
                         SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                         m_dbConnection.Open();
@@ -866,6 +913,9 @@ namespace BingRewardsBot
 
                         statusTxtBox.Text = "Ready";
                         counterTxtBox.Text = "0/0";
+                        this.dxloops = 0;
+                        this.mxloops = 0;
+                        this.logtries = 0;
 
                         SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                         m_dbConnection.Open();
@@ -939,12 +989,12 @@ namespace BingRewardsBot
                     BingRewardsBot.Properties.Settings.Default.set_desktop = randomNumber(0, 11) > randomNumber(0, 3) ? true : false;
                 }
 
-                HtmlElement head = browser.Document.GetElementsByTagName("head")[0];
-                HtmlElement scriptEl = browser.Document.CreateElement("script");
-                IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
-                string alertBlocker = "window.alert = function () { }; window.confirm=function () { };";
-                element.text = alertBlocker;
-                head.AppendChild(scriptEl);
+                //HtmlElement head = browser.Document.GetElementsByTagName("head")[0];
+                //HtmlElement scriptEl = browser.Document.CreateElement("script");
+                //IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
+                //string alertBlocker = "window.alert = function () { }; window.confirm=function () { };";
+                //element.text = alertBlocker;
+                //head.AppendChild(scriptEl);
 
                 // start search bot
                 this.timer_searches = new System.Windows.Forms.Timer();
@@ -988,6 +1038,7 @@ namespace BingRewardsBot
                     }
                 }
                 m_dbConnection.Close();
+
                 if (c >= MAXACCOUNTPERIP)
                 {
                     this.toolStripStatusLabel1.Text = MAXACCOUNTSPERIPLIMIT + " (" + MYIP + this.ip + " Country:" + this.country + ")";
@@ -1025,8 +1076,6 @@ namespace BingRewardsBot
                 {
                     if (this.country == "US" || chkbox_tor.Checked == false)
                     {
-                        //this.ClearCache();
-
                         // first step before sign-in
                         browser.Navigate(new Uri("https://login.live.com"));
                     }
@@ -1112,8 +1161,7 @@ namespace BingRewardsBot
                 browserUrlTxtbox.Text = progress.Url.ToString();
             }
         }
-
-
+        
         //**********************
         // Mainsearch Auth loop
         //***********************
@@ -1221,8 +1269,10 @@ namespace BingRewardsBot
                     }
                 }
 
-                if (this.accountsRndtry == ARNDTRIES && this.checkaccount == false)
-                {
+                if (this.accountsRndtry == ARNDTRIES 
+                    && this.checkaccount == false 
+                    && stop == false)
+                {   
                     for (int i = 0; i < this.accountVisited.Count; i++)
                     {
                         if (this.accountVisited[i] == false)
@@ -1307,7 +1357,8 @@ namespace BingRewardsBot
                         }
                     }
                 }
-                else if (this.accountsRndtry > ARNDTRIES && this.checkaccount == false)
+
+                if (this.accountsRndtry > ARNDTRIES && this.checkaccount == false && stop == false)
                 {
                     if (!this.authLock)
                     {
@@ -1317,11 +1368,12 @@ namespace BingRewardsBot
                             this.timer_auth.Stop();
                         }
                     }
-
-                    this.logtries = 0;
-                    this.Ilogtries = 0;
+                    this.button1.Text = "Start";
                     statusTxtBox.Text = "Finished";
                     counterTxtBox.Text = "0/0";
+                    this.dxloops = 0;
+                    this.mxloops = 0;
+                    this.logtries = 0;
                 }
                 else if (this.checkaccount == true)
                 {
@@ -1370,12 +1422,12 @@ namespace BingRewardsBot
             bool mobile = BingRewardsBot.Properties.Settings.Default.set_mobile;
             bool desktop = BingRewardsBot.Properties.Settings.Default.set_desktop;
 
-            HtmlElement head = browser.Document.GetElementsByTagName("head")[0];
-            HtmlElement scriptEl = browser.Document.CreateElement("script");
-            IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
-            string alertBlocker = "window.alert = function () { }; window.confirm=function () { };";
-            element.text = alertBlocker;
-            head.AppendChild(scriptEl);
+            //HtmlElement head = browser.Document.GetElementsByTagName("head")[0];
+            //HtmlElement scriptEl = browser.Document.CreateElement("script");
+            //IHTMLScriptElement element = (IHTMLScriptElement)scriptEl.DomElement;
+            //string alertBlocker = "window.alert = function () { }; window.confirm=function () { };";
+            //element.text = alertBlocker;
+            //head.AppendChild(scriptEl);
 
             // trial version
             if ((this.trialCountDownReg - (this.trialCountUp * DIVIDE)) < 0 && this.trialstopped == false)
@@ -1398,7 +1450,7 @@ namespace BingRewardsBot
                 this.timer_searches.Stop();
 
                 // accounts visited
-                if (this.accountVisitedX < this.accounts.Count())
+                if (this.accountVisitedX <= this.accounts.Count())
                 {
                     this.qpage = 0;
 
@@ -1432,7 +1484,6 @@ namespace BingRewardsBot
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.logtries = 0;
-                    this.Ilogtries = 0;
                 }
 
                 // semi-automatic
@@ -1457,7 +1508,6 @@ namespace BingRewardsBot
                 this.dxloops = 0;
                 this.mxloops = 0;
                 this.logtries = 0;
-                this.Ilogtries = 0;
             }
             else if (this.searchesLock == false && this.trialstopped == false)
             {
@@ -1571,7 +1621,7 @@ namespace BingRewardsBot
 
                     // desktop searches
                     }
-                    else if (this.counterDx > 0 && desktop == true)
+                    else if (this.counterDx >= 1 && desktop == true)
                     {
                         statusTxtBox.Text = "Desktopsearches";
                         --this.counterDx;
@@ -1970,6 +2020,7 @@ namespace BingRewardsBot
         /// <param name="e"></param>
         private void onClickStart(object sender, EventArgs e)
         {
+            BingRewardsBot.Properties.Settings.Default.Save();
             bool autorotate = chkbox_autorotate.Checked == true ? true : false;
             this.startbtn = this.startbtn ^ 1;
 
@@ -2088,6 +2139,13 @@ namespace BingRewardsBot
                     this.dxloops = 0;
                     this.mxloops = 0;
 
+                    // reset visited
+                    for (int i = 0; i < this.accountVisited.Count; i++)
+                    {
+                        this.accountVisited[i] = false;
+                    }
+                    this.accountsRndtry = 0;
+
                     statusTxtBox.Text = "Authenticating";
                     this.checkaccount = false;
                     this.authLock = false;
@@ -2171,6 +2229,7 @@ namespace BingRewardsBot
 
         private void check_button_Click(object sender, EventArgs e)
         {
+            BingRewardsBot.Properties.Settings.Default.Save();
             this.ClearCache();
             this.checkaccount = true;
             //MessageBox.Show(this.checkaccount == true ? "true" : "false");
@@ -2250,6 +2309,7 @@ namespace BingRewardsBot
 
         private void button3_Click(object sender, EventArgs e)
         {
+           
             this.toridswitcher();
 
             if (this.country != "US")
@@ -2491,14 +2551,29 @@ namespace BingRewardsBot
         }
 
         //http://stackoverflow.com/questions/9770522/how-to-handle-message-boxes-while-using-webbrowser-in-c
+
+        //****************************************************
+        //#32770, "Web Browser", "Button", "Retry"
+        //****************************************************
+        //****************************************************
+        //#32770, "Message from webpage", "Button", "Cancel"
+        //****************************************************
         private void ClickOKButton()
         {
             while (true)
             {
+                // double post error
                 IntPtr hwnd = FindWindow("#32770", "Web Browser");
                 hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Retry");
                 uint message = 0xf5;
                 SendMessage(hwnd, message, IntPtr.Zero, IntPtr.Zero);
+
+                // gps location
+                hwnd = FindWindow("#32770", "Message from webpage");
+                hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Cancel");
+                message = 0xf5;
+                SendMessage(hwnd, message, IntPtr.Zero, IntPtr.Zero);
+
                 Thread.Sleep(SLEEPDP);
                 //MessageBox.Show("Click");
             }
