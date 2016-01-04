@@ -64,6 +64,7 @@ namespace BingRewardsBot
         //private const string BRS2 = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https://www.bing.com/rewards/signin?FORM=MI0GMI&PUBL=MUIDTrial&CREA=MI0GMI&wlsso=1&wlexpsignin=1&src=EXPLICIT&sig=";
         //private const string BRS2 = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&return_url=https://www.bing.com&Token=1&sig=";
         private const string BRS2 = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https://www.bing.com/?wlsso=1%26wlexpsignin=1%26src=EXPLICIT&sig=";
+        private const string BRM = "https://www.bing.com/account/action?scope=web&setmkt=en-US&setplang=en-us&setlang=en-us&FORM=W5WA&uid=FC9008F2&sid=";
 
         private const string MAXACCOUNTSPERIPLIMIT = "Not a valid IP. Maximum number of accounts per IP limit reached!";
         private const int DOCUMENTLOADED = 5;
@@ -332,10 +333,12 @@ namespace BingRewardsBot
                                 command = new SQLiteCommand(sql, m_dbConnection);
                                 command.ExecuteNonQuery();
                             }
+                            curr = Convert.ToString(reader["ip"]);
                             c = 0;
                             curr = "";
                         } else
                         {
+                            curr = Convert.ToString(reader["ip"]);
                             c = 0;
                             curr = "";
                         }
@@ -433,10 +436,10 @@ namespace BingRewardsBot
         //    {
         //        myThread.Start();
         //    }
-            
+
         //    //this.ClearCache();
         //}
-        
+
         //**********************
         // Main webbrowser loop
         //**********************
@@ -458,8 +461,14 @@ namespace BingRewardsBot
             var loaded = (WebBrowser)sender;
 
             if (loaded.Document != null
+               && loaded.Url.ToString().Contains(@"https://account.live.com/unsupportedmarket")
+                && !String.IsNullOrEmpty(this.siguid) && !String.IsNullOrWhiteSpace(this.siguid)
+               )
+            {
+                browser.Navigate(new Uri(BRM + this.siguid));
+
+            }  else if (loaded.Document != null
                 && (loaded.Url.ToString().Contains(@"https://account.live.com/identity/confirm")
-                 || loaded.Url.ToString().Contains(@"https://account.live.com/unsupportedmarket")
                  || loaded.Url.ToString().Contains(@"https://account.live.com/recover")
                  || loaded.Url.ToString().Contains(@"https://account.live.com/Abuse")
                  )
@@ -1621,7 +1630,7 @@ namespace BingRewardsBot
 
                     // desktop searches
                     }
-                    else if (this.counterDx >= 1 && desktop == true)
+                    else if (this.counterDx >= 0 && desktop == true)
                     {
                         statusTxtBox.Text = "Desktopsearches";
                         --this.counterDx;
