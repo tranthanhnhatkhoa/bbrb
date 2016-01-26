@@ -133,11 +133,11 @@ Better Bing Rewards Bot is an automation tool to search Bing to earn Microsoft p
 - Supports multiple accounts: Auto rotate through all accounts. A text file with the credentials is required.
 - Supports auto and manual mode for auto and semi-automatical searches.
 - Supports an individual wordlist. A text file is required.
-- Supports multiple proxies (requires multiple Windows users).
+- Supports multithreading (requires multiple Windows users).
 - Supports Tor (Proxy settings and Identity switcher).
 - Supports Ip2location database (IP geolocation and to force US IP and US country). 
-- Support individual and parallel searches in desktop and mobile version of Bing. 
-In addition the parallel mode switches between desktop and mobile version (harder to detect).
+- Support individual and parallel searches in desktop and mobile version of Bing.
+  The parallel mode switches between desktop and mobile version (harder to detect).
 - Logs the IP and restrict the searches per IP to max. 5 accounts (harder to detect).
 - Random sleep delay: Set a random time delay "5-10" to wait between searches (harder to detect).
 - Random searches count: Set a random number of searches "30-50" for searches (harder to detect).
@@ -152,10 +152,13 @@ In addition the parallel mode switches between desktop and mobile version (harde
 - Surpress JavaScript errors and alerts.
 
 2. Requirements
--Windows 10 x32 and x64
+-Windows 10 x32/x64
 -accounts.txt file
 -words.txt file
 -Microsoft Bing Rewards accounts
+
+IMPORTANT INFORMATION
+Windows XP/Vista/7 requires .net framework v4 and Enable All Cookies
 
 3. Installation
 Download Better Bing Rewards Bot. Double-click setup.exe and install. Run the bot. Have fun!
@@ -170,8 +173,7 @@ Words.txt file is required.
 4.5. Go to "Settings" tab and edit the default settings in "Settings" tab to match your searches.
 4.6. Go to "Search" tab and hit the "Start" button
 4.7. Go to "Register" tab and if my progam is helpful please consider to donate!
-4.8. When it is not working please try compatibility settings or start the bot with administrator rights 
-8. Enjoy!
+4.8. Enjoy!
 
 4.9. Browser url bar
 4.9.1 The browser url bar supports some commands. Type the following commands:
@@ -188,11 +190,10 @@ all accounts during the searches. In addition untick this when you want to start
 
 4.11 Check
 The "-" and "+" button lets you specify an account and the "Check" button let you automatically log in Bing rewards. 
-In addtion untick the "Autorotate" button and start a manual search with this account. 
-You may change the search options in "Settings" tab before.
+Uncheck the "Autorotate" button and start a manual search with this account. 
 
-6. If my bot is helpful please consider to donate to support the developement. Please don't forget 
-to send me the registration code with your e-mail address to rebrobates -a-t- gmail -.- com.</value>
+5. Contact
+5.1 e-mail me at rebrobates -at- gmail dot com</value>
   </data>
   <metadata name="notifyIcon1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

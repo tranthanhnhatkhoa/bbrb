@@ -58,6 +58,11 @@ namespace BingRewardsBot
             {
                 //setProxy("127.0.0.1:8118", true);
                 WinInetInterop.SetConnectionProxy("localhost:" + TORSOCKSPORT);
+            } else if (BingRewardsBot.Properties.Settings.Default.set_proxy != "")
+            {
+                string temp = Properties.Settings.Default.set_waitsearches.ToString();
+                string[] array = temp.Split(':');
+                WinInetInterop.SetConnectionProxy(array[0] + array[1]);
             }
 
             Application.EnableVisualStyles();
