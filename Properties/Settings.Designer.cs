@@ -118,5 +118,17 @@ namespace BingRewardsBot.Properties {
                 this["set_tor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string set_proxy {
+            get {
+                return ((string)(this["set_proxy"]));
+            }
+            set {
+                this["set_proxy"] = value;
+            }
+        }
     }
 }

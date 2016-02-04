@@ -53,6 +53,7 @@
             this.accountNameTxtBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.txtbox_proxy = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.chkbox_tor = new System.Windows.Forms.CheckBox();
@@ -336,6 +337,7 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage2.Controls.Add(this.linkLabel1);
             this.tabPage2.Controls.Add(this.txtbox_proxy);
             this.tabPage2.Controls.Add(this.label15);
             this.tabPage2.Controls.Add(this.chkbox_tor);
@@ -363,6 +365,18 @@
             this.tabPage2.Size = new System.Drawing.Size(728, 486);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Settings";
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(359, 360);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(52, 14);
+            this.linkLabel1.TabIndex = 30;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Donate";
+            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // txtbox_proxy
             // 
@@ -434,7 +448,7 @@
             // 
             // settingsSaveBtn
             // 
-            this.settingsSaveBtn.Location = new System.Drawing.Point(355, 355);
+            this.settingsSaveBtn.Location = new System.Drawing.Point(417, 355);
             this.settingsSaveBtn.Name = "settingsSaveBtn";
             this.settingsSaveBtn.Size = new System.Drawing.Size(75, 23);
             this.settingsSaveBtn.TabIndex = 7;
@@ -733,6 +747,7 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TextBox txtbox_proxy;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }
 
