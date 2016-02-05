@@ -53,6 +53,7 @@ namespace BingRewardsBot
         private int numdashboardta = 0;
         private bool iniSearch = false;
         private System.Windows.Forms.Timer timer_dashboardta;
+        private double pc = 0;
 
         //https://www.bing.com/account/action?scope=web&setmkt=en-US&setplang=en-us&setlang=en-us&FORM=W5WA&uid=FC9008F2&sid=2E3761AF1D0966A7110269211C0E671C
         //https://www.bing.com/account/general
@@ -96,7 +97,8 @@ namespace BingRewardsBot
         private const int MAXIPSLEEP = 5 * 1000;
         private const int SLEEPDP = 15 * 1000;
         private const int SLEEPDASHBOARD = 30 * 1000;
-        private const int ARNDTRIES = 10;
+        private const int SLEEPRD = 180 * 1000;
+        private const int ARNDTRIES = 5;
         private int accountsRndtry = 0;
         private int accountVisitedX = 0;
         private bool loopauth = false;
@@ -131,7 +133,8 @@ namespace BingRewardsBot
         private List<string> accounts = new List<string>();
         private List<string> words = new List<string>();
         Thread myThread;
-        
+        Thread rThread;
+
         //http://stackoverflow.com/questions/9770522/how-to-handle-message-boxes-while-using-webbrowser-in-c
         [DllImport("user32.dll", SetLastError = true)]
         static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
@@ -172,6 +175,10 @@ namespace BingRewardsBot
             myThread = new Thread(new ThreadStart(ClickOKButton));
             myThread.IsBackground = true;
             myThread.Start();
+
+            rThread = new Thread(new ThreadStart(restartDocument));
+            rThread.IsBackground = true;
+            rThread.Start();
 
             //myTorID = new Thread(delegate() {RefreshTor();});
             //myTorID = new Thread(new ThreadStart(RefreshTor));
@@ -402,8 +409,6 @@ namespace BingRewardsBot
                         string temp = Properties.Settings.Default.set_waitauth.ToString();
                         string[] auth = temp.Split('-');
 
-                        this.timer_auth.Interval = 1 * 60 * 1000;
-                        //this.timer_auth.Interval = (120) * (1000);             // Timer will tick every 10 seconds
                         this.authCounterX = randomNumber(Convert.ToInt32(check[0]), Convert.ToInt32(check[1]));
 
                         this.authLock = false;
@@ -480,14 +485,14 @@ namespace BingRewardsBot
 
         void browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            if (this.timer_searches != null)
-            {
-                this.timer_searches.Enabled = false;
-            }
+            //if (this.timer_searches != null)
+            //{
+            //    this.timer_searches.Enabled = false;
+            //}
 
             string url = e.Url.ToString();
             var loaded = (WebBrowser)sender;
-
+            
             //*********************
             // Unsupported market
             //*********************
@@ -495,8 +500,7 @@ namespace BingRewardsBot
             if (loaded.Document != null
                 && loaded.Url.ToString().Contains(@"https://www.bing.com/account/action?scope=web&setmkt=en-US&setplang=en-us&setlang=en-us"))
             {
-                browser.Navigate(new Uri("https://www.bing.com/"));
-                
+                browser.Navigate(new Uri("https://www.bing.com/"));                
 
                 //*********************
                 // Unsupported market
@@ -596,6 +600,7 @@ namespace BingRewardsBot
                     this.timer_auth.Start();
                     this.authLock = false;
                     this.loopauth = false;
+                    this.accountsRndtry = 0;
 
                     browser.Navigate(new Uri("http://www.google.com"));
                     
@@ -691,13 +696,12 @@ namespace BingRewardsBot
                      || loaded.Document.GetElementById("sb_form_q") != null)
                 )
             {
-                this.toolStripStatusLabel1.Text = "Searching...";
+                this.toolStripStatusLabel1.Text = "Searching...1";
                 bool autorotate = this.chkbox_autorotate.Checked == true ? true : false;               
 
                 // callback search bot
                 if (this.pts >= 25 && autorotate == true)
                 {
-
                     try
                     {
                         this.timer_searches.Enabled = false;
@@ -724,7 +728,7 @@ namespace BingRewardsBot
                     }
                     this.timer_auth.Enabled = true;
                     this.timer_auth.Start();
-                    this.authLock = true;
+                    this.authLock = false;
 
                     this.searchesLock = false;
                     this.counterDx = 0;
@@ -732,12 +736,12 @@ namespace BingRewardsBot
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.logtries = 0;
-                    this.accountsRndtry = 0;
+                    this.accountsRndtry = this.loopauth == true ? ARNDTRIES : 0;
                     this.iniSearch = false;
                     this.dashboardta = false;
                     this.ldashboardta = false;
-                    this.loopauth = false;  
                     this.Csearch = false;
+                    this.pts = 0;
 
                 } else if (this.pts >= 25 && autorotate == false)
                 {                   
@@ -765,14 +769,16 @@ namespace BingRewardsBot
                 }
                 else
                 {
-                    //this.timer_searches = new System.Windows.Forms.Timer();
-                    //this.timer_searches.Tick += new EventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
+                    this.toolStripStatusLabel1.Text = "Searching...2";
+                    this.timer_searches = new System.Windows.Forms.Timer();
+                    this.timer_searches.Tick += new EventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
 
                     string temp = Properties.Settings.Default.set_waitsearches.ToString();
                     string[] wait = temp.Split('-');
                     this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1])) * 1000;
                     this.timer_searches.Enabled = true;
                     this.timer_searches.Start();
+
                     this.searchesLock = false;
                     this.Csearch = false;
                 }
@@ -1061,8 +1067,7 @@ namespace BingRewardsBot
                     else
                     {
                         // retry
-                        browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
-                        
+                        browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));                        
                     }
                 }
 
@@ -1084,8 +1089,7 @@ namespace BingRewardsBot
                 {
                     this.toolStripStatusLabel1.Text = "Initial dashboard tasks!";
                     this.dashboardta = true;
-                    browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
-                    
+                    browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));                    
 
                 } else if (this.dashboardta == true && this.ldashboardta == false)
                 {
@@ -1266,6 +1270,8 @@ namespace BingRewardsBot
                     }
                 }
             }
+
+            this.toolStripStatusLabel1.Text += "+";
         }
 
         //*************************
@@ -1339,49 +1345,157 @@ namespace BingRewardsBot
             {
                 counterTxtBox.Text = "60 sec.";
             }
-            else
-            {
-                //********************
-                // random visited
-                //********************
+            
+            //********************
+            // random visited
+            //********************
  
-                while (this.accountVisitedX < this.accounts.Count
-                    && this.accountsRndtry < ARNDTRIES
-                    && this.checkaccount == false
-                    && this.authLock == false 
-                    && this.loopauth == false
-                    )
-                {                    
-                    int random = this.randomNumber(0, (this.accounts.Count - 1)); 
-                    if (random == this.accountNum)
+            while (this.accountVisitedX < this.accounts.Count
+                && this.accountsRndtry < ARNDTRIES
+                && this.checkaccount == false
+                && (this.authLock == false || this.accountsRndtry == 0)
+                && this.loopauth == false
+                )
+            {                    
+                int random = this.randomNumber(0, (this.accounts.Count - 1)); 
+                if (random == this.accountNum)
+                {
+                    random = this.randomNumber(0, (this.accounts.Count - 1));
+                }
+                if (random == this.accountNum)
+                {
+                    ++random;
+                    if (random >= this.accounts.Count)
                     {
-                        random = this.randomNumber(0, (this.accounts.Count - 1));
+                        random = 0;
                     }
-                    if (random == this.accountNum)
+                }
+                this.accountNum = random;                    
+                ++this.accountsRndtry;
+
+                if (this.accountVisited[this.accountNum] == false)
+                {  
+                    Array.Clear(authstr, 0, authstr.Length);
+                    string str = this.accounts[this.accountNum];
+                    authstr = str.Split('/');
+                    this.username = authstr[0]; this.password = authstr[1];
+
+                    //MessageBox.Show(this.username);
+                    int pts = 0;
+                    SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                    m_dbConnection.Open();
+                    DateTime dateTime = DateTime.UtcNow.Date;
+                    string sql = "select * from searches where date='" + dateTime.ToString("yyyyMMdd") + "' and account='" + this.username + "' order by ip,points";
+                    SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
                     {
-                        ++random;
-                        if (random >= this.accounts.Count)
+                        if (reader["points"] != null)
                         {
-                            random = 0;
+                            pts += Convert.ToInt32(reader["points"]);
                         }
                     }
-                    this.accountNum = random;                    
-                    ++this.accountsRndtry;
+                    m_dbConnection.Close();
 
-                    //this.toolStripStatusLabel1.Text = "VISIT:" +
-                    //   Convert.ToString(this.authLock) +
-                    //   "|" + Convert.ToString(this.accountVisitedX) +
-                    //   "|" + Convert.ToString(this.accountsRndtry) +
-                    //   "|" + Convert.ToString(this.checkaccount) +
-                    //   "|" + Convert.ToString(this.accounts.Count) +
-                    //   "|" + Convert.ToString(this.accountNum);
+                    m_dbConnection.Open();
+                    sql = "select * from searches group by account, ip order by ip desc";
+                    command = new SQLiteCommand(sql, m_dbConnection);
+                    reader = command.ExecuteReader();
+                    int c = 0;
+                    while (reader.Read())
+                    {
+                        if (this.ip == Convert.ToString(reader["ip"]) && this.accountNameTxtBox.Text != Convert.ToString(reader["account"]))
+                        {
+                            ++c;
+                        }
+                    }
+                    m_dbConnection.Close();
 
-                    if (this.accountVisited[this.accountNum] == false)
-                    {                        
+                    if (pts < 25 && c >= 0 && c < MAXACCOUNTPERIP)
+                    {
+                        if (this.timer_auth != null)
+                        {
+                            this.timer_auth.Enabled = false;
+                            this.timer_auth.Stop();
+                        } 
+
+                        // use global variable 
+                        this.authLock = true;
+                        this.accountsRndtry = 0;
+
                         string temp = Properties.Settings.Default.set_counter.ToString();
                         string[] wait = temp.Split('-');
                         this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1]));
                         this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1]));
+                        
+                        this.ChangeUserAgent(EDGEUA);
+                        this.ClearCache();
+
+                        if (chkbox_tor.Checked == false && authstr[2] != "" && authstr[3] != "")
+                        {
+                            WinInetInterop.SetConnectionProxy(authstr[2] + authstr[3]);
+
+                        } else if (BingRewardsBot.Properties.Settings.Default.set_proxy != "")
+                        {
+                            string proxy = Properties.Settings.Default.set_waitsearches.ToString();
+                            string[] array = proxy.Split(':');
+                            WinInetInterop.SetConnectionProxy(array[0] + array[1]);
+                        }
+
+                        // double post problem
+                        //browser.Navigate(new Uri("https://www.msn.com/"));
+
+                        // first step before sign-in
+                        browser.Navigate(new Uri("https://login.live.com/logout.srf"));                            
+                        break;
+
+                    } else
+                    {
+                        if (this.country != "US" && chkbox_tor.Checked == true)
+                        {
+                            this.toridswitcher();
+                        }
+                        break;
+                    }                        
+                }
+            }
+
+            //********************
+            // visit all accounts
+            //********************
+
+            this.toolStripStatusLabel1.Text = "Status:" + Convert.ToString(this.authLock) +
+                    "|" + Convert.ToString(this.checkaccount) +
+                    "|" + Convert.ToString(this.accountVisitedX) +
+                    "|" + Convert.ToString(this.authCounterX) +
+                    "|" + Convert.ToString(this.accountsRndtry) +
+                    "|" + Convert.ToString(this.accounts.Count) +
+                    "|" + Convert.ToString(this.accountNum) +
+                    "|" + Convert.ToString(this.loopauth) +
+                    "|" + this.country;
+
+            if ((this.authLock == false || this.accountsRndtry >= ARNDTRIES)
+                && this.checkaccount == false 
+                && this.accountVisitedX < this.accounts.Count
+                && (this.accountsRndtry >= ARNDTRIES || this.loopauth == true)
+                )
+            {
+                if (this.country != "US"
+                            && chkbox_tor.Checked == true)
+                {
+                    this.toridswitcher();
+                }
+
+                this.loopauth = true;
+
+                int i;
+                for (i=0; i < this.accountVisited.Count; i++)
+                {
+                    if (this.accountVisited[i] == false)
+                    {
+                        ++this.accountVisitedX;                            
+                        this.accountNum = i;
 
                         Array.Clear(authstr, 0, authstr.Length);
                         string str = this.accounts[this.accountNum];
@@ -1421,239 +1535,74 @@ namespace BingRewardsBot
                         m_dbConnection.Close();
 
                         if (pts < 25 && c >= 0 && c < MAXACCOUNTPERIP)
-                        {
-                            if (this.timer_auth != null)
+                        {                           
+                            if (this.authLock && this.timer_auth != null)
                             {
                                 this.timer_auth.Enabled = false;
                                 this.timer_auth.Stop();
-                            } 
-
+                            }
+                         
                             // use global variable 
                             this.authLock = true;
-                            this.accountsRndtry = 0;
+                            this.loopauth = true;
 
-                            this.ChangeUserAgent(EDGEUA);
-                            this.ClearCache();
-
-                            if (chkbox_tor.Checked == false && authstr[2] != "" && authstr[3] != "")
-                            {
-                                WinInetInterop.SetConnectionProxy(authstr[2] + authstr[3]);
-
-                            } else if (BingRewardsBot.Properties.Settings.Default.set_proxy != "")
-                            {
-                                string proxy = Properties.Settings.Default.set_waitsearches.ToString();
-                                string[] array = proxy.Split(':');
-                                WinInetInterop.SetConnectionProxy(array[0] + array[1]);
-                            }
-
-                            // double post problem
-                            //browser.Navigate(new Uri("https://www.msn.com/"));
-
-                            // first step before sign-in
-                            browser.Navigate(new Uri("https://login.live.com/logout.srf"));
-                            
-                            break;
-
-                        } else
-                        {
-                            if (this.country != "US" && chkbox_tor.Checked == true)
-                            {
-                                this.toridswitcher();
-                            }
-
-                            //else if (randomNumber(0, 12) > (randomNumber(6, 10))
-                            //    && chkbox_tor.Checked == true)
-                            //{
-                            //    this.toridswitcher();
-                            //}
-                            break;
-                        }                        
-                    }
-                }
-
-                //********************
-                // visit all accounts
-                //********************
-
-                this.toolStripStatusLabel1.Text = "Status:" + Convert.ToString(this.authLock) +
-                      "|" + Convert.ToString(this.checkaccount) +
-                      "|" + Convert.ToString(this.accountVisitedX) +
-                      "|" + Convert.ToString(this.accountsRndtry) +
-                      "|" + Convert.ToString(this.accounts.Count) +
-                      "|" + Convert.ToString(this.accountNum) +
-                      "|" + Convert.ToString(this.loopauth) +
-                      "|" + this.country +
-                      "|" + Convert.ToString(this.timer_auth.Interval / 1000) +
-                      "|" + "ThisAddIn_Startup:" + Thread.CurrentThread.ManagedThreadId;
-
-                if (this.authLock == false 
-                    && this.checkaccount == false 
-                    && this.accountVisitedX < this.accounts.Count)
-                {
-                    if (this.country != "US"
-                                && chkbox_tor.Checked == true)
-                    {
-                        this.toridswitcher();
-                    }
-
-                    this.accountVisitedX = 0;
-                    this.loopauth = true;
-
-                    for (int i = 0; i < this.accountVisited.Count; i++)
-                    {
-                        ++this.accountVisitedX;
-                        if (this.accountVisited[i] == false)
-                        {                            
-                            this.accountNum = i;                           
-                                
                             string temp = Properties.Settings.Default.set_counter.ToString();
                             string[] wait = temp.Split('-');
                             this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1]));
                             this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1]));
+                            
+                            this.ChangeUserAgent(EDGEUA);
+                            this.ClearCache();
 
-                            string str = this.accounts[this.accountNum];
-                            authstr = str.Split('/');
-                            this.username = authstr[0]; this.password = authstr[1];
+                            // first step before sign-in
+                            browser.Navigate(new Uri("https://login.live.com/logout.srf"));                                
+                            break;
 
-                            //MessageBox.Show(this.username);
-                            int pts = 0;
-                            SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                            m_dbConnection.Open();
-                            DateTime dateTime = DateTime.UtcNow.Date;
-                            //string sql = "select * from searches where date='"+ dateTime.ToString("yyyyMMdd") + "' group by ip, account order by ip desc";
-                            string sql = "select * from searches where date='" + dateTime.ToString("yyyyMMdd") + "' and account='" + this.username + "' order by ip,points";
-                            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-                            SQLiteDataReader reader = command.ExecuteReader();
-
-                            while (reader.Read())
-                            {
-                                if (reader["points"] != null)
-                                {
-                                    pts += Convert.ToInt32(reader["points"]);
-                                }
-                            }
-                            m_dbConnection.Close();
-
-                            m_dbConnection.Open();
-                            sql = "select * from searches group by account, ip order by ip desc";
-                            command = new SQLiteCommand(sql, m_dbConnection);
-                            reader = command.ExecuteReader();
-                            int c = 0;
-                            while (reader.Read())
-                            {
-                                if (this.ip == Convert.ToString(reader["ip"]) && this.accountNameTxtBox.Text != Convert.ToString(reader["account"]))
-                                {
-                                    ++c;
-                                }
-                            }
-                            m_dbConnection.Close();
-
-                            if (pts < 25 && c >= 0 && c < MAXACCOUNTPERIP)
-                            {
-                                if (this.authLock && this.timer_auth != null)
-                                {
-                                    this.timer_auth.Enabled = false;
-                                    this.timer_auth.Stop();
-                                }
-                                // use global variable 
-                                this.authLock = true;
-                                this.loopauth = true;
-
-                                this.ChangeUserAgent(EDGEUA);
-                                this.ClearCache();
-                                                                
-                                // double post problem
-                                //browser.Navigate(new Uri("https://www.msn.com/"));
-
-                                // first step sign out
-                                // browser.Navigate(new Uri("http://login.live.com/logout.srf"));
-
-                                // first step before sign-in
-                                browser.Navigate(new Uri("https://login.live.com/logout.srf"));
-                                
-                                break;
-
-                            } else
-                            {
-                                if (this.country != "US" && chkbox_tor.Checked == true)
-                                {
-                                    this.toridswitcher();
-                                }
-                                //else if (randomNumber(0, 12) > (randomNumber(6, 10))
-                                //  && chkbox_tor.Checked == true)
-                                //{
-                                //    this.toridswitcher();
-                                //}
-                                break;
-                            }                            
-                        }
-                    }
-
-                    if (this.accountVisitedX >= this.accounts.Count)
-                    {
-                        if (this.timer_auth != null)
+                        } else
                         {
-                            this.timer_auth.Enabled = false;
-                            this.timer_auth.Stop();
-                        }
-                        this.button1.Text = "Start";
-                        statusTxtBox.Text = "Finished";
-                        counterTxtBox.Text = "0/0";
-                        this.dxloops = 0;
-                        this.mxloops = 0;
-                        this.logtries = 0;
-                        this.accountsRndtry = 0;
-                        this.authLock = false;
-                        this.loopauth = false;
-                        this.accountVisitedX = 0;
-                        this.iniSearch = false;
-                        this.dashboardta = false;
-                        this.ldashboardta = false;
-                        this.Csearch = false;
-                    }                    
+                            this.accountVisited[i] = true;
 
-                } else if (this.checkaccount == true)
+                            if (this.country != "US" && chkbox_tor.Checked == true)
+                            {
+                                this.toridswitcher();
+                            }
+                            break;
+                        }                            
+                    }
+                }
+
+                if (i >= this.accounts.Count || this.accountVisitedX >= this.accounts.Count)
                 {
-                    if (this.timer_auth != null)
+                    if (this.authLock && this.timer_auth != null)
                     {
                         this.timer_auth.Enabled = false;
                         this.timer_auth.Stop();
-                        this.loopauth = false;
-                        this.authLock = false;
-                    }                        
-
-                    string temp = Properties.Settings.Default.set_counter.ToString();
-                    string[] wait = temp.Split('-');
-                    this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1]));
-                    this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1]));
-
-                    string str = this.accounts[this.accountNum];
-                    authstr = str.Split('/');
-                    this.username = authstr[0]; this.password = authstr[1];
-                        
-                    // use global variable 
-                    this.authLock = true;
-
-                    this.ChangeUserAgent(EDGEUA);
-                    this.ClearCache();
-
-                    //MessageBox.Show(this.checkaccount == true ? "true" : "false");                   
-
-                    // first step before sign-in
-                    browser.Navigate(new Uri("https://login.live.com/logout.srf"));                    
-
-                } else
+                    }
+                    this.button1.Text = "Start";
+                    statusTxtBox.Text = "Finished";
+                    counterTxtBox.Text = "0/0";
+                    this.dxloops = 0;
+                    this.mxloops = 0;
+                    this.logtries = 0;
+                    this.accountsRndtry = 0;
+                    this.authLock = false;
+                    this.loopauth = false;
+                    this.accountVisitedX = 0;
+                    this.iniSearch = false;
+                    this.dashboardta = false;
+                    this.ldashboardta = false;
+                    this.Csearch = false;
+                }  else
                 {
-                    this.toolStripStatusLabel1.Text = "Timer:" + Convert.ToString(this.authLock) +
-                     "|" + Convert.ToString(this.checkaccount) +
-                     "|" + Convert.ToString(this.accountVisitedX) +
-                     "|" + Convert.ToString(this.accountsRndtry) +
-                     "|" + Convert.ToString(this.accounts.Count) +
-                     "|" + Convert.ToString(this.accountNum) +
-                     "|" + Convert.ToString(this.loopauth) +
-                     "|" + this.country +
-                     "|" + Convert.ToString(this.timer_auth.Interval / 1000) +
-                     "|" + "ThisAddIn_Startup:" + Thread.CurrentThread.ManagedThreadId;
+                    this.toolStripStatusLabel1.Text = "PC1:" + Convert.ToString(this.authLock) +
+                        "|" + Convert.ToString(this.checkaccount) +
+                        "|" + Convert.ToString(this.accountVisitedX) +
+                        "|" + Convert.ToString(this.authCounterX) +
+                        "|" + Convert.ToString(this.accountsRndtry) +
+                        "|" + Convert.ToString(this.accounts.Count) +
+                        "|" + Convert.ToString(this.accountNum) +
+                        "|" + Convert.ToString(this.loopauth) +
+                        "|" + this.country;
 
                     this.dxloops = 0;
                     this.mxloops = 0;
@@ -1662,8 +1611,110 @@ namespace BingRewardsBot
                     this.dashboardta = false;
                     this.ldashboardta = false;
                     this.Csearch = false;
+                                               
+                    if (this.timer_auth.Enabled == false)
+                    {
+                        this.timer_auth = new System.Windows.Forms.Timer();
+                        this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
+
+                        string temp = Properties.Settings.Default.set_waitauth.ToString();
+                        string[] auth = temp.Split('-');
+
+                        int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), Convert.ToInt32(auth[1]));
+                        if (z > 1)
+                        {
+                            this.timer_auth.Interval = z * 60 * 1000;
+                            counterTxtBox.Text = z.ToString() + " min.";
+                        }
+                        else
+                        {
+                            this.timer_auth.Interval = 1 * 60 * 1000;
+                            counterTxtBox.Text = "60 sec.";
+                        }
+
+                        this.authLock = false;
+                        this.timer_auth.Enabled = true;                       // Enable the timer
+                        this.timer_auth.Start();                              // Start the timer
+                    }
+                }                  
+
+            } else if (this.checkaccount == true)
+            {
+                if (this.authLock && this.timer_auth != null)
+                {
+                    this.timer_auth.Enabled = false;
+                    this.timer_auth.Stop();
+                    this.loopauth = false;
+                    this.authLock = false;
+                }                        
+
+                string temp = Properties.Settings.Default.set_counter.ToString();
+                string[] wait = temp.Split('-');
+                this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1]));
+                this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1]));
+
+                string str = this.accounts[this.accountNum];
+                authstr = str.Split('/');
+                this.username = authstr[0]; this.password = authstr[1];
+                        
+                // use global variable 
+                this.authLock = true;
+
+                this.ChangeUserAgent(EDGEUA);
+                this.ClearCache();
+
+                //MessageBox.Show(this.checkaccount == true ? "true" : "false");                   
+
+                // first step before sign-in
+                browser.Navigate(new Uri("https://login.live.com/logout.srf"));                    
+
+            } else
+            {
+                this.toolStripStatusLabel1.Text = "PC2:" + Convert.ToString(this.authLock) +
+                    "|" + Convert.ToString(this.checkaccount) +
+                    "|" + Convert.ToString(this.accountVisitedX) +
+                    "|" + Convert.ToString(this.authCounterX) +
+                    "|" + Convert.ToString(this.accountsRndtry) +
+                    "|" + Convert.ToString(this.accounts.Count) +
+                    "|" + Convert.ToString(this.accountNum) +
+                    "|" + Convert.ToString(this.loopauth) +
+                    "|" + this.country;
+
+                this.dxloops = 0;
+                this.mxloops = 0;
+                this.logtries = 0;
+                this.iniSearch = false;
+                this.dashboardta = false;
+                this.ldashboardta = false;
+                this.Csearch = false;
+
+                if (this.timer_auth.Enabled == false)
+                {
+                    this.timer_auth = new System.Windows.Forms.Timer();
+                    this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
+
+                    string temp = Properties.Settings.Default.set_waitauth.ToString();
+                    string[] auth = temp.Split('-');
+
+                    int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), Convert.ToInt32(auth[1]));
+                    if (z > 1)
+                    {
+                        this.timer_auth.Interval = z * 60 * 1000;
+                        counterTxtBox.Text = z.ToString() + " min.";
+                    }
+                    else
+                    {
+                        this.timer_auth.Interval = 1 * 60 * 1000;
+                        counterTxtBox.Text = "60 sec.";
+                    }
+
+                    this.authLock = false;
+                    this.timer_auth.Enabled = true;                       // Enable the timer
+                    this.timer_auth.Start();                              // Start the timer
                 }
             }
+            
+            this.toolStripStatusLabel1.Text += "+";
         }
 
         //*******************
@@ -1695,7 +1746,7 @@ namespace BingRewardsBot
 
                 this.toolStripStatusLabel1.Text = "A. visited:" +Convert.ToString(this.accountVisitedX);
                 // accounts visited
-                if (this.accountVisitedX <= this.accounts.Count())
+                if (this.accountVisitedX < this.accounts.Count())
                 {
                     this.qpage = 0;
                     statusTxtBox.Text = "Authenticating";
@@ -1703,7 +1754,7 @@ namespace BingRewardsBot
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.logtries = 0;
-                    this.accountsRndtry = 0;
+                    this.accountsRndtry = this.loopauth == true ? ARNDTRIES : 0;
                     this.iniSearch = false;
                     this.dashboardta = false;
                     this.ldashboardta = false;
@@ -1727,8 +1778,7 @@ namespace BingRewardsBot
                     this.timer_auth.Enabled = true;
                     this.timer_auth.Start();
                     this.authLock = false;
-                    this.loopauth = false;
-
+  
                 }
                 else
                 {
@@ -1855,6 +1905,7 @@ namespace BingRewardsBot
 
                 this.timer_searches.Stop();
                 this.timer_searches.Enabled = false;
+
                 this.searchesLock = true;
                 this.checkaccount = false;
 
@@ -2146,8 +2197,7 @@ namespace BingRewardsBot
                                 }
                                 catch
                                 {
-                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-                                    
+                                    browser.Navigate("http://bing.com/search?q=" + this.query);                                    
                                 }
                             }                            
                         }
@@ -2259,8 +2309,7 @@ namespace BingRewardsBot
                                 }
                                 catch
                                 {
-                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-                                    
+                                    browser.Navigate("http://bing.com/search?q=" + this.query);                                    
                                 }
                             }
                             else
@@ -2423,6 +2472,12 @@ namespace BingRewardsBot
                     }
                 }
             }
+
+            if (this.searchesLock == false)
+            {
+                browser.Navigate(new Uri(browserUrlTxtbox.Text));
+            }
+            this.toolStripStatusLabel1.Text += "+";
         }
 
         //**********************
@@ -2592,7 +2647,6 @@ namespace BingRewardsBot
                     this.timer_searches = new System.Windows.Forms.Timer();
                     this.timer_searches.Tick += new EventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
  
-
                     string str = Properties.Settings.Default.set_waitsearches.ToString();
                     string[] ns = str.Split('-');
                     this.timer_searches.Interval = randomNumber(Convert.ToInt32(ns[0]), Convert.ToInt32(ns[1])) * 1000;   // Timer will tick every 10 seconds
@@ -2698,9 +2752,7 @@ namespace BingRewardsBot
 
                     string temp = Properties.Settings.Default.set_waitauth.ToString();
                     string[] auth = temp.Split('-');
-
-                    this.timer_auth.Interval = 1 * 60 * 1000;
-                    //this.timer_auth.Interval = (120) * (1000);             // Timer will tick every 10 seconds
+                                        
                     int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), Convert.ToInt32(auth[1]));
                     if (z > 1)
                     {
@@ -3109,6 +3161,37 @@ namespace BingRewardsBot
             UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, Agent, Agent.Length, 0);
         }
 
+        private void restartDocument()
+        {
+            while (true)
+            {
+                Thread.Sleep(SLEEPRD);
+
+                //this.toolStripStatusLabel1.Text = "Continue:"+Convert.ToString(this.Csearch);
+                // refresh
+                if (this.button1.Text == "Stop" 
+                    && this.statusTxtBox.Text != "Authenticating"
+                    && this.statusTxtBox.Text != "Ready"
+                    && this.authLock == true
+                    )
+                {
+                      this.toolStripStatusLabel1.Text = "Restart searches";
+                //    this.timer_searches = new System.Windows.Forms.Timer();
+                //    this.timer_searches.Tick += new EventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
+                //    string temp = Properties.Settings.Default.set_waitsearches.ToString();
+                //    string[] wait = temp.Split('-');
+                //    this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1])) * 1000;
+                //    this.timer_searches.Enabled = true;
+                //    this.timer_searches.Start();
+                //    this.searchesLock = false;
+                //    this.Csearch = false;
+                    browser.Navigate(new Uri(browserUrlTxtbox.Text));
+                }                
+                
+                //MessageBox.Show("Click");
+            }
+        }
+
         //http://stackoverflow.com/questions/9770522/how-to-handle-message-boxes-while-using-webbrowser-in-c
 
         //****************************************************
@@ -3388,6 +3471,26 @@ namespace BingRewardsBot
             Process.Start(si);
             linkLabel1.LinkVisited = true;            
         }
+    }
+
+    //http://stackoverflow.com/questions/2475435/c-sharp-timer-wont-tick
+    public class BetterTimer : System.Windows.Forms.Timer
+    {
+        public BetterTimer() : base()
+        { base.Enabled = true; }
+
+        public BetterTimer(System.ComponentModel.IContainer container) : base(container)
+        { base.Enabled = true; }
+
+        private bool _Enabled;
+        public override bool Enabled
+        {
+            get { return _Enabled; }
+            set { _Enabled = value; }
+        }
+
+        protected override void OnTick(System.EventArgs e)
+        { if (this.Enabled) base.OnTick(e); }
     }
 
     //http://www.waytocoding.com/2014/08/how-to-clear-cache-in-web-browser.html
