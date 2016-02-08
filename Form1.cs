@@ -60,12 +60,12 @@ namespace BingRewardsBot
         //https://www.bing.com/account/action?scope=web&setmkt=en-US&setplang=en-us&setlang=en-us&FORM=W5WA&uid=FC9008F2&sid=2E3761AF1D0966A7110269211C0E671C
         //https://www.bing.com/account/general
         //https://www.bing.com/
-        //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2f%3fwlsso%3d1%26wlexpsignin%3d1&src=EXPLICIT&sig=1B21E42427B7E04B43954242F3680AF98691
+        //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2f%3fwlsso%3d1%26wlexpsignin%3d1&src=EXPLICIT&sig=1B21E07B7E04B43950F3680AF98691
         //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2frewards%2fsignin%3fFORM%3dMI0GMI%26PUBL%3dMUIDTrial%26CREA%3dMI0GMI%26wlsso%3d1%26wlexpsignin%3d1&src=EXPLICIT&sig=0348B174ED8666FA3E84B9FDEC01679C
 
         //https://account.live.com/identity/confirm?ru=https://login.live.com/login.srf%3flc%3d1033%26sf%3d1%26id%3d38936%26ru%3dhttps://account.live.com%253fmkt%253dEN-US%2526lc%253d1033%2526id%253d38936%26tw%3d20%26fs%3d0%26ts%3d0%26sec%3d%26mspp_share
         //https://login.live.com/login.srf?wa=wsignin1.0&amp;rpsnv=12&amp;ct=1451077233&amp;rver=6.5.6509.0&amp;wp=MBI_SSL&amp;wreply=https:%2F%2Faccount.microsoft.com%2Fauth%2Fcomplete-signin%3Fru%3Dhttps%253a%252f%252faccount.microsoft.com%252f%253frefd%253dlogin.live.com&amp;lc=1033&amp;id=292666"
-        //private const string BRSIGNIN = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2frewards%2fdashboard%3fwlexpsignin%3d1&src=EXPLICIT&sig=53EAA11DBE614242C68B829049F399A1F2";
+        //private const string BRSIGNIN = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2frewards%2fdashboard%3fwlexpsignin%3d1&src=EXPLICIT&sig=53EAA11DBE60C68B829049F399A1F2";
         ///fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&sig=05116B5A81F46BD83CAA63D280186ADD&return_url=https://www.bing.com\rewards\dashboard&Token=1
         //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&sig=27BCFAE69AA86D76381CF26E9B2F6CB6&return_url=https%3a%2f%2fwww.bing.com%3a443%2frewards%2fsignin%3fFORM%3dMI0GMI%26PUBL%3dMUIDTrial%26CREA%3dMI0GMI&Token=1
         //private const string BRSIGNIN = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&return_url=https://www.bing.com&Token=1&sig=";
@@ -87,11 +87,12 @@ namespace BingRewardsBot
         private const int TORTRIES = 10;
         private int prevpts = 0;
         private int pts = 0;
-        private const string APPLEMOBILEUA = "User-Agent: Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en) AppleWebKit/534.46.0 (KHTML, like Gecko) CriOS/19.0.1084.60 Mobile/9B206 Safari/7534.48.3";
+        //private const string APPLEMOBILEUA = "User-Agent: Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en) AppleWebKit/534.46.0 (KHTML, like Gecko) CriOS/19.0.1084.60 Mobile/9B206 Safari/7534.48.3";
+        private const string APPLEMOBILEUA = "Mozilla / 5.0(iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10B350 Safari/8536.25";
         private const string CHROMEDESKTOPUA = "Mozilla / 5.0(Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.93 Safari/537.36";
         private const string IEDESKTOPUA = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.2; Win64; x64; Trident/8.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729; GWX:QUALIFIED)";
         private const string IE11UA = "Mozilla/5.0 (Windows NT 6.4; WOW64; Trident/7.0; .NET4.0E; .NET4.0C; rv:11.0) like Gecko";
-        private const string EDGEUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/4242.0.2311.135 Safari/537.36 Edge/12.10240";
+        private const string EDGEUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/0000.0.2311.135 Safari/537.36 Edge/12.10240";
         private bool Csearch = false;
         private int qpage = 0;
         private const int SLEEPTOR = 8 * 1000;
@@ -111,7 +112,7 @@ namespace BingRewardsBot
         private bool trialstopped = false;
         private bool checkaccount = false;
         private string trialRegKey;
-        private const int FREEX = 2424200;
+        private const int FREEX = 2000000;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
@@ -151,16 +152,18 @@ namespace BingRewardsBot
         [System.Runtime.InteropServices.DllImport("wininet.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
         public static extern bool InternetSetOption(int hInternet, int dwOption, IntPtr lpBuffer, int dwBufferLength);
 
+        //http://stackoverflow.com/questions/937573/changing-the-user-agent-of-the-webbrowser-control
         [DllImport("urlmon.dll", CharSet = CharSet.Ansi)]
         private static extern int UrlMkSetSessionOption(int dwOption, string pBuffer, int dwBufferLength, int dwReserved);
-        const int URLMON_OPTION_USERAGENT = 0x14242001;
+
+        const int URLMON_OPTION_USERAGENT = 0x10000001;
+        const int URLMON_OPTION_USERAGENT_REFRESH = 0x10000002;
 
         [DllImport("wininet.dll", SetLastError = true)]
         public static extern bool InternetSetOption(IntPtr hInternet, int dwOption, IntPtr lpBuffer, int lpdwBufferLength);
 
         //http://www.nullskull.com/q/10387873/clear-temporary-internet-files-via-c-winforms.aspx
-        private const int INTERNET_OPTION_END_BROWSER_SESSION = 4242;
-        
+        private const int INTERNET_OPTION_END_BROWSER_SESSION = 0;        
         public struct Struct_INTERNET_PROXY_INFO
         {
             public int dwAccessType;
@@ -182,7 +185,7 @@ namespace BingRewardsBot
             rThread.IsBackground = true;
             rThread.Start();            
 
-            //http://stackoverflow.com/questions/204842424/disable-image-loading-from-webbrowser-control-before-the-documentcompleted-event
+            //http://stackoverflow.com/questions/204804/disable-image-loading-from-webbrowser-control-before-the-documentcompleted-event
             //RegistryKey RegKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\Main", true);
             //RegKey.SetValue("Display Inline Images", "no");
 
@@ -190,8 +193,7 @@ namespace BingRewardsBot
             browser.ProgressChanged += new WebBrowserProgressChangedEventHandler(browser_ProgressChanged);
 
             browser.ScriptErrorsSuppressed = true;
-            this.ChangeUserAgent(EDGEUA);
-              
+            this.ChangeUserAgent(EDGEUA);              
          
             //Trial
             if (Application.UserAppDataRegistry.GetValue("ConnXY") == null)
@@ -232,7 +234,7 @@ namespace BingRewardsBot
             }
             else
             {
-                //http://stackoverflow.com/questions/134424221/how-can-i-generate-random-alphanumeric-strings-in-c
+                //http://stackoverflow.com/questions/134021/how-can-i-generate-random-alphanumeric-strings-in-c
                 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
                 var random = new Random(Guid.NewGuid().GetHashCode());
                 var password = new string(
@@ -283,6 +285,9 @@ namespace BingRewardsBot
             this.txtbox_counter.Text = BingRewardsBot.Properties.Settings.Default.set_counter;
             this.txtbox_waitsearches.Text = BingRewardsBot.Properties.Settings.Default.set_waitsearches;
             this.txtbox_waitauth.Text = BingRewardsBot.Properties.Settings.Default.set_waitauth;
+            this.txtboxcustomdesktop.Text = BingRewardsBot.Properties.Settings.Default.set_uadesktop;
+            this.txtboxcustommobile.Text = BingRewardsBot.Properties.Settings.Default.set_uamobile;
+            this.txtbox_customaccounts.Text = BingRewardsBot.Properties.Settings.Default.set_accounts;
 
             // Get IP
             this.subgetip();
@@ -443,7 +448,7 @@ namespace BingRewardsBot
         //https://msdn.microsoft.com/en-us/library/system.windows.forms.form.closing(v=vs.110).aspx
         private void Form1_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //http://stackoverflow.com/questions/204842424/disable-image-loading-from-webbrowser-control-before-the-documentcompleted-event
+            //http://stackoverflow.com/questions/204804/disable-image-loading-from-webbrowser-control-before-the-documentcompleted-event
             //RegistryKey RegKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\Main", true);
             //RegKey.SetValue("Display Inline Images", "yes");
 
@@ -456,6 +461,9 @@ namespace BingRewardsBot
             BingRewardsBot.Properties.Settings.Default.set_waitauth = txtbox_waitauth.Text;
             BingRewardsBot.Properties.Settings.Default.set_autostart = txtbox_autostart.Text;
             BingRewardsBot.Properties.Settings.Default.set_proxy = txtbox_proxy.Text;
+            BingRewardsBot.Properties.Settings.Default.set_uadesktop = txtboxcustomdesktop.Text;
+            BingRewardsBot.Properties.Settings.Default.set_uamobile = txtboxcustommobile.Text;
+            BingRewardsBot.Properties.Settings.Default.set_accounts = txtbox_customaccounts.Text;
             BingRewardsBot.Properties.Settings.Default.Save();
         }
 
@@ -542,13 +550,24 @@ namespace BingRewardsBot
 
                     if (count == 0)
                     {
-                        sql = "insert into searches (date, ip, account, points) values ('" + dateTime.ToString("yyyyMMdd") + "','" + this.ip + "','" + this.username + "','4242')";
+                        sql = "insert into searches (date, ip, account, points) values ('" + 
+                            dateTime.ToString("yyyyMMdd") + 
+                            "','" + 
+                            this.ip + 
+                            "','" + 
+                            this.username + "','4242')";
                         command = new SQLiteCommand(sql, m_dbConnection);
                         command.ExecuteNonQuery();
                     }
                     else
                     {
-                        sql = "update searches set points='4242' WHERE ip='" + this.ip + "' and date='" + dateTime.ToString("yyyyMMdd") + "' and account='" + this.accountNameTxtBox.Text + "';";
+                        sql = "update searches set points='4242' WHERE ip='" + 
+                            this.ip + 
+                            "' and date='" + 
+                            dateTime.ToString("yyyyMMdd") + 
+                            "' and account='" + 
+                            this.accountNameTxtBox.Text + 
+                            "';";
 
                         command = new SQLiteCommand(sql, m_dbConnection);
                         command.ExecuteNonQuery();                       
@@ -568,8 +587,8 @@ namespace BingRewardsBot
                     }
                     else
                     {
-                        this.timer_auth.Interval = 1 * 60 * 1000;
-                        counterTxtBox.Text = "60 sec.";
+                        this.timer_auth.Interval = 1 * 30 * 1000;
+                        counterTxtBox.Text = "30 sec.";
                     }
                     this.timer_auth.Enabled = true;
                     this.timer_auth.Start();
@@ -698,8 +717,8 @@ namespace BingRewardsBot
                     }
                     else
                     {
-                        this.timer_auth.Interval = 1 * 60 * 1000;
-                        counterTxtBox.Text = "60 sec.";
+                        this.timer_auth.Interval = 1 * 30 * 1000;
+                        counterTxtBox.Text = "30 sec.";
                     }
                     this.timer_auth.Enabled = true;
                     this.timer_auth.Start();
@@ -1256,8 +1275,8 @@ namespace BingRewardsBot
                     }
                     else
                     {
-                        this.timer_auth.Interval = 1 * 60 * 1000;
-                        counterTxtBox.Text = "60 sec.";
+                        this.timer_auth.Interval = 1 * 30 * 1000;
+                        counterTxtBox.Text = "30 sec.";
                     }
                     this.timer_auth.Enabled = true;
                     this.timer_auth.Start();
@@ -1325,8 +1344,8 @@ namespace BingRewardsBot
                             }
                             else
                             {
-                                this.timer_auth.Interval = 1 * 60 * 1000;
-                                counterTxtBox.Text = "60 sec.";
+                                this.timer_auth.Interval = 1 * 30 * 1000;
+                                counterTxtBox.Text = "30 sec.";
                             }
                             this.timer_auth.Enabled = true;
                             this.timer_auth.Start();
@@ -1409,7 +1428,7 @@ namespace BingRewardsBot
 
             } else if (this.authCounterX == 1)
             {
-                counterTxtBox.Text = "60 sec.";
+                counterTxtBox.Text = "30 sec.";
             }
 
             //********************
@@ -1459,25 +1478,30 @@ namespace BingRewardsBot
                 }
                 catch { }
 
+                this.toolStripStatusLabel1.Text = "Filter:" + z + "|" + c;
+
+                int[] select = new int[this.accounts.Count - z];
                 int a = 0;
-                int x = 0;
-                int[] select = new int[this.accounts.Count-z];
-                bool del = false;
-                foreach (string outer in this.accounts)
+                int x = 0;                    
+                bool m = false;
+                foreach (string user in this.accounts)
                 {
                     foreach (string ele in list)
-                    {
-                        if (outer == ele)
+                    {                        
+                        if (user == ele)
                         {
-                            del = true;
+                            m = true;
+                            this.toolStripStatusLabel1.Text += "|" + ele;
                         }
-                    }                  
-                    if (!del)
-                    {
-                        select[a++] = x;
-                        del = false;
                     }
-                    ++x;  
+                    if (!m && a < select.Count())
+                    {
+                        select[a++] = x;                        
+                    } else
+                    {
+                        m = false;
+                    }
+                    ++x;
                 }
 
                 int random = this.randomNumber(0, (this.accounts.Count - z));
@@ -1594,7 +1618,8 @@ namespace BingRewardsBot
                                     "','" + 
                                     this.ip + 
                                     "','" + 
-                                    this.username + "','4242')";
+                                    this.username + 
+                                    "','4242')";
                                 command = new SQLiteCommand(sql, m_dbConnection);
                                 command.ExecuteNonQuery();
                             }
@@ -1605,7 +1630,8 @@ namespace BingRewardsBot
                                     "' and date='" + 
                                     dateTime.ToString("yyyyMMdd") + 
                                     "' and account='" + 
-                                    this.username + "';";
+                                    this.username + 
+                                    "';";
                                command = new SQLiteCommand(sql, m_dbConnection);
                                command.ExecuteNonQuery();                               
                             }
@@ -1818,8 +1844,8 @@ namespace BingRewardsBot
                         }
                         else
                         {
-                            this.timer_auth.Interval = 1 * 60 * 1000;
-                            counterTxtBox.Text = "60 sec.";
+                            this.timer_auth.Interval = 1 * 30 * 1000;
+                            counterTxtBox.Text = "30 sec.";
                         }
 
                         this.authLock = false;
@@ -1894,8 +1920,8 @@ namespace BingRewardsBot
                     }
                     else
                     {
-                        this.timer_auth.Interval = 1 * 60 * 1000;
-                        counterTxtBox.Text = "60 sec.";
+                        this.timer_auth.Interval = 1 * 30 * 1000;
+                        counterTxtBox.Text = "30 sec.";
                     }
 
                     this.authLock = false;
@@ -1965,8 +1991,8 @@ namespace BingRewardsBot
                     }
                     else
                     {
-                        this.timer_auth.Interval = 1 * 60 * 1000;
-                        counterTxtBox.Text = "60 sec.";
+                        this.timer_auth.Interval = 1 * 30 * 1000;
+                        counterTxtBox.Text = "30 sec.";
                     }
                     
                     this.timer_auth.Enabled = true;
@@ -1989,7 +2015,9 @@ namespace BingRewardsBot
                             this.ip + 
                             "' and date='" + 
                             dateTime.ToString("yyyyMMdd") + 
-                            "' and account='" + this.accountNameTxtBox.Text + "';";
+                            "' and account='" + 
+                            this.accountNameTxtBox.Text + 
+                            "';";
 
                         SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
                         command.ExecuteNonQuery();
@@ -2692,7 +2720,7 @@ namespace BingRewardsBot
             if (e.KeyCode == Keys.Enter)
             {
                 //string target = "";
-                //string authHeader = "User-Agent: Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/42420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543 Safari/419.3\r\n";
+                //string authHeader = "User-Agent: Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/00+ (KHTML, like Gecko) Version/3.0 Mobile/1A543 Safari/419.3\r\n";
                 //string authHeader = "User-Agent: Mozilla/5.0(iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en) AppleWebKit / 534.46.0(KHTML, like Gecko) CriOS / 19.0.1084.60 Mobile / 9B206 Safari/ 7534.48.3\r\n";
                 //string authHeader = "User-Agent: Mozilla/5.0(Linux; U; Android 4.0.3; ko - kr; LG - L160L Build / IML74K) AppleWebkit / 534.30(KHTML, like Gecko) Version / 4.0 Mobile Safari/ 534.30\r\n";
 
@@ -2727,7 +2755,7 @@ namespace BingRewardsBot
                 else if (url.StartsWith("amazon"))
                 {
                     this.ChangeUserAgent(APPLEMOBILEUA);
-                    browser.Navigate("https://www.bing.com/rewards/redeem/000142420004");
+                    browser.Navigate("https://www.bing.com/rewards/redeem/000100004");
                 }
                 else if (url.StartsWith("bing"))
                 {
@@ -2961,8 +2989,8 @@ namespace BingRewardsBot
                     }
                     else
                     {
-                        this.timer_auth.Interval = 1 * 60 * 1000;
-                        counterTxtBox.Text = "60 sec.";
+                        this.timer_auth.Interval = 1 * 30 * 1000;
+                        counterTxtBox.Text = "30 sec.";
                     }
 
                     this.loopauth = false;
@@ -3070,7 +3098,7 @@ namespace BingRewardsBot
                 {
                     try
                     {
-                        Application.UserAppDataRegistry.SetValue("Injector", randomNumber(1000, 142420));
+                        Application.UserAppDataRegistry.SetValue("Injector", randomNumber(1000, 100000));
                     }
                     catch
                     {
@@ -3081,7 +3109,7 @@ namespace BingRewardsBot
                 {
                     try
                     {
-                        Application.UserAppDataRegistry.SetValue("Codedll", randomNumber(1000, 142420));
+                        Application.UserAppDataRegistry.SetValue("Codedll", randomNumber(1000, 100000));
                     }
                     catch
                     {
@@ -3092,7 +3120,7 @@ namespace BingRewardsBot
                 {
                     try
                     {
-                        Application.UserAppDataRegistry.SetValue("Vnumber", randomNumber(1000, 142420));
+                        Application.UserAppDataRegistry.SetValue("Vnumber", randomNumber(1000, 100000));
                     }
                     catch
                     {
@@ -3353,9 +3381,12 @@ namespace BingRewardsBot
             //System.Diagnostics.Process.Start("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess 4351")
         }
 
-        private void ChangeUserAgent(string Agent)
+        //http://stackoverflow.com/questions/937573/changing-the-user-agent-of-the-webbrowser-control
+        private void ChangeUserAgent(string ua)
         {
-            UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, Agent, Agent.Length, 0);
+            //UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, Agent, Agent.Length, 0);
+            UrlMkSetSessionOption(URLMON_OPTION_USERAGENT_REFRESH, null, 0, 0);
+            UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, ua, ua.Length, 0);
         }
 
         private void restartDocument()

@@ -130,5 +130,43 @@ namespace BingRewardsBot.Properties {
                 this["set_proxy"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("accounts.txt")]
+        public string set_accounts {
+            get {
+                return ((string)(this["set_accounts"]));
+            }
+            set {
+                this["set_accounts"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Mozilla / 5.0(Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chro" +
+            "me/45.0.2454.93 Safari/537.36")]
+        public string set_uadesktop {
+            get {
+                return ((string)(this["set_uadesktop"]));
+            }
+            set {
+                this["set_uadesktop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Mozilla / 5.0(iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTM" +
+            "L, like Gecko) Version/6.0 Mobile/10B350 Safari/8536.25")]
+        public string set_uamobile {
+            get {
+                return ((string)(this["set_uamobile"]));
+            }
+            set {
+                this["set_uamobile"] = value;
+            }
+        }
     }
 }

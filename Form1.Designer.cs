@@ -53,6 +53,12 @@
             this.accountNameTxtBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.txtbox_customaccounts = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.txtboxcustommobile = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.txtboxcustomdesktop = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.txtbox_proxy = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
@@ -337,6 +343,12 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage2.Controls.Add(this.txtbox_customaccounts);
+            this.tabPage2.Controls.Add(this.label19);
+            this.tabPage2.Controls.Add(this.txtboxcustommobile);
+            this.tabPage2.Controls.Add(this.label18);
+            this.tabPage2.Controls.Add(this.txtboxcustomdesktop);
+            this.tabPage2.Controls.Add(this.label17);
             this.tabPage2.Controls.Add(this.linkLabel1);
             this.tabPage2.Controls.Add(this.txtbox_proxy);
             this.tabPage2.Controls.Add(this.label15);
@@ -366,10 +378,65 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Settings";
             // 
+            // txtbox_customaccounts
+            // 
+            this.txtbox_customaccounts.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.txtbox_customaccounts.Location = new System.Drawing.Point(178, 402);
+            this.txtbox_customaccounts.Name = "txtbox_customaccounts";
+            this.txtbox_customaccounts.Size = new System.Drawing.Size(238, 22);
+            this.txtbox_customaccounts.TabIndex = 36;
+            this.txtbox_customaccounts.Text = "accounts.txt";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.label19.Location = new System.Drawing.Point(7, 406);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(119, 14);
+            this.label19.TabIndex = 35;
+            this.label19.Text = "Custom account file:";
+            // 
+            // txtboxcustommobile
+            // 
+            this.txtboxcustommobile.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.txtboxcustommobile.Location = new System.Drawing.Point(178, 375);
+            this.txtboxcustommobile.Name = "txtboxcustommobile";
+            this.txtboxcustommobile.Size = new System.Drawing.Size(541, 22);
+            this.txtboxcustommobile.TabIndex = 34;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.label18.Location = new System.Drawing.Point(8, 379);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(154, 14);
+            this.label18.TabIndex = 33;
+            this.label18.Text = "Custom mobile user agent:";
+            // 
+            // txtboxcustomdesktop
+            // 
+            this.txtboxcustomdesktop.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.txtboxcustomdesktop.Location = new System.Drawing.Point(178, 348);
+            this.txtboxcustomdesktop.Name = "txtboxcustomdesktop";
+            this.txtboxcustomdesktop.Size = new System.Drawing.Size(541, 22);
+            this.txtboxcustomdesktop.TabIndex = 32;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.label17.Location = new System.Drawing.Point(9, 352);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(163, 14);
+            this.label17.TabIndex = 31;
+            this.label17.Text = "Custom desktop user agent:";
+            // 
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(359, 360);
+            this.linkLabel1.Location = new System.Drawing.Point(359, 446);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(52, 14);
             this.linkLabel1.TabIndex = 30;
@@ -381,16 +448,16 @@
             // txtbox_proxy
             // 
             this.txtbox_proxy.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.txtbox_proxy.Location = new System.Drawing.Point(355, 325);
+            this.txtbox_proxy.Location = new System.Drawing.Point(178, 322);
             this.txtbox_proxy.Name = "txtbox_proxy";
-            this.txtbox_proxy.Size = new System.Drawing.Size(193, 22);
+            this.txtbox_proxy.Size = new System.Drawing.Size(238, 22);
             this.txtbox_proxy.TabIndex = 29;
             // 
             // label15
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label15.Location = new System.Drawing.Point(9, 330);
+            this.label15.Location = new System.Drawing.Point(9, 327);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(88, 14);
             this.label15.TabIndex = 28;
@@ -448,9 +515,9 @@
             // 
             // settingsSaveBtn
             // 
-            this.settingsSaveBtn.Location = new System.Drawing.Point(417, 355);
+            this.settingsSaveBtn.Location = new System.Drawing.Point(417, 441);
             this.settingsSaveBtn.Name = "settingsSaveBtn";
-            this.settingsSaveBtn.Size = new System.Drawing.Size(75, 23);
+            this.settingsSaveBtn.Size = new System.Drawing.Size(75, 26);
             this.settingsSaveBtn.TabIndex = 7;
             this.settingsSaveBtn.Text = "Save";
             this.settingsSaveBtn.UseVisualStyleBackColor = true;
@@ -748,6 +815,12 @@
         private System.Windows.Forms.TextBox txtbox_proxy;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TextBox txtboxcustomdesktop;
+        private System.Windows.Forms.TextBox txtboxcustommobile;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.TextBox txtbox_customaccounts;
+        private System.Windows.Forms.Label label19;
     }
 }
 

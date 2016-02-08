@@ -29,5 +29,14 @@
     <Setting Name="set_proxy" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="set_accounts" Type="System.String" Scope="User">
+      <Value Profile="(Default)">accounts.txt</Value>
+    </Setting>
+    <Setting Name="set_uadesktop" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Mozilla / 5.0(Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.93 Safari/537.36</Value>
+    </Setting>
+    <Setting Name="set_uamobile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Mozilla / 5.0(iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10B350 Safari/8536.25</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
