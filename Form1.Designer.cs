@@ -89,6 +89,8 @@
             this.passwd_txtbox = new System.Windows.Forms.TextBox();
             this.regcode_txtbox = new System.Windows.Forms.TextBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.label20 = new System.Windows.Forms.Label();
+            this.txtbox_torsettings = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.btn_ip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -343,6 +345,8 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage2.Controls.Add(this.txtbox_torsettings);
+            this.tabPage2.Controls.Add(this.label20);
             this.tabPage2.Controls.Add(this.txtbox_customaccounts);
             this.tabPage2.Controls.Add(this.label19);
             this.tabPage2.Controls.Add(this.txtboxcustommobile);
@@ -381,9 +385,9 @@
             // txtbox_customaccounts
             // 
             this.txtbox_customaccounts.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.txtbox_customaccounts.Location = new System.Drawing.Point(178, 402);
+            this.txtbox_customaccounts.Location = new System.Drawing.Point(199, 430);
             this.txtbox_customaccounts.Name = "txtbox_customaccounts";
-            this.txtbox_customaccounts.Size = new System.Drawing.Size(238, 22);
+            this.txtbox_customaccounts.Size = new System.Drawing.Size(217, 22);
             this.txtbox_customaccounts.TabIndex = 36;
             this.txtbox_customaccounts.Text = "accounts.txt";
             // 
@@ -391,7 +395,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label19.Location = new System.Drawing.Point(7, 406);
+            this.label19.Location = new System.Drawing.Point(7, 434);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(119, 14);
             this.label19.TabIndex = 35;
@@ -400,16 +404,16 @@
             // txtboxcustommobile
             // 
             this.txtboxcustommobile.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.txtboxcustommobile.Location = new System.Drawing.Point(178, 375);
+            this.txtboxcustommobile.Location = new System.Drawing.Point(199, 403);
             this.txtboxcustommobile.Name = "txtboxcustommobile";
-            this.txtboxcustommobile.Size = new System.Drawing.Size(541, 22);
+            this.txtboxcustommobile.Size = new System.Drawing.Size(520, 22);
             this.txtboxcustommobile.TabIndex = 34;
             // 
             // label18
             // 
             this.label18.AutoSize = true;
             this.label18.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label18.Location = new System.Drawing.Point(8, 379);
+            this.label18.Location = new System.Drawing.Point(8, 407);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(154, 14);
             this.label18.TabIndex = 33;
@@ -418,16 +422,16 @@
             // txtboxcustomdesktop
             // 
             this.txtboxcustomdesktop.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.txtboxcustomdesktop.Location = new System.Drawing.Point(178, 348);
+            this.txtboxcustomdesktop.Location = new System.Drawing.Point(199, 376);
             this.txtboxcustomdesktop.Name = "txtboxcustomdesktop";
-            this.txtboxcustomdesktop.Size = new System.Drawing.Size(541, 22);
+            this.txtboxcustomdesktop.Size = new System.Drawing.Size(520, 22);
             this.txtboxcustomdesktop.TabIndex = 32;
             // 
             // label17
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label17.Location = new System.Drawing.Point(9, 352);
+            this.label17.Location = new System.Drawing.Point(9, 380);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(163, 14);
             this.label17.TabIndex = 31;
@@ -436,7 +440,7 @@
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(359, 446);
+            this.linkLabel1.Location = new System.Drawing.Point(442, 440);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(52, 14);
             this.linkLabel1.TabIndex = 30;
@@ -448,16 +452,17 @@
             // txtbox_proxy
             // 
             this.txtbox_proxy.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.txtbox_proxy.Location = new System.Drawing.Point(178, 322);
+            this.txtbox_proxy.Location = new System.Drawing.Point(199, 349);
             this.txtbox_proxy.Name = "txtbox_proxy";
-            this.txtbox_proxy.Size = new System.Drawing.Size(238, 22);
+            this.txtbox_proxy.Size = new System.Drawing.Size(217, 22);
             this.txtbox_proxy.TabIndex = 29;
+            this.txtbox_proxy.Text = "127.0.0.1:8118";
             // 
             // label15
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label15.Location = new System.Drawing.Point(9, 327);
+            this.label15.Location = new System.Drawing.Point(9, 354);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(88, 14);
             this.label15.TabIndex = 28;
@@ -478,11 +483,11 @@
             // 
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label16.Location = new System.Drawing.Point(8, 302);
+            this.label16.Location = new System.Drawing.Point(6, 300);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(183, 14);
+            this.label16.Size = new System.Drawing.Size(181, 14);
             this.label16.TabIndex = 26;
-            this.label16.Text = "Tor (needs Tor and Iplocation)?";
+            this.label16.Text = "Tor (needs Tor and Iplocation):";
             // 
             // label14
             // 
@@ -515,7 +520,7 @@
             // 
             // settingsSaveBtn
             // 
-            this.settingsSaveBtn.Location = new System.Drawing.Point(417, 441);
+            this.settingsSaveBtn.Location = new System.Drawing.Point(500, 435);
             this.settingsSaveBtn.Name = "settingsSaveBtn";
             this.settingsSaveBtn.Size = new System.Drawing.Size(75, 26);
             this.settingsSaveBtn.TabIndex = 7;
@@ -734,6 +739,25 @@
             this.notifyIcon1.Text = "notifyIcon1";
             this.notifyIcon1.Visible = true;
             // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.label20.Location = new System.Drawing.Point(6, 326);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(189, 14);
+            this.label20.TabIndex = 37;
+            this.label20.Text = "Tor settings (server:controlport):";
+            // 
+            // txtbox_torsettings
+            // 
+            this.txtbox_torsettings.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.txtbox_torsettings.Location = new System.Drawing.Point(199, 322);
+            this.txtbox_torsettings.Name = "txtbox_torsettings";
+            this.txtbox_torsettings.Size = new System.Drawing.Size(217, 22);
+            this.txtbox_torsettings.TabIndex = 38;
+            this.txtbox_torsettings.Text = "127.0.0.1:9050";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -821,6 +845,8 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.TextBox txtbox_customaccounts;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox txtbox_torsettings;
+        private System.Windows.Forms.Label label20;
     }
 }
 
