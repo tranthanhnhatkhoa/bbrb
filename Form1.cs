@@ -193,8 +193,7 @@ namespace BingRewardsBot
 
             browser.ScriptErrorsSuppressed = true;
             //this.ChangeUserAgent(this.txtboxcustomdesktop.Text);              
-
-          
+                     
 
             //Trial
             if (Application.UserAppDataRegistry.GetValue("ConnXY") == null)
@@ -402,9 +401,6 @@ namespace BingRewardsBot
                     this.timer_auth = new System.Windows.Forms.Timer();
                     this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
 
-                    string temp = Properties.Settings.Default.set_waitauth.ToString();
-                    string[] auth = temp.Split('-');
-
                     this.authCounterX = randomNumber(Convert.ToInt32(check[0]), Convert.ToInt32(check[1]));
 
                     this.authLock = false;
@@ -593,21 +589,14 @@ namespace BingRewardsBot
 
                     statusTxtBox.Text = "Authenticating";
 
-                    string temp = Properties.Settings.Default.set_waitauth.ToString();
-                    string[] auth = temp.Split('-');
+                    string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
 
                     int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), 
                         Convert.ToInt32(auth[1]));
-                    if (z > 1)
-                    {
-                        this.timer_auth.Interval = z * 60 * 1000;
-                        counterTxtBox.Text = z.ToString() + " min.";
-                    }
-                    else
-                    {
-                        this.timer_auth.Interval = 1 * 30 * 1000;
-                        counterTxtBox.Text = "30 sec.";
-                    }
+
+                    this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
+                    counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
+                  
                     this.timer_auth.Enabled= true;
                     this.timer_auth.Start();
                     this.authLock = false;
@@ -724,21 +713,12 @@ namespace BingRewardsBot
                     statusTxtBox.Text = "Authenticating";
                     counterTxtBox.Text = "0/0";
 
-                    string temp = Properties.Settings.Default.set_waitauth.ToString();
-                    string[] auth = temp.Split('-');
-
+                    string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
                     int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), 
                         Convert.ToInt32(auth[1]));
-                    if (z > 1)
-                    {
-                        this.timer_auth.Interval = z * 60 * 1000;
-                        counterTxtBox.Text = z.ToString() + " min.";
-                    }
-                    else
-                    {
-                        this.timer_auth.Interval = 1 * 30 * 1000;
-                        counterTxtBox.Text = "30 sec.";
-                    }
+                    this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
+                    counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
+
                     this.timer_auth.Enabled= true;
                     this.timer_auth.Start();
                     this.authLock = false;
@@ -788,10 +768,10 @@ namespace BingRewardsBot
                     this.timer_searches = new System.Windows.Forms.Timer();
                     this.timer_searches.Tick += new EventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
 
-                    string temp = Properties.Settings.Default.set_waitsearches.ToString();
-                    string[] wait = temp.Split('-');
+                    string[] wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
                     this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]),
                         Convert.ToInt32(wait[1])) * 1000;
+
                     this.timer_searches.Enabled = true;
                     this.timer_searches.Start();
 
@@ -1256,8 +1236,8 @@ namespace BingRewardsBot
                     this.timer_searches = new System.Windows.Forms.Timer();
                     this.timer_searches.Tick += new EventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
 
-                    string str = Properties.Settings.Default.set_waitsearches.ToString();
-                    string[] wait = str.Split('-');
+
+                    string[] wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
                     this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]), 
                         Convert.ToInt32(wait[1])) * 1000;   // Timer will tick every 10 seconds
 
@@ -1303,21 +1283,12 @@ namespace BingRewardsBot
 
                     statusTxtBox.Text = "Authenticating";
 
-                    string temp = Properties.Settings.Default.set_waitauth.ToString();
-                    string[] auth = temp.Split('-');
-
+                    string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
                     int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), 
                         Convert.ToInt32(auth[1]));
-                    if (z > 1)
-                    {
-                        this.timer_auth.Interval = z * 60 * 1000;
-                        counterTxtBox.Text = z.ToString() + " min.";
-                    }
-                    else
-                    {
-                        this.timer_auth.Interval = 1 * 30 * 1000;
-                        counterTxtBox.Text = "30 sec.";
-                    }
+                    this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
+                    counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
+
                     this.timer_auth.Enabled= true;
                     this.timer_auth.Start();
                     this.authLock = false;
@@ -1377,21 +1348,12 @@ namespace BingRewardsBot
                         {
                             statusTxtBox.Text = "Authenticating";
 
-                            string temp = Properties.Settings.Default.set_waitauth.ToString();
-                            string[] auth = temp.Split('-');
-
+                            string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');                   
                             int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), 
                                 Convert.ToInt32(auth[1]));
-                            if (z > 1)
-                            {
-                                this.timer_auth.Interval = z * 60 * 1000;
-                                counterTxtBox.Text = z.ToString() + " min.";
-                            }
-                            else
-                            {
-                                this.timer_auth.Interval = 1 * 30 * 1000;
-                                counterTxtBox.Text = "30 sec.";
-                            }
+                            this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
+                            counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
+
                             this.timer_auth.Enabled= true;
                             this.timer_auth.Start();
                             this.authLock = false;
@@ -1560,8 +1522,7 @@ namespace BingRewardsBot
                 ++this.accountsRndtry;
 
                 Array.Clear(authstr, 0, authstr.Length);
-                string str = this.accounts[random];
-                authstr = str.Split('/');
+                authstr = this.accounts[random].Split('/');
                 this.username = authstr[0]; this.password = authstr[1];
 
                 this.toolStripStatusLabel1.Text = "1Loop:" + Convert.ToString(this.authLock) +
@@ -1618,8 +1579,7 @@ namespace BingRewardsBot
                         this.authLock = true;
                         this.accountsRndtry = 0;
 
-                        string temp = Properties.Settings.Default.set_counter.ToString();
-                        string[] wait = temp.Split('-');
+                        string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
                         this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]), 
                             Convert.ToInt32(wait[1]));
                         this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]), 
@@ -1706,21 +1666,13 @@ namespace BingRewardsBot
                         this.timer_auth = new System.Windows.Forms.Timer();
                         this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
 
-                        string temp = Properties.Settings.Default.set_waitauth.ToString();
-                        string[] auth = temp.Split('-');
+                        string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
 
                         z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]),
                             Convert.ToInt32(auth[1]));
-                        if (z > 1)
-                        {
-                            this.timer_auth.Interval = z * 60 * 1000;
-                            counterTxtBox.Text = z.ToString() + " min.";
-                        }
-                        else
-                        {
-                            this.timer_auth.Interval = 1 * 30 * 1000;
-                            counterTxtBox.Text = "30 sec.";
-                        }
+
+                        this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
+                        counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
 
                         this.authLock = false;
                         this.timer_auth.Enabled= true;                       // Enable the timer
@@ -1802,21 +1754,11 @@ namespace BingRewardsBot
                     this.timer_auth = new System.Windows.Forms.Timer();
                     this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
 
-                    string temp = Properties.Settings.Default.set_waitauth.ToString();
-                    string[] auth = temp.Split('-');
-
+                    string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
                     z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), 
                         Convert.ToInt32(auth[1]));
-                    if (z > 1)
-                    {
-                        this.timer_auth.Interval = z * 60 * 1000;
-                        counterTxtBox.Text = z.ToString() + " min.";
-                    }
-                    else
-                    {
-                        this.timer_auth.Interval = 1 * 30 * 1000;
-                        counterTxtBox.Text = "30 sec.";
-                    }
+                    this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
+                    counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
 
                     this.authLock = false;
                     this.timer_auth.Enabled= true;                       // Enable the timer
@@ -1894,8 +1836,8 @@ namespace BingRewardsBot
                 {
                     ++this.accountVisitedX;
                     Array.Clear(authstr, 0, authstr.Length);
-                    string str = this.accounts[i];
-                    authstr = str.Split('/');
+
+                    authstr = this.accounts[i].Split('/');
                     this.username = authstr[0]; this.password = authstr[1];
                     this.toolStripStatusLabel1.Text += "|"+this.username;
 
@@ -1943,8 +1885,7 @@ namespace BingRewardsBot
                             this.authLock = true;
                             this.loopauth = true;
 
-                            string temp = Properties.Settings.Default.set_counter.ToString();
-                            string[] wait = temp.Split('-');
+                            string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
                             this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]), 
                                 Convert.ToInt32(wait[1]));
                             this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]), 
@@ -2025,21 +1966,19 @@ namespace BingRewardsBot
             {
                 if (this.authLock && this.timer_auth != null)
                 {
-                    this.timer_auth.Enabled= false;
+                    this.timer_auth.Enabled=false;
                     this.timer_auth.Stop();
                     this.loopauth = false;
                     this.authLock = false;
                 }                        
 
-                string temp = Properties.Settings.Default.set_counter.ToString();
-                string[] wait = temp.Split('-');
+                string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
                 this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
                     Convert.ToInt32(wait[1]));
                 this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
                     Convert.ToInt32(wait[1]));
 
-                string str = this.accounts[this.accountNum];
-                authstr = str.Split('/');
+                authstr = this.accounts[this.accountNum].Split('/');
                 this.username = authstr[0]; this.password = authstr[1];
                         
                 // use global variable 
@@ -2115,25 +2054,15 @@ namespace BingRewardsBot
                     this.timer_auth = new System.Windows.Forms.Timer();
                     this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
 
-                    string temp = Properties.Settings.Default.set_waitauth.ToString();
-                    string[] auth = temp.Split('-');
-
+ 
+                    string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
                     int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), Convert.ToInt32(auth[1]));
-                    if (z > 1)
-                    {
-                        this.timer_auth.Interval = z * 60 * 1000;
-                        counterTxtBox.Text = z.ToString() + " min.";
-                    }
-                    else
-                    {
-                        this.timer_auth.Interval = 1 * 30 * 1000;
-                        counterTxtBox.Text = "30 sec.";
-                    }
+                    this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
+                    counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
 
                     this.authLock = false;
                     this.timer_auth.Enabled= true;                       // Enable the timer
                     this.timer_auth.Start();                              // Start the timer
-
                 }
                 else
                 {
@@ -2235,8 +2164,7 @@ namespace BingRewardsBot
                 if (this.counterDx <= 1 && this.dxloops < MAXLOOPS)
                 {
                     this.dxloops++;
-                    string temp = Properties.Settings.Default.set_counter.ToString();
-                    string[] wait = temp.Split('-');
+                    string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
                     this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]), 
                         Convert.ToInt32(wait[1]));
                 }
@@ -2244,8 +2172,7 @@ namespace BingRewardsBot
                 if (this.counterMx <= 1 && this.mxloops < MAXLOOPS)
                 {
                     this.mxloops++;
-                    string temp = Properties.Settings.Default.set_counter.ToString();
-                    string[] wait = temp.Split('-');
+                    string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
                     this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]), 
                         Convert.ToInt32(wait[1]));
                 }
@@ -3004,17 +2931,19 @@ namespace BingRewardsBot
                     this.dashboardta = false;
                     this.ldashboardta = false;
 
-                    string temp = Properties.Settings.Default.set_counter.ToString();
-                    string[] wait = temp.Split('-');
-                    this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1]));
-                    this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]), Convert.ToInt32(wait[1]));
+     
+                    string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                    this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                        Convert.ToInt32(wait[1]));
+                    this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]), 
+                        Convert.ToInt32(wait[1]));
 
                     this.timer_searches = new System.Windows.Forms.Timer();
                     this.timer_searches.Tick += new EventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
- 
-                    string str = Properties.Settings.Default.set_waitsearches.ToString();
-                    string[] ns = str.Split('-');
-                    this.timer_searches.Interval = randomNumber(Convert.ToInt32(ns[0]), Convert.ToInt32(ns[1])) * 1000;   // Timer will tick every 10 seconds
+
+                    string[] ns = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
+                    this.timer_searches.Interval = randomNumber(Convert.ToInt32(ns[0]), 
+                        Convert.ToInt32(ns[1])) * 1000;   // Timer will tick every 10 seconds
 
                     this.timer_searches.Enabled = true;                         // Enable the timer
                     this.timer_searches.Start();     
@@ -3114,20 +3043,11 @@ namespace BingRewardsBot
                     this.timer_auth = new System.Windows.Forms.Timer();
                     this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
 
-                    string temp = Properties.Settings.Default.set_waitauth.ToString();
-                    string[] auth = temp.Split('-');
-                                        
+
+                    string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');                                        
                     int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), Convert.ToInt32(auth[1]));
-                    if (z > 1)
-                    {
-                        this.timer_auth.Interval = z * 60 * 1000;
-                        counterTxtBox.Text = z.ToString() + " min.";
-                    }
-                    else
-                    {
-                        this.timer_auth.Interval = 1 * 30 * 1000;
-                        counterTxtBox.Text = "30 sec.";
-                    }
+                    this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
+                    counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
 
                     this.loopauth = false;
                     this.authLock = false;
@@ -3158,8 +3078,7 @@ namespace BingRewardsBot
             {
                 if (BingRewardsBot.Properties.Settings.Default.set_proxy != "")
                 {
-                    string[] array = Properties.Settings.Default.set_proxy.ToString().Split(':');
-                    WinInetInterop.SetConnectionProxy(array[0] + ":" + array[1]);
+                    WinInetInterop.SetConnectionProxy(Properties.Settings.Default.set_proxy.ToString());
 
                 } else
                 {
@@ -3170,8 +3089,7 @@ namespace BingRewardsBot
             }
             else if (BingRewardsBot.Properties.Settings.Default.set_proxy != "")
             {
-                string[] array = Properties.Settings.Default.set_proxy.ToString().Split(':');
-                WinInetInterop.SetConnectionProxy(array[0] + ":" + array[1]);
+                WinInetInterop.SetConnectionProxy(Properties.Settings.Default.set_proxy.ToString());
             }
         }
 
@@ -3180,9 +3098,7 @@ namespace BingRewardsBot
             if (this.accountNum > 0)
             {
                 --this.accountNum;
-
-                string str = this.accounts[this.accountNum];
-                string[] auth = str.Split('/');
+                string[] auth = this.accounts[this.accountNum].Split('/');
                 this.username = auth[0];
                 this.password = auth[1];
 
@@ -3196,9 +3112,7 @@ namespace BingRewardsBot
             if (this.accountNum < (this.accounts.Count - 1))
             {
                 ++this.accountNum;
-
-                string str = this.accounts[this.accountNum];
-                string[] auth = str.Split('/');
+                string[] auth = this.accounts[this.accountNum].Split('/');
                 this.username = auth[0];
                 this.password = auth[1];
 
@@ -3382,7 +3296,9 @@ namespace BingRewardsBot
             {
                 if (ele != null)
                 {
-                    sql = "select * from searches where date='" + dateTime.ToString("yyyyMMdd") + "' and account='" + ele + "'";
+                    sql = "select * from searches where date='" + 
+                        dateTime.ToString("yyyyMMdd") + 
+                        "' and account='" + ele + "'";
                     command = new SQLiteCommand(sql, conn);
                     reader = command.ExecuteReader();
 
@@ -3405,7 +3321,9 @@ namespace BingRewardsBot
                 }
             }
 
-            MessageBox.Show("Accounts:" + string.Join("\r\n", aarr) + "\r\nIPs:" + string.Join("\r\n", iparr) + string.Join("\r\n", score));
+            MessageBox.Show("Accounts:" + string.Join("\r\n", aarr) + 
+                "\r\nIPs:" + string.Join("\r\n", iparr) + 
+                string.Join("\r\n", score));
         }
 
         //http://mdb-blog.blogspot.fr/2013/02/c-winforms-webbrowser-clear-all-cookies.html
@@ -3477,7 +3395,7 @@ namespace BingRewardsBot
 
                     while(toriddone == false && c < 10)
                     {
-                        this.toolStripStatusLabel1.Text += "New Identity|";
+                        this.toolStripStatusLabel1.Text += "New Identity...";
                         Thread.Sleep(SLEEPTOR);
                         ++c;                        
                     }
@@ -3568,6 +3486,19 @@ namespace BingRewardsBot
                 {
                     this.toolStripStatusLabel1.Text = "Restart searches";
 
+                    this.toolStripStatusLabel1.Text += Convert.ToString(this.authLock) +
+                           "|" + Convert.ToString(this.checkaccount) +
+                           "|" + Convert.ToString(this.accountVisitedX) +
+                           "|" + Convert.ToString(this.authCounterX) +
+                           "|" + Convert.ToString(this.accountsRndtry) +
+                           "|" + Convert.ToString(this.accounts.Count) +
+                           "|" + Convert.ToString(this.accountNum) +
+                           "|" + Convert.ToString(this.loopauth) +
+                           "|" + this.country +
+                           "|" + this.username +
+                           "|" + pts +
+                           "|" + this.timer_searches.Enabled;
+
                     if (!this.timer_searches.Enabled)
                     {
                         this.timer_searches = new System.Windows.Forms.Timer();
@@ -3578,10 +3509,11 @@ namespace BingRewardsBot
                             Convert.ToInt32(wait[1])) * 1000;
                         this.timer_searches.Enabled = true;
                         this.timer_searches.Start();
-                        this.searchesLock = false;
-                        this.Csearch = false;
                     }
                     
+                    this.searchesLock = false;
+                    this.Csearch = false;
+
                     browser.Navigate(new Uri(browserUrlTxtbox.Text));
 
                 } else if (this.button1.Text == "Stop" 

@@ -58,8 +58,7 @@ namespace BingRewardsBot
             {
                 if (BingRewardsBot.Properties.Settings.Default.set_proxy != "")
                 {
-                    string[] array = Properties.Settings.Default.set_proxy.ToString().Split(':');
-                    WinInetInterop.SetConnectionProxy(array[0] + ":" + array[1]);
+                    WinInetInterop.SetConnectionProxy(Properties.Settings.Default.set_proxy.ToString());
                 }
                 else
                 {
@@ -69,8 +68,7 @@ namespace BingRewardsBot
 
             } else if (BingRewardsBot.Properties.Settings.Default.set_proxy != "")
             {
-                string[] array = Properties.Settings.Default.set_proxy.ToString().Split(':');
-                WinInetInterop.SetConnectionProxy(array[0] + ":" + array[1]);
+                WinInetInterop.SetConnectionProxy(Properties.Settings.Default.set_proxy.ToString());
             }
 
             Application.EnableVisualStyles();
