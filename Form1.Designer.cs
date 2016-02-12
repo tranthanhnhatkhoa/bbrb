@@ -53,6 +53,8 @@
             this.accountNameTxtBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.txtbox_torsettings = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
             this.txtbox_customaccounts = new System.Windows.Forms.TextBox();
             this.label19 = new System.Windows.Forms.Label();
             this.txtboxcustommobile = new System.Windows.Forms.TextBox();
@@ -89,8 +91,6 @@
             this.passwd_txtbox = new System.Windows.Forms.TextBox();
             this.regcode_txtbox = new System.Windows.Forms.TextBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.label20 = new System.Windows.Forms.Label();
-            this.txtbox_torsettings = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.btn_ip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -381,6 +381,25 @@
             this.tabPage2.Size = new System.Drawing.Size(728, 486);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Settings";
+            // 
+            // txtbox_torsettings
+            // 
+            this.txtbox_torsettings.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.txtbox_torsettings.Location = new System.Drawing.Point(199, 322);
+            this.txtbox_torsettings.Name = "txtbox_torsettings";
+            this.txtbox_torsettings.Size = new System.Drawing.Size(217, 22);
+            this.txtbox_torsettings.TabIndex = 38;
+            this.txtbox_torsettings.Text = "127.0.0.1:9050";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.label20.Location = new System.Drawing.Point(6, 326);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(189, 14);
+            this.label20.TabIndex = 37;
+            this.label20.Text = "Tor settings (server:controlport):";
             // 
             // txtbox_customaccounts
             // 
@@ -738,25 +757,6 @@
             // 
             this.notifyIcon1.Text = "notifyIcon1";
             this.notifyIcon1.Visible = true;
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label20.Location = new System.Drawing.Point(6, 326);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(189, 14);
-            this.label20.TabIndex = 37;
-            this.label20.Text = "Tor settings (server:controlport):";
-            // 
-            // txtbox_torsettings
-            // 
-            this.txtbox_torsettings.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.txtbox_torsettings.Location = new System.Drawing.Point(199, 322);
-            this.txtbox_torsettings.Name = "txtbox_torsettings";
-            this.txtbox_torsettings.Size = new System.Drawing.Size(217, 22);
-            this.txtbox_torsettings.TabIndex = 38;
-            this.txtbox_torsettings.Text = "127.0.0.1:9050";
             // 
             // Form1
             // 

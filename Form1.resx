@@ -123,12 +123,6 @@
   <metadata name="richTextBox1.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>130, 17</value>
-  </metadata>
-  <metadata name="richTextBox1.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <data name="richTextBox1.Text" xml:space="preserve">
     <value>Better Bing Rewards Bot
 
@@ -144,7 +138,7 @@ Better Bing Rewards Bot is an automation tool to search Bing to earn Microsoft p
 - Supports Ip2location database (IP geolocation and to force US IP and US country). 
 - Support individual and parallel searches in desktop and mobile version of Bing.
   The parallel mode switches between desktop and mobile version (harder to detect).
-- Logs the IP and restrict the searches per IP to max. 5 accounts (harder to detect).
+- Logs the IP and limit the searches per IP to max. 5 accounts (harder to detect).
 - Random sleep delay: Set a random time delay "5-10" to wait between searches (harder to detect).
 - Random searches count: Set a random number of searches "30-50" for searches (harder to detect).
 - Random sleep between authentification "2-5" minutes to wait between accounts (harder to detect).
@@ -153,9 +147,11 @@ Better Bing Rewards Bot is an automation tool to search Bing to earn Microsoft p
 - Supports auto start through a scheduled task.
 - Simulate real user and real key strokes and real mouse button clicks (harder to detect).
 - Shows earned Microsoft points for each searches.
-- Ignore search counter and stop searches when max points earned. 
-- Max out points: Ignores search counter up to 2 times and continues searches until max points are earned.
+- Faster: Stop searches when all points are earned. 
+- Max income: Continues searches until all points are earned (ignores searches count up to 2x)
 - Surpress JavaScript errors and alerts.
+- NEW! Dashboard tasks: earns all dashboard tasks!
+- NEW! Custom Desktop &amp; Mobile User Agent!
 
 2. Requirements
 -Windows 10 x32/x64

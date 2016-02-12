@@ -30,6 +30,7 @@ using mshtml;
 using SetProxy;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Timers;
 
 namespace BingRewardsBot
 {
@@ -52,7 +53,7 @@ namespace BingRewardsBot
         private int dashboardtaalt = 0;
         private int numdashboardta = 0;
         private bool iniSearch = false;
-        private System.Windows.Forms.Timer timer_dashboardta;
+        private System.Timers.Timer timer_dashboardta;
         
         ///news?q=us+news&amp;FORM=ML11Z9&amp;CREA=ML11Z9&amp;rnoreward=1" id="srch1-2-15-NOT_T1T3_Control-Exist" class="tile rel blk tile-height" target="_blank" h="ID=rewards,5027.1
         ///explore/rewards-mobile?FORM=ML10NS&amp;CREA=ML10NS&amp;rnoreward=1" id="mobsrch1-2-10-NOT_T1T3_Control-Exist" class="tile rel blk tile-height" target="_blank" h="ID=rewards,5028.1
@@ -99,7 +100,7 @@ namespace BingRewardsBot
         private const int MAXIPSLEEP = 5 * 1000;
         private const int SLEEPDP = 15 * 1000;
         private const int SLEEPDASHBOARD = 30 * 1000;
-        private const int SLEEPRD = 180 * 1000;
+        private const int SLEEPRD = 120 * 1000;
         private const int ARNDTRIES = 9;
         private int accountsRndtry = 0;
         private int accountVisitedX = 0;
@@ -118,10 +119,9 @@ namespace BingRewardsBot
         private int authCounterX = 0;
         private bool searchesLock = false;
         private string query;
-        private bool loaded = false;
-        private System.Windows.Forms.Timer timer_auth;
-        private System.Windows.Forms.Timer timer_searches;
-        private System.Windows.Forms.Timer timer_tor;
+        private System.Timers.Timer timer_auth;
+        private System.Timers.Timer timer_searches;
+        private System.Timers.Timer timer_tor;
         private int countDownDesktop;
         private int countDownMobile;
         private int counterMx;
@@ -301,9 +301,8 @@ namespace BingRewardsBot
                 SQLiteConnection.CreateFile("points.sqlite");
                 SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                 m_dbConnection.Open();
-
-                string sql = "CREATE TABLE searches (uid INTEGER PRIMARY KEY, date VARCHAR(20), ip VARCHAR(20),account VARCHAR(20),points INT)";
-                SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                SQLiteCommand command = new SQLiteCommand("CREATE TABLE searches (uid INTEGER PRIMARY KEY, date VARCHAR(20), ip VARCHAR(20),account VARCHAR(20),points INT)", 
+                    m_dbConnection);
                 command.ExecuteNonQuery();
                 m_dbConnection.Close();
 
@@ -313,8 +312,8 @@ namespace BingRewardsBot
                 SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                 m_dbConnection.Open();
                 DateTime dateTime = DateTime.UtcNow.Date;
-                string sql = "select * from searches group by account, ip order by ip,date desc";
-                SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                SQLiteCommand command = new SQLiteCommand("select * from searches group by account, ip order by ip,date desc",
+                    m_dbConnection);
                 SQLiteDataReader reader = command.ExecuteReader();
                 int c = 0;
                 string curr = "";
@@ -333,9 +332,8 @@ namespace BingRewardsBot
                     } else if (c>4)
                     {
                         for (int i = 0; i < (c - 5);i++)
-                        {
-                            sql = "delete from searches where uid="+arr[i];
-                            command = new SQLiteCommand(sql, m_dbConnection);
+                        { 
+                            command = new SQLiteCommand("delete from searches where uid=" + arr[i], m_dbConnection);
                             command.ExecuteNonQuery();
                         }
                         curr = Convert.ToString(reader["ip"]);
@@ -351,8 +349,8 @@ namespace BingRewardsBot
                 // delete 
                 m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                 m_dbConnection.Open();
-                sql = "delete from searches where account <> '' and (points=0 or points>25) and points<>4242;";
-                command = new SQLiteCommand(sql, m_dbConnection);
+                command = new SQLiteCommand("delete from searches where account <> '' and (points=0 or points>25) and points<>4242;", 
+                    m_dbConnection);
                 command.ExecuteNonQuery();
                 m_dbConnection.Close();
 
@@ -360,8 +358,9 @@ namespace BingRewardsBot
                 if (this.country == "US")
                 {                       
                     m_dbConnection.Open();
-                    sql = "select count(*) from searches where points='" + this.ip + "," + this.country + "';";
-                    command = new SQLiteCommand(sql, m_dbConnection);
+                    command = new SQLiteCommand("select count(*) from searches where points='" + 
+                        this.ip + "," + this.country + "';", 
+                        m_dbConnection);
                     reader = command.ExecuteReader();
 
                     int count = 0;
@@ -372,12 +371,11 @@ namespace BingRewardsBot
 
                     if (count == 0)
                     {
-                        sql = "insert into searches (date, ip, account, points) values ('','" + 
-                            this.ip + 
-                            "," + 
-                            this.country + 
-                            "','','')";
-                        command = new SQLiteCommand(sql, m_dbConnection);
+                        command = new SQLiteCommand("insert into searches (date, ip, account, points) values ('','" +
+                            this.ip +
+                            "," +
+                            this.country +
+                            "','','')", m_dbConnection);
                         command.ExecuteNonQuery();
                     }
                     m_dbConnection.Close();
@@ -398,8 +396,8 @@ namespace BingRewardsBot
 
                     this.checkaccount = false;
 
-                    this.timer_auth = new System.Windows.Forms.Timer();
-                    this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
+                    this.timer_auth = new System.Timers.Timer();
+                    this.timer_auth.Elapsed += new ElapsedEventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
 
                     this.authCounterX = randomNumber(Convert.ToInt32(check[0]), Convert.ToInt32(check[1]));
 
@@ -449,7 +447,7 @@ namespace BingRewardsBot
             this.TopMost = false;
         }
 
-        //https://msdn.microsoft.com/en-us/library/system.windows.forms.form.closing(v=vs.110).aspx
+        //https://msdn.microsoft.com/en-us/library/System.Timers.Timer.form.closing(v=vs.110).aspx
         private void Form1_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             //http://stackoverflow.com/questions/204804/disable-image-loading-from-webbrowser-control-before-the-documentcompleted-event
@@ -545,14 +543,13 @@ namespace BingRewardsBot
                     SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                     m_dbConnection.Open();
                     DateTime dateTime = DateTime.UtcNow.Date;
-                    string sql = "select count(*) from searches where account='" + 
-                        this.username + 
-                        "' and ip='" + 
-                        this.ip + 
-                        "' and date='" + 
-                        dateTime.ToString("yyyyMMdd") + 
-                        "';";
-                    SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                    SQLiteCommand command = new SQLiteCommand("select count(*) from searches where account='" +
+                        this.username +
+                        "' and ip='" +
+                        this.ip +
+                        "' and date='" +
+                        dateTime.ToString("yyyyMMdd") +
+                        "';", m_dbConnection);
                     SQLiteDataReader reader = command.ExecuteReader();
 
                     int count = 0;
@@ -563,34 +560,42 @@ namespace BingRewardsBot
 
                     if (count == 0)
                     {
-                        sql = "insert into searches (date, ip, account, points) values ('" + 
-                            dateTime.ToString("yyyyMMdd") + 
-                            "','" + 
-                            this.ip + 
-                            "','" + 
-                            this.username + "','4242')";
-                        command = new SQLiteCommand(sql, m_dbConnection);
+                        command = new SQLiteCommand("insert into searches (date, ip, account, points) values ('" +
+                            dateTime.ToString("yyyyMMdd") +
+                            "','" +
+                            this.ip +
+                            "','" +
+                            this.username + "','4242')", m_dbConnection);
                         command.ExecuteNonQuery();
                     }
                     else
                     {
-                        sql = "update searches set points='4242' WHERE ip='" + 
-                            this.ip + 
-                            "' and date='" + 
-                            dateTime.ToString("yyyyMMdd") + 
-                            "' and account='" + 
-                            this.accountNameTxtBox.Text + 
-                            "';";
-
-                        command = new SQLiteCommand(sql, m_dbConnection);
+                        command = new SQLiteCommand("update searches set points='4242' WHERE ip='" +
+                            this.ip +
+                            "' and date='" +
+                            dateTime.ToString("yyyyMMdd") +
+                            "' and account='" +
+                            this.accountNameTxtBox.Text +
+                            "';", m_dbConnection);
                         command.ExecuteNonQuery();                       
                     }
                     m_dbConnection.Close();
 
                     statusTxtBox.Text = "Authenticating";
 
-                    string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
+                    if (this.timer_auth != null)
+                    {
+                        this.timer_auth.Enabled = false;
+                        this.timer_auth.Stop();
+                        this.timer_auth.Dispose();
+                    }
 
+                    this.timer_auth = new System.Timers.Timer();
+                    this.timer_auth.AutoReset = true;
+                    this.timer_auth.Elapsed += new ElapsedEventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
+
+                    string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
+                    
                     int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), 
                         Convert.ToInt32(auth[1]));
 
@@ -599,6 +604,7 @@ namespace BingRewardsBot
                   
                     this.timer_auth.Enabled= true;
                     this.timer_auth.Start();
+
                     this.authLock = false;
                     this.loopauth = false;
                     this.accountsRndtry = 0;
@@ -703,19 +709,30 @@ namespace BingRewardsBot
                 // callback search bot
                 if (this.pts >= 25 && autorotate == true)
                 {
-                    try
+                    if (this.timer_searches != null)
                     {
                         this.timer_searches.Enabled = false;
                         this.timer_searches.Stop();
+                        this.timer_searches.Dispose();
                     }
-                    catch { }
+
+                    if (this.timer_auth != null)
+                    {
+                        this.timer_auth.Enabled = false;
+                        this.timer_auth.Stop();
+                        this.timer_auth.Dispose();
+                    }
 
                     statusTxtBox.Text = "Authenticating";
-                    counterTxtBox.Text = "0/0";
 
+                    this.timer_auth = new System.Timers.Timer();
+                    this.timer_auth.AutoReset = true;
+                    this.timer_auth.Elapsed += new ElapsedEventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
+                    
                     string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
                     int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), 
                         Convert.ToInt32(auth[1]));
+
                     this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
                     counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
 
@@ -723,7 +740,7 @@ namespace BingRewardsBot
                     this.timer_auth.Start();
                     this.authLock = false;
 
-                    this.searchesLock = false;
+                    this.searchesLock = true;
                     this.counterDx = 0;
                     this.counterMx = 0;
                     this.dxloops = 0;
@@ -738,15 +755,15 @@ namespace BingRewardsBot
 
                 } else if (this.pts >= 25 && autorotate == false)
                 {                   
-                    try
+                    if (this.timer_searches!=null)
                     {
                         this.timer_searches.Enabled = false;
                         this.timer_searches.Stop();
+                        this.timer_searches.Dispose();
                     }
-                    catch { }
 
                     this.button1.Text = "Start";
-                    statusTxtBox.Text = "Completed";
+                    statusTxtBox.Text = "Stop";
                     counterTxtBox.Text = "0/0";
 
                     this.searchesLock = false;
@@ -761,12 +778,35 @@ namespace BingRewardsBot
                     this.Csearch = false;
 
                     this.toolStripStatusLabel1.Text += "|Browser1";
+
+                    this.toolStripStatusLabel1.Text += "|" + Convert.ToString(this.authLock) +
+                       "|" + Convert.ToString(this.checkaccount) +
+                       "|" + Convert.ToString(this.accountVisitedX) +
+                       "|" + Convert.ToString(this.authCounterX) +
+                       "|" + Convert.ToString(this.accountsRndtry) +
+                       "|" + Convert.ToString(this.accounts.Count) +
+                       "|" + Convert.ToString(this.accountNum) +
+                       "|" + Convert.ToString(this.loopauth) +
+                       "|" + this.country +
+                       "|" + this.username +
+                       "|" + this.pts +
+                       "|" + this.timer_auth.Enabled +
+                       "|" + this.timer_searches.Enabled;
                 }
                 else
                 {
                     this.toolStripStatusLabel1.Text = "Searching...2";
-                    this.timer_searches = new System.Windows.Forms.Timer();
-                    this.timer_searches.Tick += new EventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
+
+                    if (this.timer_searches != null)
+                    {
+                        this.timer_searches.Enabled = false;
+                        this.timer_searches.Stop();
+                        this.timer_searches.Dispose();
+                    }
+
+                    this.timer_searches = new System.Timers.Timer();
+                    this.timer_searches.AutoReset = true;
+                    this.timer_searches.Elapsed += new ElapsedEventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
 
                     string[] wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
                     this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]),
@@ -820,14 +860,14 @@ namespace BingRewardsBot
                                 SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                                 m_dbConnection.Open();
                                 DateTime dateTime = DateTime.UtcNow.Date;
-                                string sql = "select count(*) from searches where account='" +
-                                    this.accountNameTxtBox.Text + 
-                                    "' and ip='" + 
-                                    this.ip + 
-                                    "' and date='" + 
-                                    dateTime.ToString("yyyyMMdd") + 
-                                    "';";
-                                SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+
+                                SQLiteCommand command = new SQLiteCommand("select count(*) from searches where account='" +
+                                    this.accountNameTxtBox.Text +
+                                    "' and ip='" +
+                                    this.ip +
+                                    "' and date='" +
+                                    dateTime.ToString("yyyyMMdd") +
+                                    "';", m_dbConnection);
                                 SQLiteDataReader reader = command.ExecuteReader();
 
                                 int count = 0;
@@ -837,29 +877,26 @@ namespace BingRewardsBot
                                 }
 
                                 if (count == 0)
-                                {
-                                    sql = "insert into searches (date, ip, account, points) values ('" + 
-                                        dateTime.ToString("yyyyMMdd") + 
-                                        "','" + 
-                                        this.ip + 
-                                        "','" + 
-                                        this.accountNameTxtBox.Text + 
-                                        "','0')";
-                                    command = new SQLiteCommand(sql, m_dbConnection);
+                                {             
+                                    command = new SQLiteCommand("insert into searches (date, ip, account, points) values ('" +
+                                        dateTime.ToString("yyyyMMdd") +
+                                        "','" +
+                                        this.ip +
+                                        "','" +
+                                        this.accountNameTxtBox.Text +
+                                        "','0')", m_dbConnection);
                                     command.ExecuteNonQuery();
                                 } else
-                                {
-                                    sql = "update searches set points='" + 
-                                        Convert.ToString(this.pts) + 
-                                        "' WHERE ip='" + 
-                                        this.ip + 
+                                {                                  
+                                    command = new SQLiteCommand("update searches set points='" +
+                                        Convert.ToString(this.pts) +
+                                        "' WHERE ip='" +
+                                        this.ip +
                                         "' and date='" +
-                                        dateTime.ToString("yyyyMMdd") + 
-                                        "' and account='" + 
-                                        this.accountNameTxtBox.Text + 
-                                        "';";
-
-                                    command = new SQLiteCommand(sql, m_dbConnection);
+                                        dateTime.ToString("yyyyMMdd") +
+                                        "' and account='" +
+                                        this.accountNameTxtBox.Text +
+                                        "';", m_dbConnection);
                                     command.ExecuteNonQuery();
                                 }
                                 m_dbConnection.Close();
@@ -926,6 +963,14 @@ namespace BingRewardsBot
                         && a == false
                         )
                     {
+
+                        if (this.timer_auth != null)
+                        {
+                            this.timer_auth.Enabled = false;
+                            this.timer_auth.Stop();
+                            this.timer_auth.Dispose();
+                        }
+
                         this.prevpts = 0;
                         this.pts = 0;
                         this.pts_txtbox.Text = Convert.ToString(this.pts);
@@ -951,14 +996,14 @@ namespace BingRewardsBot
                         SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                         m_dbConnection.Open();
                         DateTime dateTime = DateTime.UtcNow.Date;
-                        string sql = "select count(*) from searches where account='" + 
-                            this.accountNameTxtBox.Text + 
-                            "' and ip='" + 
-                            this.ip + 
-                            "' and date='" + 
-                            dateTime.ToString("yyyyMMdd") + 
-                            "';";
-                        SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+
+                        SQLiteCommand command = new SQLiteCommand("select count(*) from searches where account='" +
+                            this.accountNameTxtBox.Text +
+                            "' and ip='" +
+                            this.ip +
+                            "' and date='" +
+                            dateTime.ToString("yyyyMMdd") +
+                            "';", m_dbConnection);
                         SQLiteDataReader reader = command.ExecuteReader();
 
                         int count = 0;
@@ -969,24 +1014,22 @@ namespace BingRewardsBot
 
                         if (count == 0)
                         {
-                            sql = "insert into searches (date, ip, account, points) values ('" + 
-                                dateTime.ToString("yyyyMMdd") + 
-                                "','" + 
-                                this.ip + 
-                                "','" + 
-                                this.accountNameTxtBox.Text + 
-                                "','0')";
-                            command = new SQLiteCommand(sql, m_dbConnection);
+                            command = new SQLiteCommand("insert into searches (date, ip, account, points) values ('" +
+                                dateTime.ToString("yyyyMMdd") +
+                                "','" +
+                                this.ip +
+                                "','" +
+                                this.accountNameTxtBox.Text +
+                                "','0')", m_dbConnection);
                             command.ExecuteNonQuery();
                         }
                         else
                         {
-                            sql = "select * from searches where date='" + 
-                                dateTime.ToString("yyyyMMdd") + 
-                                "' and account='" + 
-                                this.username + 
-                                "' order by ip,points";
-                            command = new SQLiteCommand(sql, m_dbConnection);
+                            command = new SQLiteCommand("select * from searches where date='" +
+                                dateTime.ToString("yyyyMMdd") +
+                                "' and account='" +
+                                this.username +
+                                "' order by ip,points", m_dbConnection);
                             reader = command.ExecuteReader();
 
                             while (reader.Read())
@@ -1033,15 +1076,13 @@ namespace BingRewardsBot
                         SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                         m_dbConnection.Open();
                         DateTime dateTime = DateTime.UtcNow.Date;
-
-                        string sql = "select count(*) from searches where account='" + 
-                            this.accountNameTxtBox.Text + 
-                            "' and ip='" + 
-                            this.ip + 
-                            "' and date='" + 
-                            dateTime.ToString("yyyyMMdd") + 
-                            "';";
-                        SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                        SQLiteCommand command = new SQLiteCommand("select count(*) from searches where account='" +
+                            this.accountNameTxtBox.Text +
+                            "' and ip='" +
+                            this.ip +
+                            "' and date='" +
+                            dateTime.ToString("yyyyMMdd") +
+                            "';", m_dbConnection);
                         SQLiteDataReader reader = command.ExecuteReader();
 
                         int count = 0;
@@ -1052,24 +1093,22 @@ namespace BingRewardsBot
 
                         if (count == 0)
                         {
-                            sql = "insert into searches (date, ip, account, points) values ('" + 
-                                dateTime.ToString("yyyyMMdd") + 
-                                "','" + 
-                                this.ip + 
-                                "','" + 
-                                this.accountNameTxtBox.Text + 
-                                "','0')";
-                            command = new SQLiteCommand(sql, m_dbConnection);
+                            command = new SQLiteCommand("insert into searches (date, ip, account, points) values ('" +
+                                dateTime.ToString("yyyyMMdd") +
+                                "','" +
+                                this.ip +
+                                "','" +
+                                this.accountNameTxtBox.Text +
+                                "','0')", m_dbConnection);
                             command.ExecuteNonQuery();
                         }
                         else
-                        {
-                            sql = "select * from searches where date='" + 
-                                dateTime.ToString("yyyyMMdd") + 
-                                "' and account='" + 
-                                this.username + 
-                                "' order by ip,points";
-                            command = new SQLiteCommand(sql, m_dbConnection);
+                        { 
+                            command = new SQLiteCommand("select * from searches where date='" +
+                                dateTime.ToString("yyyyMMdd") +
+                                "' and account='" +
+                                this.username +
+                                "' order by ip,points", m_dbConnection);
                             reader = command.ExecuteReader();
 
                             while (reader.Read())
@@ -1144,27 +1183,28 @@ namespace BingRewardsBot
                     {
                     }
 
+                    Thread.Sleep(SLEEPPTS);
                     try
-                    {
-                        string str = browser.Document.GetElementById("srch1-2-15-NOT_T1T3_Control-Exist").InnerHtml;
-                        //MessageBox.Show(str);
-                        if (str.Contains(@"close-check"))
+                    {  
+                        if (browser.Document.GetElementById("srch1-2-15-NOT_T1T3_Control-Exist").InnerHtml.Contains(@"close-check"))
                         {
-                            this.dxloops = MAXLOOPS;                            
-                            this.toolStripStatusLabel1.Text += "Desktop|";
+                            this.dxloops = MAXLOOPS;
+                            this.counterDx = 0;
+                            this.toolStripStatusLabel1.Text += "|Desktop";
                         } else
                         {
                             this.dxloops = 0;
                         }
                     } catch { }
-                                        
+
+                    Thread.Sleep(SLEEPPTS);
                     try
                     {
-                        string str = browser.Document.GetElementById("srch1-2-15-NOT_T1T3_Control-Exist").InnerHtml;
-                        if (str.Contains(@"close-check"))
+                        if (browser.Document.GetElementById("srch1-2-15-NOT_T1T3_Control-Exist").InnerHtml.Contains(@"close-check"))
                         {
                             this.mxloops = MAXLOOPS;
-                            this.toolStripStatusLabel1.Text += "Mobile";
+                            this.counterMx = 0;
+                            this.toolStripStatusLabel1.Text += "|Mobile";
                         } else
                         {
                             this.mxloops = 0;
@@ -1176,14 +1216,13 @@ namespace BingRewardsBot
                         SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                         m_dbConnection.Open();
                         DateTime dateTime = DateTime.UtcNow.Date;
-                        string sql = "select count(*) from searches where account='" + 
-                            this.accountNameTxtBox.Text + 
-                            "' and ip='" + 
-                            this.ip + 
-                            "' and date='" + 
-                            dateTime.ToString("yyyyMMdd") + 
-                            "';";
-                        SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                        SQLiteCommand command = new SQLiteCommand("select count(*) from searches where account='" +
+                            this.accountNameTxtBox.Text +
+                            "' and ip='" +
+                            this.ip +
+                            "' and date='" +
+                            dateTime.ToString("yyyyMMdd") +
+                            "';", m_dbConnection);
                         SQLiteDataReader reader = command.ExecuteReader();
 
                         int count = 0;
@@ -1194,37 +1233,42 @@ namespace BingRewardsBot
 
                         if (count == 0)
                         {
-                            sql = "insert into searches (date, ip, account, points) values ('" + 
-                                dateTime.ToString("yyyyMMdd") + 
-                                "','" + 
-                                this.ip + 
-                                "','" + 
-                                this.username + 
-                                "','25')";
-                            command = new SQLiteCommand(sql, m_dbConnection);
+                            command = new SQLiteCommand("insert into searches (date, ip, account, points) values ('" +
+                                dateTime.ToString("yyyyMMdd") +
+                                "','" +
+                                this.ip +
+                                "','" +
+                                this.username +
+                                "','25')", m_dbConnection);
                             command.ExecuteNonQuery();
                         }
                         else
                         {
-                            sql = "update searches set points=25 WHERE ip='" + 
-                                this.ip + 
-                                "' and date='" + 
-                                dateTime.ToString("yyyyMMdd") + 
-                                "' and account='" + 
-                                this.username + 
-                                "';";
-                            command = new SQLiteCommand(sql, m_dbConnection);
+                            command = new SQLiteCommand("update searches set points=25 WHERE ip='" +
+                                this.ip +
+                                "' and date='" +
+                                dateTime.ToString("yyyyMMdd") +
+                                "' and account='" +
+                                this.username +
+                                "';", m_dbConnection);
                             command.ExecuteNonQuery();                            
                         }
                         m_dbConnection.Close();
                     }
 
-                    this.toolStripStatusLabel1.Text += "No. Dashboard tasks ("+
+                    this.toolStripStatusLabel1.Text += "|No. Dashboard tasks ("+
                         Convert.ToString(this.numdashboardta)+")";
-    
+
+                    if (this.timer_dashboardta != null)
+                    {
+                        this.timer_dashboardta.Enabled = false;
+                        this.timer_dashboardta.Stop();
+                        this.timer_dashboardta.Dispose();
+                    }
+
                     // earn dashboardta
-                    this.timer_dashboardta = new System.Windows.Forms.Timer();
-                    this.timer_dashboardta.Tick += new EventHandler(earndashboardta); // Every time timer ticks, timer_Tick will be called
+                    this.timer_dashboardta = new System.Timers.Timer();
+                    this.timer_dashboardta.Elapsed += new ElapsedEventHandler(earndashboardta); // Every time timer ticks, timer_Tick will be called
                     this.timer_dashboardta.Interval = SLEEPDASHBOARD;   // Timer will tick every 10 seconds
                     this.timer_dashboardta.Enabled = true;                         // Enable the timer
                     this.timer_dashboardta.Start();
@@ -1232,17 +1276,50 @@ namespace BingRewardsBot
                 }
                 else if (this.iniSearch == true)
                 {
+                    if (this.timer_auth != null)
+                    {
+                        this.timer_auth.Enabled = false;
+                        this.timer_auth.Stop();
+                        this.timer_auth.Dispose();
+                    }
+
+                    if (this.timer_searches!=null)
+                    {
+                        this.timer_searches.Enabled = false;                       
+                        this.timer_searches.Stop();
+                        this.timer_searches.Dispose();
+                    }
+
                     // start search bot
-                    this.timer_searches = new System.Windows.Forms.Timer();
-                    this.timer_searches.Tick += new EventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
-
-
+                    this.timer_searches = new System.Timers.Timer();
+                    this.timer_searches.AutoReset = true;
+                    this.timer_searches.Elapsed += new ElapsedEventHandler(searchCallback); 
+                    
                     string[] wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
                     this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]), 
-                        Convert.ToInt32(wait[1])) * 1000;   // Timer will tick every 10 seconds
+                        Convert.ToInt32(wait[1])) * 1000;  
 
-                    this.timer_searches.Enabled = true;                         // Enable the timer
+                    this.timer_searches.Enabled = true;                         
                     this.timer_searches.Start();
+
+                    this.Csearch = true;
+                    this.searchesLock = true;
+                    this.authLock = true;
+
+                    this.toolStripStatusLabel1.Text += "|Initial searches";
+                    this.toolStripStatusLabel1.Text += "|" + Convert.ToString(this.authLock) +
+                      "|" + Convert.ToString(this.checkaccount) +
+                      "|" + Convert.ToString(this.accountVisitedX) +
+                      "|" + Convert.ToString(this.authCounterX) +
+                      "|" + Convert.ToString(this.accountsRndtry) +
+                      "|" + Convert.ToString(this.accounts.Count) +
+                      "|" + Convert.ToString(this.accountNum) +
+                      "|" + Convert.ToString(this.loopauth) +
+                      "|" + this.country +
+                      "|" + this.username +
+                      "|" + this.pts +
+                      "|" + this.timer_auth.Enabled +
+                      "|" + this.timer_searches.Enabled;
                 }
 
                 //*******************************
@@ -1260,8 +1337,8 @@ namespace BingRewardsBot
             
                 SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                 m_dbConnection.Open();       
-                string sql = "select * from searches group by account, ip order by ip desc";
-                SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                SQLiteCommand command = new SQLiteCommand("select * from searches group by account, ip order by ip desc", 
+                    m_dbConnection);
                 SQLiteDataReader reader = command.ExecuteReader();
                 int c = 0;
                 while (reader.Read())
@@ -1283,27 +1360,43 @@ namespace BingRewardsBot
 
                     statusTxtBox.Text = "Authenticating";
 
+                    if (this.timer_auth != null)
+                    {
+                        this.timer_auth.Enabled = false;
+                        this.timer_auth.Stop();
+                        this.timer_auth.Dispose();
+                    }
+
+                    this.timer_auth = new System.Timers.Timer();
+                    this.timer_auth.AutoReset = true;
+                    this.timer_auth.Elapsed += new ElapsedEventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
+
                     string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
                     int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), 
                         Convert.ToInt32(auth[1]));
+
                     this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
                     counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
 
                     this.timer_auth.Enabled= true;
                     this.timer_auth.Start();
+
                     this.authLock = false;
                     this.loopauth = false;
+                    this.searchesLock = true;
                 }
                 else
                 {
                     if (this.country == "US" || chkbox_tor.Checked == false)
                     {
-                        if (timer_auth != null)
+                        if (this.timer_auth != null)
                         {
-                            this.timer_auth.Enabled= false;
+                            this.timer_auth.Enabled = false;
                             this.timer_auth.Stop();
+                            this.timer_auth.Dispose();
                         }
                         this.authLock = true;
+                        this.searchesLock = true;
 
                         // first step before sign-in
                         browser.Navigate(new Uri("https://login.live.com"));
@@ -1313,8 +1406,8 @@ namespace BingRewardsBot
                     {
                         m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                         m_dbConnection.Open();
-                        sql = "select count(*) from searches where ip='" + this.ip + "," + this.country + "';";
-                        command = new SQLiteCommand(sql, m_dbConnection);
+                        command = new SQLiteCommand("select count(*) from searches where ip='" + 
+                            this.ip + "," + this.country + "';", m_dbConnection);
                         reader = command.ExecuteReader();
 
                         int count = 0;
@@ -1325,39 +1418,45 @@ namespace BingRewardsBot
 
                         if (count == 0)
                         {
-                            sql = "insert into searches (date, ip, account, points) values ('','" + 
-                                this.ip + 
-                                "," + 
-                                this.country + 
-                                "','','')";
-                            command = new SQLiteCommand(sql, m_dbConnection);
+                            command = new SQLiteCommand("insert into searches (date, ip, account, points) values ('','" +
+                                this.ip +
+                                "," +
+                                this.country +
+                                "','','')", m_dbConnection);
                             command.ExecuteNonQuery();
                         }
                         m_dbConnection.Close();
 
                         if (chkbox_autorotate.Checked == false)
                         {
-                            try
+                            if (this.timer_auth!=null)
                             {
-                                this.timer_auth.Enabled= false;
+                                this.timer_auth.Enabled = false;
                                 this.timer_auth.Stop();
-                            }
-                            catch { }
+                                this.timer_auth.Dispose();
+                            }                            
 
                         } else
                         {
                             statusTxtBox.Text = "Authenticating";
 
-                            string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');                   
-                            int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), 
+                            this.timer_auth = new System.Timers.Timer();
+                            this.timer_auth.AutoReset = true;
+                            this.timer_auth.Elapsed += new ElapsedEventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
+
+                            string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
+                            int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]),
                                 Convert.ToInt32(auth[1]));
+
                             this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
                             counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
 
-                            this.timer_auth.Enabled= true;
+                            this.timer_auth.Enabled = true;
                             this.timer_auth.Start();
+
                             this.authLock = false;
                             this.loopauth = false;
+                            this.searchesLock = true;
                         }
                     }
                 }
@@ -1414,6 +1513,8 @@ namespace BingRewardsBot
                 this.pts_txtbox.Text = Convert.ToString(this.pts);
                 this.timer_dashboardta.Enabled = false;
                 this.timer_dashboardta.Stop();
+                this.timer_dashboardta.Dispose();
+
                 this.iniSearch = true;
                 browser.Navigate(new Uri("https://www.bing.com"));
                 
@@ -1450,7 +1551,7 @@ namespace BingRewardsBot
 
             bool innervisited = false;
 
-            while (this.accountVisitedX < this.accounts.Count
+            if (this.accountVisitedX < this.accounts.Count
                 && this.accountsRndtry < ARNDTRIES
                 && this.checkaccount == false
                 && (this.authLock == false || this.authCounterX < -10)
@@ -1459,39 +1560,58 @@ namespace BingRewardsBot
             {
                 innervisited = true;
 
-                int z = 0;
+                SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                m_dbConnection.Open();
+                SQLiteCommand command = new SQLiteCommand("select * from searches group by account, ip order by ip desc",
+                    m_dbConnection);
+                SQLiteDataReader reader = command.ExecuteReader();
                 int c = 0;
-                string[] list = new string[5];
-                try
+                while (reader.Read())
                 {
-                    SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                    m_dbConnection.Open();
-                    string sql = "select * from searches group by account, ip order by ip desc";
-                    SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-                    SQLiteDataReader reader = command.ExecuteReader();
-                                        
-                    while (reader.Read() && c < MAXACCOUNTPERIP )
+                    if (this.ip == Convert.ToString(reader["ip"]) &&
+                        this.accountNameTxtBox.Text != Convert.ToString(reader["account"])
+                         && "4242" != Convert.ToString(reader["points"])
+                        )
                     {
-                        if (this.ip == Convert.ToString(reader["ip"])
-                            && this.username != Convert.ToString(reader["account"])
-                            && "4242" != Convert.ToString(reader["points"])
-                            )
-                        {
-                            c++;
-
-                        } else if (this.ip == Convert.ToString(reader["ip"])
-                            && this.username != Convert.ToString(reader["account"])
-                            && "4242" == Convert.ToString(reader["points"])
-                            )
-                        {
-                            list[z++] = Convert.ToString(reader["account"]);
-                        }
+                        ++c;
                     }
-                    m_dbConnection.Close();
                 }
-                catch { }
+                m_dbConnection.Close();
 
-                this.toolStripStatusLabel1.Text = "Filter:" + z + "|" + c;
+                int z = 0;
+                
+                //string[] list = new string[5];
+                //try
+                //{
+                //    SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                //    m_dbConnection.Open();
+
+                //    SQLiteCommand command = new SQLiteCommand("select * from searches group by account, ip order by ip desc",
+                //        m_dbConnection);
+                //    SQLiteDataReader reader = command.ExecuteReader();
+
+                //    while (reader.Read() && c < MAXACCOUNTPERIP )
+                //    {
+                //        if (this.ip == Convert.ToString(reader["ip"])
+                //            && this.username != Convert.ToString(reader["account"])
+                //            && "4242" != Convert.ToString(reader["points"])
+                //            )
+                //        {
+                //            c++;
+
+                //        } else if (this.ip == Convert.ToString(reader["ip"])
+                //            && this.username != Convert.ToString(reader["account"])
+                //            && "4242" == Convert.ToString(reader["points"])
+                //            )
+                //        {
+                //            list[z++] = Convert.ToString(reader["account"]);
+                //        }
+                //    }
+                //    m_dbConnection.Close();
+                //}
+                //catch { }
+
+                //this.toolStripStatusLabel1.Text = "Filter:" + z + "|" + c;
 
                 //int[] select = new int[this.accounts.Count - z];
                 //int a = 0;
@@ -1525,7 +1645,8 @@ namespace BingRewardsBot
                 authstr = this.accounts[random].Split('/');
                 this.username = authstr[0]; this.password = authstr[1];
 
-                this.toolStripStatusLabel1.Text = "1Loop:" + Convert.ToString(this.authLock) +
+                this.toolStripStatusLabel1.Text = "1Loop:" +
+                    Convert.ToString(this.authLock) +
                   "|" + Convert.ToString(this.checkaccount) +
                   "|" + Convert.ToString(this.accountVisitedX) +
                   "|" + Convert.ToString(this.authCounterX) +
@@ -1534,26 +1655,23 @@ namespace BingRewardsBot
                   "|" + Convert.ToString(this.accountNum) +
                   "|" + Convert.ToString(this.loopauth) +
                   "|" + this.country +
-                  "|" + this.username +
-                  "|" + pts;
+                  "|" + this.username;
 
                 if (this.accountVisited[random] == false && random != this.accountNum)
                 {
                     this.accountNum = random;
-
                     try
                     {
-                        SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                        m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                         m_dbConnection.Open();
                         DateTime dateTime = DateTime.UtcNow.Date;
-                        string sql = "select * from searches where date='" + 
+                        command = new SQLiteCommand("select * from searches where date='" +
                             dateTime.ToString("yyyyMMdd") +
-                            " and points<>4242" + 
-                            "' and account='" + this.username + 
-                            "' order by ip,points";
-
-                        SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-                        SQLiteDataReader reader = command.ExecuteReader();
+                            " and points<>4242" +
+                            "' and account='" + this.username +
+                            "' order by ip,points", m_dbConnection);
+                        reader = command.ExecuteReader();
+                        pts = 0;
 
                         while (reader.Read())
                         {
@@ -1565,7 +1683,7 @@ namespace BingRewardsBot
                         m_dbConnection.Close();
                     }
                     catch { }                   
-                    this.toolStripStatusLabel1.Text += "|pts:" + pts;
+                    this.toolStripStatusLabel1.Text += "|pts:" + pts+"|c:" + c; ;
 
                     if (pts < 25 && c >= 0 && c < MAXACCOUNTPERIP)
                     {
@@ -1573,6 +1691,7 @@ namespace BingRewardsBot
                         {
                             this.timer_auth.Enabled= false;
                             this.timer_auth.Stop();
+                            this.timer_auth.Dispose();
                         } 
 
                         // use global variable 
@@ -1589,12 +1708,18 @@ namespace BingRewardsBot
                         this.ClearCache();
                        
                         // first step before sign-in
-                        browser.Navigate(new Uri("https://login.live.com/logout.srf"));                            
-                        break;
+                        browser.Navigate(new Uri("https://login.live.com/logout.srf"));
 
                     } else
                     {
                         ++this.accountVisitedX;
+
+                        if (this.timer_auth != null)
+                        {
+                            this.timer_auth.Enabled = false;
+                            this.timer_auth.Stop();
+                            this.timer_auth.Dispose();
+                        }
 
                         this.dxloops = 0;
                         this.mxloops = 0;
@@ -1604,24 +1729,16 @@ namespace BingRewardsBot
                         this.ldashboardta = false;
                         this.Csearch = false;
 
-                        if (this.timer_auth != null)
-                        {
-                            this.timer_auth.Enabled= false;
-                            this.timer_auth.Stop();
-                        }
-
                         try {
-                            SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                             m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                             m_dbConnection.Open();
                             DateTime dateTime = DateTime.UtcNow.Date;
-                            string sql = "select count(*) from searches where account='" + 
-                                this.username + 
-                                "' and ip='" + this.ip + 
-                                "' and date='" + 
-                                dateTime.ToString("yyyyMMdd") + "';";
-                            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-                            SQLiteDataReader reader = command.ExecuteReader();
+                            command = new SQLiteCommand("select count(*) from searches where account='" +
+                                this.username +
+                                "' and ip='" + this.ip +
+                                "' and date='" +
+                                dateTime.ToString("yyyyMMdd") + "';", m_dbConnection);
+                            reader = command.ExecuteReader();
 
                             int count = 0;
                             while (reader.Read())
@@ -1631,26 +1748,24 @@ namespace BingRewardsBot
 
                             if (count == 0)
                             {
-                                sql = "insert into searches (date, ip, account, points) values ('" + 
+                                command = new SQLiteCommand("insert into searches (date, ip, account, points) values ('" +
                                     dateTime.ToString("yyyyMMdd") +
-                                    "','" + 
-                                    this.ip + 
-                                    "','" + 
-                                    this.username + 
-                                    "','4242')";
-                                command = new SQLiteCommand(sql, m_dbConnection);
+                                    "','" +
+                                    this.ip +
+                                    "','" +
+                                    this.username +
+                                    "','4242')", m_dbConnection);
                                 command.ExecuteNonQuery();
                             }
                             else
                             { 
-                               sql = "update searches set points=4242 WHERE ip='" + 
-                                    this.ip + 
-                                    "' and date='" + 
-                                    dateTime.ToString("yyyyMMdd") + 
-                                    "' and account='" + 
-                                    this.username + 
-                                    "';";
-                               command = new SQLiteCommand(sql, m_dbConnection);
+                               command = new SQLiteCommand("update searches set points=4242 WHERE ip='" +
+                                    this.ip +
+                                    "' and date='" +
+                                    dateTime.ToString("yyyyMMdd") +
+                                    "' and account='" +
+                                    this.username +
+                                    "';", m_dbConnection);
                                command.ExecuteNonQuery();                               
                             }
                             m_dbConnection.Close();
@@ -1663,8 +1778,9 @@ namespace BingRewardsBot
                             this.toridswitcher();
                         }
 
-                        this.timer_auth = new System.Windows.Forms.Timer();
-                        this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
+                        this.timer_auth = new System.Timers.Timer();
+                        this.timer_auth.AutoReset = true;
+                        this.timer_auth.Elapsed += new ElapsedEventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
 
                         string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
 
@@ -1677,15 +1793,17 @@ namespace BingRewardsBot
                         this.authLock = false;
                         this.timer_auth.Enabled= true;                       // Enable the timer
                         this.timer_auth.Start();                              // Start the timer
-                        break;
-                    }                        
+                    }
+                       
                 } else
                 {
                     ++this.accountVisitedX;
+
                     if (this.timer_auth != null)
                     {
                         this.timer_auth.Enabled= false;
                         this.timer_auth.Stop();
+                        this.timer_auth.Dispose();
                     }
 
                     this.dxloops = 0;
@@ -1698,7 +1816,6 @@ namespace BingRewardsBot
 
                     try
                     {
-                        SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                         m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                         m_dbConnection.Open();
                         DateTime dateTime = DateTime.UtcNow.Date;
@@ -1707,8 +1824,8 @@ namespace BingRewardsBot
                             "' and ip='" + this.ip +
                             "' and date='" +
                             dateTime.ToString("yyyyMMdd") + "';";
-                        SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-                        SQLiteDataReader reader = command.ExecuteReader();
+                        command = new SQLiteCommand(sql, m_dbConnection);
+                        reader = command.ExecuteReader();
 
                         int count = 0;
                         while (reader.Read())
@@ -1751,8 +1868,9 @@ namespace BingRewardsBot
                         this.toridswitcher();
                     }
 
-                    this.timer_auth = new System.Windows.Forms.Timer();
-                    this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
+                    this.timer_auth = new System.Timers.Timer();
+                    this.timer_auth.AutoReset = true;
+                    this.timer_auth.Elapsed += new ElapsedEventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
 
                     string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
                     z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), 
@@ -1776,7 +1894,6 @@ namespace BingRewardsBot
                    "|" + this.username +
                    "|" + pts +
                    "|" + this.timer_auth.Enabled;
-
                 }
             } 
 
@@ -1784,6 +1901,7 @@ namespace BingRewardsBot
             // visit all accounts
             //********************           
 
+/*
             if (innervisited == false
                 && this.checkaccount == false 
                 && this.accountVisitedX < this.accounts.Count
@@ -1803,8 +1921,8 @@ namespace BingRewardsBot
                 {
                     SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                     m_dbConnection.Open();
-                    string sql = "select * from searches group by account, ip order by ip desc";
-                    SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                    SQLiteCommand command = new SQLiteCommand("select * from searches group by account, ip order by ip desc",
+                        m_dbConnection);
                     SQLiteDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
@@ -1850,13 +1968,12 @@ namespace BingRewardsBot
                             SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                             m_dbConnection.Open();
                             DateTime dateTime = DateTime.UtcNow.Date;
-                            string sql = "select * from searches where date='" + 
+                            SQLiteCommand command = new SQLiteCommand("select * from searches where date='" +
                                 dateTime.ToString("yyyyMMdd") +
                                 " and points<>4242" +
-                                "' and account='" + 
-                                this.username + 
-                                "' order by ip,points";
-                            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                                "' and account='" +
+                                this.username +
+                                "' order by ip,points", m_dbConnection);
                             SQLiteDataReader reader = command.ExecuteReader();
 
                             while (reader.Read())
@@ -1962,12 +2079,16 @@ namespace BingRewardsBot
                     this.Csearch = false;
                 }                  
 
-            } else if (this.checkaccount == true)
+            } 
+
+   */
+            if (this.checkaccount == true)
             {
                 if (this.authLock && this.timer_auth != null)
                 {
                     this.timer_auth.Enabled=false;
                     this.timer_auth.Stop();
+                    this.timer_auth.Dispose();
                     this.loopauth = false;
                     this.authLock = false;
                 }                        
@@ -1990,8 +2111,8 @@ namespace BingRewardsBot
                 // first step before sign-in
                 browser.Navigate(new Uri("https://login.live.com/logout.srf"));                    
 
-            } 
-            
+            }
+
             this.toolStripStatusLabel1.Text += "-";
         }
 
@@ -2031,17 +2152,37 @@ namespace BingRewardsBot
                 {
                     this.timer_searches.Enabled = false;
                     this.timer_searches.Stop();
+                    this.timer_searches.Dispose();
                     this.Csearch = false;
                 }
 
+                if (this.timer_auth != null)
+                {
+                    this.timer_auth.Enabled = false;
+                    this.timer_auth.Stop();
+                    this.timer_auth.Dispose();
+                }
+
                 this.toolStripStatusLabel1.Text = "A. visited:" +Convert.ToString(this.accountVisitedX);
+                this.toolStripStatusLabel1.Text += "|" + Convert.ToString(this.authLock) +
+                   "|" + Convert.ToString(this.checkaccount) +
+                   "|" + Convert.ToString(this.accountVisitedX) +
+                   "|" + Convert.ToString(this.authCounterX) +
+                   "|" + Convert.ToString(this.accountsRndtry) +
+                   "|" + Convert.ToString(this.accounts.Count) +
+                   "|" + Convert.ToString(this.accountNum) +
+                   "|" + Convert.ToString(this.loopauth) +
+                   "|" + this.country +
+                   "|" + this.username +
+                   "|" + this.pts +
+                   "|" + this.timer_auth.Enabled +
+                   "|" + this.timer_searches.Enabled;
 
                 // accounts visited
                 if (this.accountVisitedX < this.accounts.Count())
                 {
                     this.qpage = 0;
                     statusTxtBox.Text = "Authenticating";
-                    counterTxtBox.Text = "0/0";
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.logtries = 0;
@@ -2050,22 +2191,40 @@ namespace BingRewardsBot
                     this.dashboardta = false;
                     this.ldashboardta = false;
                     this.Csearch = false;
+                    this.searchesLock = true;
 
-                    this.timer_auth = new System.Windows.Forms.Timer();
-                    this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
-
- 
+                    this.timer_auth = new System.Timers.Timer();
+                    this.timer_auth.AutoReset = true;
+                    this.timer_auth.Elapsed += new ElapsedEventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
+                     
                     string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
-                    int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), Convert.ToInt32(auth[1]));
+                    int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]),
+                        Convert.ToInt32(auth[1]));
+
                     this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
                     counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
-
-                    this.authLock = false;
+                    
                     this.timer_auth.Enabled= true;                       // Enable the timer
                     this.timer_auth.Start();                              // Start the timer
+
+                    this.authLock = false;
                 }
                 else
                 {
+                    if (timer_searches != null)
+                    {
+                        this.timer_searches.Enabled = false;
+                        this.timer_searches.Stop();
+                        this.timer_searches.Dispose();
+                    }
+
+                    if (this.timer_auth != null)
+                    {
+                        this.timer_auth.Enabled = false;
+                        this.timer_auth.Stop();
+                        this.timer_auth.Dispose();
+                    }
+
                     if (Convert.ToInt16(pts_txtbox.Text) >= 25 
                         || String.IsNullOrEmpty(pts_txtbox.Text) 
                         || pts_txtbox.Text == "0" 
@@ -2075,31 +2234,17 @@ namespace BingRewardsBot
                         m_dbConnection.Open();
 
                         DateTime dateTime = DateTime.UtcNow.Date;
-                        string sql = "update searches set points='4242' WHERE ip='" + 
-                            this.ip + 
-                            "' and date='" + 
-                            dateTime.ToString("yyyyMMdd") + 
-                            "' and account='" + 
-                            this.accountNameTxtBox.Text + 
-                            "';";
-
-                        SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                        SQLiteCommand command = new SQLiteCommand("update searches set points='4242' WHERE ip='" +
+                            this.ip +
+                            "' and date='" +
+                            dateTime.ToString("yyyyMMdd") +
+                            "' and account='" +
+                            this.accountNameTxtBox.Text +
+                            "';", m_dbConnection);
                         command.ExecuteNonQuery();
                         m_dbConnection.Close();
                     }
-
-                    if (timer_searches != null)
-                    {
-                        this.timer_searches.Enabled = false;
-                        this.timer_searches.Stop();
-                    }
-
-                    if (this.timer_auth != null)
-                    {
-                        this.timer_auth.Enabled= false;
-                        this.timer_auth.Stop();
-                    }
-
+                    
                     this.button1.Text = "Start";
                     statusTxtBox.Text = "Stop";
                     counterTxtBox.Text = "0/0";
@@ -2115,6 +2260,20 @@ namespace BingRewardsBot
                     this.Csearch = false;
 
                     this.toolStripStatusLabel1.Text += "|Mainsearches1";
+
+                    this.toolStripStatusLabel1.Text += "|" + Convert.ToString(this.authLock) +
+                    "|" + Convert.ToString(this.checkaccount) +
+                    "|" + Convert.ToString(this.accountVisitedX) +
+                    "|" + Convert.ToString(this.authCounterX) +
+                    "|" + Convert.ToString(this.accountsRndtry) +
+                    "|" + Convert.ToString(this.accounts.Count) +
+                    "|" + Convert.ToString(this.accountNum) +
+                    "|" + Convert.ToString(this.loopauth) +
+                    "|" + this.country +
+                    "|" + this.username +
+                    "|" + this.pts +
+                    "|" + this.timer_auth.Enabled +
+                    "|" + this.timer_searches.Enabled;
                 }
 
                 // semi-automatic
@@ -2135,12 +2294,15 @@ namespace BingRewardsBot
                 {
                     this.timer_searches.Enabled = false;
                     this.timer_searches.Stop();
+                    this.timer_searches.Dispose();
+                    this.Csearch = false;
                 }
                 
                 if (this.timer_auth != null)
                 {
                     this.timer_auth.Enabled= false;
                     this.timer_auth.Stop();
+                    this.timer_auth.Dispose();
                 }
 
                 this.button1.Text = "Start";
@@ -2157,9 +2319,39 @@ namespace BingRewardsBot
                 this.ldashboardta = false;
                 this.Csearch = false;
                 this.toolStripStatusLabel1.Text += "|Mainsearches2";
+
+                this.toolStripStatusLabel1.Text += "|" + Convert.ToString(this.authLock) +
+                "|" + Convert.ToString(this.checkaccount) +
+                "|" + Convert.ToString(this.accountVisitedX) +
+                "|" + Convert.ToString(this.authCounterX) +
+                "|" + Convert.ToString(this.accountsRndtry) +
+                "|" + Convert.ToString(this.accounts.Count) +
+                "|" + Convert.ToString(this.accountNum) +
+                "|" + Convert.ToString(this.loopauth) +
+                "|" + this.country +
+                "|" + this.username +
+                "|" + this.pts +
+                "|" + this.timer_auth.Enabled +
+                "|" + this.timer_searches.Enabled;
             }
             else if (this.searchesLock == false && this.trialstopped == false)
             {
+
+                if (timer_searches != null)
+                {
+                    this.timer_searches.Enabled = false;
+                    this.timer_searches.Stop();
+                    this.Csearch = false;
+                }
+
+                if (this.timer_auth != null)
+                {
+                    this.timer_auth.Enabled = false;
+                    this.timer_auth.Stop();
+                    this.timer_auth.Dispose();
+                }
+
+
                 // max out
                 if (this.counterDx <= 1 && this.dxloops < MAXLOOPS)
                 {
@@ -2182,10 +2374,7 @@ namespace BingRewardsBot
                 double x = (double)100 / FREEX;
                 double z = x * (this.trialCountDownReg - (this.trialCountUp * DIVIDE));
                 this.Text = TITLE + Math.Round(z) + "% Shareware";
-
-                this.timer_searches.Stop();
-                this.timer_searches.Enabled = false;
-
+                
                 this.searchesLock = true;
                 this.checkaccount = false;
 
@@ -2428,15 +2617,13 @@ namespace BingRewardsBot
                                         }
                                         else
                                         {
-                                            browser.Navigate("http://bing.com/search?q=" + this.query);
-                                            
+                                            browser.Navigate("http://bing.com/search?q=" + this.query);                                            
                                         }
                                     }
                                 }
                                 catch
                                 {
-                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-                                    
+                                    browser.Navigate("http://bing.com/search?q=" + this.query);                                    
                                 }
                             }
                             else
@@ -2477,8 +2664,7 @@ namespace BingRewardsBot
                                         }
                                         else
                                         {
-                                            browser.Navigate("http://bing.com/search?q=" + this.query);
-                                            
+                                            browser.Navigate("http://bing.com/search?q=" + this.query);                                            
                                         }
                                     }
                                 }
@@ -2898,12 +3084,14 @@ namespace BingRewardsBot
                 {
                     this.timer_searches.Enabled = false;
                     this.timer_searches.Stop();
+                    this.timer_searches.Dispose();
                 }
                 
                 if (this.timer_auth != null)
                 {
                     this.timer_auth.Enabled= false;                       // Enable the timer
                     this.timer_auth.Stop();                              // Stop the timer
+                    this.timer_auth.Dispose();
                 }
             }
             else
@@ -2930,7 +3118,6 @@ namespace BingRewardsBot
                     this.iniSearch = false;
                     this.dashboardta = false;
                     this.ldashboardta = false;
-
      
                     string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
                     this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
@@ -2938,8 +3125,15 @@ namespace BingRewardsBot
                     this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]), 
                         Convert.ToInt32(wait[1]));
 
-                    this.timer_searches = new System.Windows.Forms.Timer();
-                    this.timer_searches.Tick += new EventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
+                    if (this.timer_searches!=null)
+                    {
+                        this.timer_searches.Enabled = false;                         // Enable the timer
+                        this.timer_searches.Stop();
+                        this.timer_searches.Dispose();
+                    }
+
+                    this.timer_searches = new System.Timers.Timer();
+                    this.timer_searches.Elapsed += new ElapsedEventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
 
                     string[] ns = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
                     this.timer_searches.Interval = randomNumber(Convert.ToInt32(ns[0]), 
@@ -2966,7 +3160,8 @@ namespace BingRewardsBot
                             if (mobile == true)
                             {
                                 --this.counterMx;
-                                counterTxtBox.Text = (this.countDownMobile - this.counterMx) + "/" + this.countDownMobile;
+                                counterTxtBox.Text = (this.countDownMobile - this.counterMx) + 
+                                    "/" + this.countDownMobile;
                                 this.Csearch = true;
 
                                 this.ChangeUserAgent(this.txtboxcustommobile.Text);
@@ -2984,7 +3179,6 @@ namespace BingRewardsBot
                                     browser.Navigate("http://bing.com/search?q=" + this.query);
                                     
                                 }
-
                             }
                             else
                             {
@@ -3040,10 +3234,9 @@ namespace BingRewardsBot
                     statusTxtBox.Text = "Authenticating";
                     this.checkaccount = false;
                    
-                    this.timer_auth = new System.Windows.Forms.Timer();
-                    this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
-
-
+                    this.timer_auth = new System.Timers.Timer();
+                    this.timer_auth.Elapsed += new ElapsedEventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
+                    
                     string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');                                        
                     int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]), Convert.ToInt32(auth[1]));
                     this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
@@ -3198,7 +3391,6 @@ namespace BingRewardsBot
                         MessageBox.Show("Registry error!");
                     }
                 }
-
             }
             try
             {
@@ -3218,8 +3410,8 @@ namespace BingRewardsBot
             {
                 SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                 m_dbConnection.Open();
-                string sql = "select count(*) from searches where ip='" + this.ip + "," + this.country + "';";
-                SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                SQLiteCommand command = new SQLiteCommand("select count(*) from searches where ip='" + 
+                    this.ip + "," + this.country + "';", m_dbConnection);
                 SQLiteDataReader reader = command.ExecuteReader();
                 int count = 0;
                 while (reader.Read())
@@ -3229,11 +3421,10 @@ namespace BingRewardsBot
 
                 if (count == 0)
                 {
-                    sql = "insert into searches (date, ip, account, points) values ('','" + 
-                        this.ip + "," 
-                        + this.country + 
-                        "','','')";
-                    command = new SQLiteCommand(sql, m_dbConnection);
+                    command = new SQLiteCommand("insert into searches (date, ip, account, points) values ('','" +
+                        this.ip + ","
+                        + this.country +
+                        "','','')", m_dbConnection);
                     command.ExecuteNonQuery();
                 }
                 m_dbConnection.Close();
@@ -3380,13 +3571,20 @@ namespace BingRewardsBot
         {
             if (chkbox_tor.Checked == true)
             {
-                this.timer_tor = new System.Windows.Forms.Timer();
-                this.timer_tor.Tick += new EventHandler(RefreshTor); // Every time timer ticks, timer_Tick will be called
+
+                if (this.timer_tor!=null)
+                {
+                    this.timer_tor.Enabled = false;
+                    this.timer_tor.Stop();
+                }
+
+                this.timer_tor = new System.Timers.Timer();
+                this.timer_tor.Elapsed += new ElapsedEventHandler(RefreshTor); // Every time timer ticks, timer_Tick will be called
 
                 this.timer_tor.Interval = SLEEPTOR;
                 this.timer_tor.Enabled = true;
                 this.timer_tor.Start();
-                this.toolStripStatusLabel1.Text = "";
+                this.toolStripStatusLabel1.Text = "New Identity:";
 
                 try
                 {
@@ -3395,7 +3593,7 @@ namespace BingRewardsBot
 
                     while(toriddone == false && c < 10)
                     {
-                        this.toolStripStatusLabel1.Text += "New Identity...";
+                        this.toolStripStatusLabel1.Text += c+"|";
                         Thread.Sleep(SLEEPTOR);
                         ++c;                        
                     }
@@ -3484,7 +3682,7 @@ namespace BingRewardsBot
                     && this.authLock == true
                     )
                 {
-                    this.toolStripStatusLabel1.Text = "Restart searches";
+                    this.toolStripStatusLabel1.Text = "Restart searches:";
 
                     this.toolStripStatusLabel1.Text += Convert.ToString(this.authLock) +
                            "|" + Convert.ToString(this.checkaccount) +
@@ -3501,8 +3699,13 @@ namespace BingRewardsBot
 
                     if (!this.timer_searches.Enabled)
                     {
-                        this.timer_searches = new System.Windows.Forms.Timer();
-                        this.timer_searches.Tick += new EventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
+                        this.timer_searches.Enabled = false;
+                        this.timer_searches.Stop();
+                        this.timer_searches.Dispose();
+
+                        this.timer_searches = new System.Timers.Timer();
+                        this.timer_searches.AutoReset = true;
+                        this.timer_searches.Elapsed += new ElapsedEventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
                         string temp = Properties.Settings.Default.set_waitsearches.ToString();
                         string[] wait = temp.Split('-');
                         this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]), 
@@ -3511,14 +3714,14 @@ namespace BingRewardsBot
                         this.timer_searches.Start();
                     }
                     
-                    this.searchesLock = false;
-                    this.Csearch = false;
+                    this.Csearch = true;
 
                     browser.Navigate(new Uri(browserUrlTxtbox.Text));
 
                 } else if (this.button1.Text == "Stop" 
                     && this.statusTxtBox.Text == "Authenticating"
                     && this.chkbox_autorotate.Checked == true
+                    && this.timer_auth.Enabled == true
                     )
                 {
                     if (this.accountVisitedX >= this.accounts.Count)
@@ -3527,6 +3730,7 @@ namespace BingRewardsBot
                         {
                             this.timer_auth.Enabled = false;
                             this.timer_auth.Stop();
+                            this.timer_auth.Dispose();
                         }
 
                         this.button1.Text = "Start";
@@ -3566,31 +3770,73 @@ namespace BingRewardsBot
 
                         if (!this.timer_auth.Enabled)
                         {
-                            this.timer_auth = new System.Windows.Forms.Timer();
-                            this.timer_auth.Tick += new EventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
+                            this.timer_auth.Enabled = false;
+                            this.timer_auth.Stop();
+                            this.timer_auth.Dispose();
 
-                            string temp = Properties.Settings.Default.set_waitauth.ToString();
-                            string[] auth = temp.Split('-');
+                            this.timer_auth = new System.Timers.Timer();
+                            this.timer_auth.Elapsed += new ElapsedEventHandler(authCallback); // Every time timer ticks, timer_Tick will be called
+
+                            string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
 
                             int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]),
                                 Convert.ToInt32(auth[1]));
-                            if (z > 1)
-                            {
-                                this.timer_auth.Interval = z * 60 * 1000;
-                                counterTxtBox.Text = z.ToString() + " min.";
-                            }
-                            else
-                            {
-                                this.timer_auth.Interval = 1 * 30 * 1000;
-                                counterTxtBox.Text = "30 sec.";
-                            }
-
-                            this.authLock = false;
+                            this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
+                            counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
+                            
                             this.timer_auth.Enabled = true;                       // Enable the timer
                             this.timer_auth.Start();                              // Start the timer
+
+                            this.authLock = false;
                         }
                         authCallback(null, null);
                     }
+
+                } else if (this.button1.Text == "Stop"
+                     && this.statusTxtBox.Text == "Connected"
+                    && this.chkbox_autorotate.Checked == true
+                    && this.timer_auth.Enabled==true
+                )
+                {
+                    this.timer_auth.Enabled = false;
+                    this.timer_auth.Stop();
+                    this.timer_auth.Dispose();
+
+                    this.toolStripStatusLabel1.Text = "Restart searches:";
+
+                    this.toolStripStatusLabel1.Text += Convert.ToString(this.authLock) +
+                           "|" + Convert.ToString(this.checkaccount) +
+                           "|" + Convert.ToString(this.accountVisitedX) +
+                           "|" + Convert.ToString(this.authCounterX) +
+                           "|" + Convert.ToString(this.accountsRndtry) +
+                           "|" + Convert.ToString(this.accounts.Count) +
+                           "|" + Convert.ToString(this.accountNum) +
+                           "|" + Convert.ToString(this.loopauth) +
+                           "|" + this.country +
+                           "|" + this.username +
+                           "|" + pts +
+                           "|" + this.timer_searches.Enabled;
+
+                    if (!this.timer_searches.Enabled)
+                    {
+                        this.timer_searches.Enabled = false;
+                        this.timer_searches.Stop();
+                        this.timer_searches.Dispose();
+
+                        this.timer_searches = new System.Timers.Timer();
+                        this.timer_searches.AutoReset = true;
+                        this.timer_searches.Elapsed += new ElapsedEventHandler(searchCallback); // Every time timer ticks, timer_Tick will be called
+
+                        string[] wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
+                        this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]),
+                            Convert.ToInt32(wait[1])) * 1000;
+                        this.timer_searches.Enabled = true;
+                        this.timer_searches.Start();
+                    }
+
+                    this.Csearch = true;
+
+                    browser.Navigate(new Uri(browserUrlTxtbox.Text));
                 }            
             }
         }
@@ -3858,24 +4104,24 @@ namespace BingRewardsBot
     }
 
     //http://stackoverflow.com/questions/2475435/c-sharp-timer-wont-tick
-    public class BetterTimer : System.Windows.Forms.Timer
-    {
-        public BetterTimer() : base()
-        { base.Enabled = true; }
+    //public class BetterTimer : System.Timers.Timer.Timer
+    //{
+    //    public BetterTimer() : base()
+    //    { base.Enabled = true; }
 
-        public BetterTimer(System.ComponentModel.IContainer container) : base(container)
-        { base.Enabled = true; }
+    //    public BetterTimer(System.ComponentModel.IContainer container) : base(container)
+    //    { base.Enabled = true; }
 
-        private bool _Enabled;
-        public override bool Enabled
-        {
-            get { return _Enabled; }
-            set { _Enabled = value; }
-        }
+    //    private bool _Enabled;
+    //    public override bool Enabled
+    //    {
+    //        get { return _Enabled; }
+    //        set { _Enabled = value; }
+    //    }
 
-        protected override void OnTick(System.EventArgs e)
-        { if (this.Enabled) base.OnTick(e); }
-    }
+    //    protected override void OnTick(System.EventArgs e)
+    //    { if (this.Enabled) base.OnTick(e); }
+    //}
 
     //http://www.waytocoding.com/2014/08/how-to-clear-cache-in-web-browser.html
     public class WebBrowserHelper
