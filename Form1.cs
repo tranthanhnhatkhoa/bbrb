@@ -1199,7 +1199,7 @@ namespace BingRewardsBot
                     Thread.Sleep(SLEEPPTS);
                     try
                     {
-                        if (browser.Document.GetElementById("srch1-2-15-NOT_T1T3_Control-Exist").InnerHtml.Contains(@"close-check"))
+                        if (browser.Document.GetElementById("mobsrch1-2-10-NOT_T1T3_Control-Exist").InnerHtml.Contains(@"close-check"))
                         {
                             this.mxloops = MAXLOOPS;
                             this.counterMx = 0;
