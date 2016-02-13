@@ -274,8 +274,7 @@ namespace BingRewardsBot
                 this.accountVisited.Add(false);
             }
 
-            string str = this.accounts[0];
-            string[] authstr = str.Split('/');
+            string[] authstr = this.accounts[0].Split('/');
             this.accountNameTxtBox.Text = authstr[0];
 
             this.chkbox_tor.Checked = BingRewardsBot.Properties.Settings.Default.set_tor == true ? true : false;
@@ -790,8 +789,8 @@ namespace BingRewardsBot
                        "|" + this.country +
                        "|" + this.username +
                        "|" + this.pts +
-                       "|" + this.timer_auth.Enabled +
-                       "|" + this.timer_searches.Enabled;
+                       "|" + (this.timer_auth != null ? Convert.ToString(this.timer_auth.Enabled) : "no auth") +
+                       "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Enabled) : "no searches");
                 }
                 else
                 {
@@ -1276,6 +1275,13 @@ namespace BingRewardsBot
                 }
                 else if (this.iniSearch == true)
                 {
+                    if (this.timer_dashboardta != null)
+                    {
+                        this.timer_dashboardta.Enabled = false;
+                        this.timer_dashboardta.Stop();
+                        this.timer_dashboardta.Dispose();
+                    }
+
                     if (this.timer_auth != null)
                     {
                         this.timer_auth.Enabled = false;
@@ -1290,20 +1296,31 @@ namespace BingRewardsBot
                         this.timer_searches.Dispose();
                     }
 
+                    // update account
+                    string[] authstr = this.accounts[this.accountNum].Split('/');
+                    this.username = authstr[0]; this.password = authstr[1];
+
+                    // search parameter
+                    string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                    this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                        Convert.ToInt32(wait[1]));
+                    this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                        Convert.ToInt32(wait[1]));
+                    
                     // start search bot
                     this.timer_searches = new System.Timers.Timer();
                     this.timer_searches.AutoReset = true;
                     this.timer_searches.Elapsed += new ElapsedEventHandler(searchCallback); 
                     
-                    string[] wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
+                    wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
                     this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]), 
                         Convert.ToInt32(wait[1])) * 1000;  
 
                     this.timer_searches.Enabled = true;                         
                     this.timer_searches.Start();
 
-                    this.Csearch = true;
-                    this.searchesLock = true;
+                    this.Csearch = false;
+                    this.searchesLock = false;
                     this.authLock = true;
 
                     this.toolStripStatusLabel1.Text += "|Initial searches";
@@ -1318,8 +1335,8 @@ namespace BingRewardsBot
                       "|" + this.country +
                       "|" + this.username +
                       "|" + this.pts +
-                      "|" + this.timer_auth.Enabled +
-                      "|" + this.timer_searches.Enabled;
+                      "|" + (this.timer_auth != null ? Convert.ToString(this.timer_auth.Enabled) : "no auth") +
+                      "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Enabled) : "no searches");
                 }
 
                 //*******************************
@@ -1333,8 +1350,7 @@ namespace BingRewardsBot
                 || loaded.Url.ToString().Contains(@"https://www.msn.com")
                 || loaded.Url.ToString().Contains(@"https://login.live.com/logout.srf")
                 ))
-            {
-            
+            {            
                 SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                 m_dbConnection.Open();       
                 SQLiteCommand command = new SQLiteCommand("select * from searches group by account, ip order by ip desc", 
@@ -1503,14 +1519,15 @@ namespace BingRewardsBot
             else if (this.numdashboardta == 0)
             {
                 --this.numdashboardta;
-                browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
-                
+                browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));                
 
             } else { 
 
                 this.prevpts = 0;
                 this.pts = 0;
                 this.pts_txtbox.Text = Convert.ToString(this.pts);
+
+
                 this.timer_dashboardta.Enabled = false;
                 this.timer_dashboardta.Stop();
                 this.timer_dashboardta.Dispose();
@@ -1645,17 +1662,19 @@ namespace BingRewardsBot
                 authstr = this.accounts[random].Split('/');
                 this.username = authstr[0]; this.password = authstr[1];
 
-                this.toolStripStatusLabel1.Text = "1Loop:" +
-                    Convert.ToString(this.authLock) +
-                  "|" + Convert.ToString(this.checkaccount) +
-                  "|" + Convert.ToString(this.accountVisitedX) +
-                  "|" + Convert.ToString(this.authCounterX) +
-                  "|" + Convert.ToString(this.accountsRndtry) +
-                  "|" + Convert.ToString(this.accounts.Count) +
-                  "|" + Convert.ToString(this.accountNum) +
-                  "|" + Convert.ToString(this.loopauth) +
-                  "|" + this.country +
-                  "|" + this.username;
+                this.toolStripStatusLabel1.Text = "1Loop:" + Convert.ToString(this.authLock) +
+                      "|" + Convert.ToString(this.checkaccount) +
+                      "|" + Convert.ToString(this.accountVisitedX) +
+                      "|" + Convert.ToString(this.authCounterX) +
+                      "|" + Convert.ToString(this.accountsRndtry) +
+                      "|" + Convert.ToString(this.accounts.Count) +
+                      "|" + Convert.ToString(this.accountNum) +
+                      "|" + Convert.ToString(this.loopauth) +
+                      "|" + this.country +
+                      "|" + this.username +
+                      "|" + this.pts +
+                      "|" + (this.timer_auth != null ? Convert.ToString(this.timer_auth.Enabled) : "no auth") +
+                      "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Enabled) : "no searches");
 
                 if (this.accountVisited[random] == false && random != this.accountNum)
                 {
@@ -1882,18 +1901,19 @@ namespace BingRewardsBot
                     this.timer_auth.Enabled= true;                       // Enable the timer
                     this.timer_auth.Start();                              // Start the timer
 
-                    this.toolStripStatusLabel1.Text = "PC2:" + Convert.ToString(this.authLock) +
-                   "|" + Convert.ToString(this.checkaccount) +
-                   "|" + Convert.ToString(this.accountVisitedX) +
-                   "|" + Convert.ToString(this.authCounterX) +
-                   "|" + Convert.ToString(this.accountsRndtry) +
-                   "|" + Convert.ToString(this.accounts.Count) +
-                   "|" + Convert.ToString(this.accountNum) +
-                   "|" + Convert.ToString(this.loopauth) +
-                   "|" + this.country +
-                   "|" + this.username +
-                   "|" + pts +
-                   "|" + this.timer_auth.Enabled;
+                    this.toolStripStatusLabel1.Text = "PC2:"+ Convert.ToString(this.authLock) +
+                       "|" + Convert.ToString(this.checkaccount) +
+                       "|" + Convert.ToString(this.accountVisitedX) +
+                       "|" + Convert.ToString(this.authCounterX) +
+                       "|" + Convert.ToString(this.accountsRndtry) +
+                       "|" + Convert.ToString(this.accounts.Count) +
+                       "|" + Convert.ToString(this.accountNum) +
+                       "|" + Convert.ToString(this.loopauth) +
+                       "|" + this.country +
+                       "|" + this.username +
+                       "|" + pts +
+                       "|" + (this.timer_auth != null ? Convert.ToString(this.timer_auth.Enabled) : "no auth") +
+                       "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Enabled) : "no searches");
                 }
             } 
 
@@ -2175,8 +2195,8 @@ namespace BingRewardsBot
                    "|" + this.country +
                    "|" + this.username +
                    "|" + this.pts +
-                   "|" + this.timer_auth.Enabled +
-                   "|" + this.timer_searches.Enabled;
+                   "|" + (this.timer_auth != null ? Convert.ToString(this.timer_auth.Enabled) : "no auth") +
+                   "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Enabled) : "no searches");
 
                 // accounts visited
                 if (this.accountVisitedX < this.accounts.Count())
@@ -2272,8 +2292,8 @@ namespace BingRewardsBot
                     "|" + this.country +
                     "|" + this.username +
                     "|" + this.pts +
-                    "|" + this.timer_auth.Enabled +
-                    "|" + this.timer_searches.Enabled;
+                    "|" + (this.timer_auth != null ? Convert.ToString(this.timer_auth.Enabled) : "no auth") +
+                    "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Enabled) : "no searches");
                 }
 
                 // semi-automatic
@@ -2331,8 +2351,9 @@ namespace BingRewardsBot
                 "|" + this.country +
                 "|" + this.username +
                 "|" + this.pts +
-                "|" + this.timer_auth.Enabled +
-                "|" + this.timer_searches.Enabled;
+                "|" + (this.timer_auth != null ? Convert.ToString(this.timer_auth.Enabled) : "no auth") +
+                "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Enabled) : "no searches");
+
             }
             else if (this.searchesLock == false && this.trialstopped == false)
             {
@@ -3766,7 +3787,8 @@ namespace BingRewardsBot
                             "|" + this.country +
                             "|" + this.username +
                             "|" + pts +
-                            "|" + this.timer_auth.Enabled;
+                            "|" + (this.timer_auth != null ? Convert.ToString(this.timer_auth.Enabled) : "no auth") +
+                            "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Enabled) : "no searches");
 
                         if (!this.timer_auth.Enabled)
                         {
@@ -3815,7 +3837,8 @@ namespace BingRewardsBot
                            "|" + this.country +
                            "|" + this.username +
                            "|" + pts +
-                           "|" + this.timer_searches.Enabled;
+                           "|" + (this.timer_auth != null ? Convert.ToString(this.timer_auth.Enabled) : "no auth") +
+                           "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Enabled) : "no searches");
 
                     if (!this.timer_searches.Enabled)
                     {
