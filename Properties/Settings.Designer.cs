@@ -121,7 +121,7 @@ namespace BingRewardsBot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1:8118")]
         public string set_proxy {
             get {
                 return ((string)(this["set_proxy"]));
@@ -166,6 +166,18 @@ namespace BingRewardsBot.Properties {
             }
             set {
                 this["set_uamobile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1:9050")]
+        public string set_torsettings {
+            get {
+                return ((string)(this["set_torsettings"]));
+            }
+            set {
+                this["set_torsettings"] = value;
             }
         }
     }
