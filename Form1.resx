@@ -131,27 +131,29 @@ Better Bing Rewards Bot is an automation tool to search Bing to earn Microsoft p
 
 1.2. Features
 - Supports multiple accounts: Auto rotate through all accounts. A text file with the credentials is required.
-- Supports auto and manual mode for auto and semi-automatical searches.
+- Supports auto and manual mode for auto and manual searches.
 - Supports an individual wordlist. A text file is required.
 - Supports multithreading (requires multiple Windows users).
 - Supports Tor (Proxy settings and Identity switcher).
 - Supports Ip2location database (IP geolocation and to force US IP and US country). 
-- Support individual and parallel searches in desktop and mobile version of Bing.
-  The parallel mode switches between desktop and mobile version (harder to detect).
-- Logs the IP and limit the searches per IP to max. 5 accounts (harder to detect).
-- Random sleep delay: Set a random time delay "5-10" to wait between searches (harder to detect).
-- Random searches count: Set a random number of searches "30-50" for searches (harder to detect).
-- Random sleep between authentification "2-5" minutes to wait between accounts (harder to detect).
-- In auto mode random order of account (harder to detect).
-- In all searches random click in searches (harder to detect).
+- Support individual and searches in desktop and mobile version of Bing.
+- Stealthier: The search engines switches between desktop and mobile version.
+- Stealthier: Logs the IP and limit the searches per IP to max. 5 accounts.
+- Stealthier: Random sleep delay: Set a random time delay "5-10" to wait between searches.
+- Stealthier: Random searches count: Set a random number of searches "30-50" for searches.
+- Stealthier: Random sleep between authentification "2-5" minutes to wait between accounts.
+- Stealthier: In auto mode random order of account.
+- Stealthier: In all searches random click in searches.
 - Supports auto start through a scheduled task.
-- Simulate real user and real key strokes and real mouse button clicks (harder to detect).
+- Stealthier: Simulate real user and real key strokes and real mouse button clicks.
 - Shows earned Microsoft points for each searches.
 - Faster: Stop searches when all points are earned. 
 - Max income: Continues searches until all points are earned (ignores searches count up to 2x)
-- Surpress JavaScript errors and alerts.
 - NEW! Dashboard tasks: earns all dashboard tasks!
 - NEW! Custom Desktop &amp; Mobile User Agent!
+- NEW! Faster: Auto select US market (needs Tor)!
+- NEW! Faster: Auto skip temporarily suspended accounts!
+- NEW! Faster: Checks earns Microsoft points!
 
 2. Requirements
 -Windows 10 x32/x64
