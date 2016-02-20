@@ -414,7 +414,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label19.Location = new System.Drawing.Point(7, 434);
+            this.label19.Location = new System.Drawing.Point(6, 434);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(119, 14);
             this.label19.TabIndex = 35;
@@ -432,7 +432,7 @@
             // 
             this.label18.AutoSize = true;
             this.label18.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label18.Location = new System.Drawing.Point(8, 407);
+            this.label18.Location = new System.Drawing.Point(6, 407);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(154, 14);
             this.label18.TabIndex = 33;
@@ -450,7 +450,7 @@
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label17.Location = new System.Drawing.Point(9, 380);
+            this.label17.Location = new System.Drawing.Point(6, 380);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(163, 14);
             this.label17.TabIndex = 31;
@@ -481,7 +481,7 @@
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label15.Location = new System.Drawing.Point(9, 354);
+            this.label15.Location = new System.Drawing.Point(6, 351);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(88, 14);
             this.label15.TabIndex = 28;
@@ -504,9 +504,9 @@
             this.label16.Font = new System.Drawing.Font("Tahoma", 9F);
             this.label16.Location = new System.Drawing.Point(6, 300);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(181, 14);
+            this.label16.Size = new System.Drawing.Size(110, 14);
             this.label16.TabIndex = 26;
-            this.label16.Text = "Tor (needs Tor and Iplocation):";
+            this.label16.Text = "Tor (requires Tor):";
             // 
             // label14
             // 
@@ -522,7 +522,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label3.Location = new System.Drawing.Point(8, 276);
+            this.label3.Location = new System.Drawing.Point(6, 276);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(127, 14);
             this.label3.TabIndex = 22;
@@ -581,7 +581,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label6.Location = new System.Drawing.Point(8, 249);
+            this.label6.Location = new System.Drawing.Point(6, 249);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(319, 14);
             this.label6.TabIndex = 15;
@@ -591,7 +591,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label5.Location = new System.Drawing.Point(8, 223);
+            this.label5.Location = new System.Drawing.Point(6, 223);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(307, 14);
             this.label5.TabIndex = 14;
@@ -601,7 +601,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label4.Location = new System.Drawing.Point(8, 197);
+            this.label4.Location = new System.Drawing.Point(6, 197);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(334, 14);
             this.label4.TabIndex = 13;
