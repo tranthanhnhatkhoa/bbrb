@@ -58,6 +58,7 @@ namespace BingRewardsBot
         //private string altUrl = "";
         //public System.Windows.Forms.WebBrowser loaded;
 
+        //https://account.microsoft.com/?lang=en-US&refd=account.live.com&refp=landing
         //https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=12&ct=1456257304&rver=6.5.6510.0&wp=SAPI&wreply=https:%2F%2Faccount.live.com%2F%3Fmkt%3DEN-US%26lc%3D1033%26id%3D38936&lc=1033&id=38936&mkt=en-US&uaid=
         //https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=12&ct=1456042569&rver=6.5.6510.0&wp=SAPI&wreply=https:%2F%2Faccount.live.com%2F%3Fmkt%3DEN-US%26lc%3D1033%26id%3D38936&lc=1033&id=38936&mkt=en-US&uaid=
         //https://login.live.com/ppsecure/post.srf?bk=
@@ -471,11 +472,11 @@ namespace BingRewardsBot
         {
             WebBrowser wb = sender as WebBrowser;
 
-            if (wb != null && wb.ReadyState == WebBrowserReadyState.Complete)
-            {
-                //string url = e.Url.ToString();
+            //if (wb != null && wb.ReadyState == WebBrowserReadyState.Complete)
+            //{
+                string url = e.Url.ToString();
                 //this.loaded = (WebBrowser)sender;
-                string url = wb.Url.ToString();
+                //string url = wb.Url.ToString();
 
                 //*********************
                 // Unsupported market
@@ -507,15 +508,14 @@ namespace BingRewardsBot
                     //****************************************************
                     // surpress browser dialog box & double post problem
                     //****************************************************
+                    // https://login.live.com/ppsecure/post.srf
                 }
                 else if ((url.Contains(@"https://account.live.com/identity/confirm")
                         || url.Contains(@"https://account.live.com/recover")
                         || url.Contains(@"https://account.live.com/Abuse")
-                        || url.Contains(@"https://login.live.com/ppsecure/post.srf")
                         || browserUrlTxtbox.Text.Contains(@"https://account.live.com/identity/confirm")
                         || browserUrlTxtbox.Text.Contains(@"https://account.live.com/recover")
                         || browserUrlTxtbox.Text.Contains(@"https://account.live.com/Abuse")
-                        || browserUrlTxtbox.Text.Contains(@"https://login.live.com/ppsecure/post.srf")
                         )
                         && chkbox_autorotate.Checked == true
                         )
@@ -525,49 +525,55 @@ namespace BingRewardsBot
 
                     //if (this.logtries > 3)
                     //{
-                    this.logtries = 0;
+                        this.logtries = 0;
 
-                    if (this.accountVisited[this.accountNum] == false)
-                    {
-                        this.accountVisited[this.accountNum] = true;
-                        ++this.accountVisitedX;
-
-                        this.updateUserPts(4242);
-
-                        statusTxtBox.Text = "Authenticating";
-
-                        if (this.timer_auth == null)
+                        if (this.accountVisited[this.accountNum] == false)
                         {
-                            this.timer_auth = new System.Timers.Timer();
-                            this.timer_auth.AutoReset = false;
-                            this.timer_auth.Elapsed += new ElapsedEventHandler(authCallback);
+
+                            if (this.timer_tor != null)
+                            {
+                                this.timer_tor.Enabled = false;
+                            }
+
+                            this.accountVisited[this.accountNum] = true;
+                            ++this.accountVisitedX;
+
+                            this.updateUserPts(4242);
+
+                            statusTxtBox.Text = "Authenticating";
+
+                            if (this.timer_auth == null)
+                            {
+                                this.timer_auth = new System.Timers.Timer();
+                                this.timer_auth.AutoReset = false;
+                                this.timer_auth.Elapsed += new ElapsedEventHandler(authCallback);
+                            }
+
+                            string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
+
+                            int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]),
+                                Convert.ToInt32(auth[1]));
+
+                            this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
+                            counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
+
+                            this.authLock = false;
+
+                            this.accountsRndtry = 0;
+                            this.iniSearch = false;
+                            this.dashboardta = false;
+                            this.ldashboardta = false;
+                            this.Csearch = false;
+
+                            this.timer_auth.Enabled = true;
+
+                            this.statusDebug("PC4:");
+
+                            browser.Navigate(new Uri("https://www.google.com"));
+
+                            //browser.Navigate(new Uri("https://login.live.com/logout.srf"));
                         }
-
-                        string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
-
-                        int z = this.authCounterX = randomNumber(Convert.ToInt32(auth[0]),
-                            Convert.ToInt32(auth[1]));
-
-                        this.timer_auth.Interval = z > 1 ? z * 60 * 1000 : 1 * 30 * 1000;
-                        counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "30 sec.";
-
-                        this.authLock = false;
-
-                        this.accountsRndtry = 0;
-                        this.iniSearch = false;
-                        this.dashboardta = false;
-                        this.ldashboardta = false;
-                        this.Csearch = false;
-
-                        this.timer_auth.Enabled = true;
-
-                        this.statusDebug("PC4:");
-
-                        browser.Navigate(new Uri("https://www.google.com"));
-
-                        //browser.Navigate(new Uri("https://login.live.com/logout.srf"));
-                    }                        
-
+                    //}
                     //*********************
                     // Continue searches 
                     //*********************
@@ -585,6 +591,12 @@ namespace BingRewardsBot
                     // callback search bot
                     if (this.pts >= 25 && autorotate == true)
                     {
+
+                        if (this.timer_tor != null)
+                        {
+                            this.timer_tor.Enabled = false;
+                        }
+
                         if (this.timer_searches != null)
                         {
                             this.timer_searches.Enabled = false;
@@ -633,6 +645,12 @@ namespace BingRewardsBot
                     }
                     else if (this.pts >= 25 && autorotate == false)
                     {
+
+                        if (this.timer_tor != null)
+                        {
+                            this.timer_tor.Enabled = false;
+                        }
+
                         if (this.timer_searches != null)
                         {
                             this.timer_searches.Enabled = false;
@@ -661,6 +679,12 @@ namespace BingRewardsBot
                     }
                     else
                     {
+
+                        if (this.timer_tor != null)
+                        {
+                            this.timer_tor.Enabled = false;
+                        }
+
                         if (this.timer_auth != null)
                         {
                             this.timer_auth.Enabled = false;
@@ -774,7 +798,7 @@ namespace BingRewardsBot
                     //********************************
                 }
                 else if ((!url.Contains(@"https://www.bing.com/rewards") || this.dashboardta == true)
-                    && url.Contains(@"http://www.bing.com")
+                    && url.Contains(@"https://www.bing.com")
                     && !url.Contains(@"search?q=")
                     && this.checkaccount == false
                     && this.authLock == true
@@ -783,9 +807,8 @@ namespace BingRewardsBot
                     && !url.Contains(@"https://www.bing.com/account/general")
                     )
                 {
-                    if ((this.dashboardta == false &&
-                        (!url.Contains(@"https://www.bing.com/rewards")
-                        || !url.Contains(@"http://www.bing.com")))
+                    if (this.dashboardta == false
+                        && !url.Contains(@"https://www.bing.com/rewards")
                         && this.ldashboardta == false
                         )
                     {
@@ -803,7 +826,7 @@ namespace BingRewardsBot
                             this.timer_auth.Enabled = false;
                         }
 
-                        if (this.timer_tor == null)
+                        if (this.timer_tor != null)
                         {
                             this.timer_tor.Enabled = false;
                         }
@@ -839,7 +862,7 @@ namespace BingRewardsBot
                             this.timer_auth.Enabled = false;
                         }
 
-                        if (this.timer_tor == null)
+                        if (this.timer_tor != null)
                         {
                             this.timer_tor.Enabled = false;
                         }
@@ -940,7 +963,7 @@ namespace BingRewardsBot
                             this.timer_searches.Enabled = false;
                         }
 
-                        if (this.timer_tor == null)
+                        if (this.timer_tor != null)
                         {
                             this.timer_tor.Enabled = false;
                         }
@@ -995,33 +1018,13 @@ namespace BingRewardsBot
                     // Sign-in 6/6 Finalize
                     //**************************
                 }
-                else if (url.Contains(@"https://www.bing.com/rewards/dashboard")
+                else if ((url.Contains(@"https://www.bing.com/rewards/dashboard") || browserUrlTxtbox.Text == "https://www.bing.com/rewards/dashboard")
                     && !String.IsNullOrEmpty(this.siguid) && !String.IsNullOrWhiteSpace(this.siguid)
                     && !url.Contains(@"login.live.com")
                     && chkbox_autorotate.Checked == true
                     && this.dashboardta == false
                 )
                 {
-                    if (this.timer_dashboardta != null)
-                    {
-                        this.timer_dashboardta.Enabled = false;
-                    }
-
-                    if (this.timer_auth != null)
-                    {
-                        this.timer_auth.Enabled = false;
-                    }
-
-                    if (this.timer_searches != null)
-                    {
-                        this.timer_searches.Enabled = false;
-                    }
-
-                    if (this.timer_tor == null)
-                    {
-                        this.timer_tor.Enabled = false;
-                    }
-
                     string[] authstr = this.accounts[this.accountNum].Split('/');
                     this.username = authstr[0];
                     this.password = authstr[1];
@@ -1046,8 +1049,7 @@ namespace BingRewardsBot
                     this.ldashboardta = false;
                     this.Csearch = false;
 
-                    //Thread.Sleep(SLEEPPTS);
-                    this.statusDebug("Connected:");
+                    this.statusDebug("Finalize:");
 
                     browser.Navigate(new Uri("https://www.bing.com/"));
 
@@ -1065,11 +1067,12 @@ namespace BingRewardsBot
                 {
                     //Thread.Sleep(SLEEPPTS);
 
-                    HtmlElementCollection links = wb.Document.Links;
-                    foreach (HtmlElement ele in links)
+                    try
                     {
-                        try
+                        HtmlElementCollection links = wb.Document.Links;
+                        foreach (HtmlElement ele in links)
                         {
+                       
                             if ((ele.GetAttribute("href") != null)
                             && ele.GetAttribute("href").Contains(@"sig=")
                             )
@@ -1082,20 +1085,66 @@ namespace BingRewardsBot
                                     if (sig.Contains(@"sig="))
                                     {
                                         this.siguid = sig.Replace("sig=", "");
+
+                                        if (this.timer_dashboardta != null)
+                                        {
+                                            this.timer_dashboardta.Enabled = false;
+                                        }
+
+                                        if (this.timer_auth != null)
+                                        {
+                                            this.timer_auth.Enabled = false;
+                                        }
+
+                                        if (this.timer_searches != null)
+                                        {
+                                            this.timer_searches.Enabled = false;
+                                        }
+
+                                        if (this.timer_tor != null)
+                                        {
+                                            this.timer_tor.Enabled = false;
+                                        }
+
+                                        string[] authstr = this.accounts[this.accountNum].Split('/');
+                                        this.username = authstr[0];
+                                        this.password = authstr[1];
+
+                                        accountNameTxtBox.Text = this.username;
+                                        accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
+
+                                        this.prevpts = 0;
+                                        this.pts = 0;
+                                        this.pts_txtbox.Text = "0";
+
+                                        statusTxtBox.Text = "Connected";
+                                        counterTxtBox.Text = "0/0";
+
+                                        this.dxloops = 0;
+                                        this.mxloops = 0;
+                                        this.logtries = 0;
+
+                                        this.authLock = true;
+                                        this.iniSearch = false;
+                                        this.dashboardta = false;
+                                        this.ldashboardta = false;
+                                        this.Csearch = false;
+
+                                        //Thread.Sleep(SLEEPPTS);
+                                        this.statusDebug("Connected:");
+
                                         browser.Navigate(new Uri(BRSIGNIN + this.siguid));
-                                        break;
                                     }
                                 }
                             }
                         }
-                        catch
-                        {
-                        }
                     }
+                    catch { }
 
                     //****************************************************
                     //  Sign-in Step 6/4
                     // @"https://account.microsoft.com/?lang=en-US"
+                    // https://account.microsoft.com/?lang=en-US&refd=account.live.com&refp=landing
                     //****************************************************
                 }
                 else if (url.Contains(@"https://account.microsoft.com/"))
@@ -1108,27 +1157,26 @@ namespace BingRewardsBot
                         this.logtries = 0;
                         bool a = false;
 
-                        // extract url       
-                        HtmlElementCollection links = wb.Document.Links;
-                        foreach (HtmlElement ele in links)
+                        try
                         {
-                            try
+                            // extract url       
+                            HtmlElementCollection links = wb.Document.Links;
+                            foreach (HtmlElement ele in links)
                             {
-                                if ((ele.GetAttribute("href") != null)
-                                && ele.GetAttribute("href").Contains(@"id=")
-                                && ele.GetAttribute("href").Contains(@"login.live.com")
-                                && !ele.GetAttribute("href").Contains(@"signup.live.com")
-                                )
-                                {
-                                    string text = ele.GetAttribute("href");
-                                    browser.Navigate(new Uri(text));
-                                    a = true;
+                           
+                                    if ((ele.GetAttribute("href") != null)
+                                    && ele.GetAttribute("href").Contains(@"id=")
+                                    && ele.GetAttribute("href").Contains(@"login.live.com")
+                                    && !ele.GetAttribute("href").Contains(@"signup.live.com")
+                                    )
+                                    {
+                                        string text = ele.GetAttribute("href");
+                                        browser.Navigate(new Uri(text));
+                                        a = true;
+                                    }
                                 }
                             }
-                            catch
-                            {
-                            }
-                        }
+                        catch { }
 
                         //prepare connection
                         if (this.accountVisited[this.accountNum] == false
@@ -1217,13 +1265,13 @@ namespace BingRewardsBot
                             // retry
                             browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
                         }
-                    }
+                    
 
-                    else if (browserUrlTxtbox.Text.Contains(@"https://account.live.com/identity/confirm")
-                    || browserUrlTxtbox.Text.Contains(@"https://account.live.com/recover")
-                    || browserUrlTxtbox.Text.Contains(@"https://account.live.com/Abuse")
-                    || browserUrlTxtbox.Text.Contains(@"https://login.live.com/ppsecure/post.srf"))
-                    {
+                    //else if (browserUrlTxtbox.Text.Contains(@"https://account.live.com/identity/confirm")
+                    //|| browserUrlTxtbox.Text.Contains(@"https://account.live.com/recover")
+                    //|| browserUrlTxtbox.Text.Contains(@"https://account.live.com/Abuse")
+                    //|| browserUrlTxtbox.Text.Contains(@"https://login.live.com/ppsecure/post.srf"))
+                    //{
 
                         //    if (this.altUrl != browserUrlTxtbox.Text)
                         //    {
@@ -1231,7 +1279,7 @@ namespace BingRewardsBot
                         //        browser.Navigate(new Uri("http://www.google.com"));
                         //    }
 
-                        browser.Navigate(new Uri(browserUrlTxtbox.Text));
+                    //    browser.Navigate(new Uri(browserUrlTxtbox.Text));
 
                     }
                     //else if (this.altUrl != browserUrlTxtbox.Text)
@@ -1366,7 +1414,9 @@ namespace BingRewardsBot
                 }
                 ++this.pccounter;
                 this.toolStripStatusLabel1.Text += "#";
-            }
+            //}
+            // Dispose the WebBrowser now that the task is complete. 
+            //((WebBrowser)sender).Dispose();
         }
  
         //**********************
@@ -1629,7 +1679,7 @@ namespace BingRewardsBot
 
                     this.statusDebug("PC3:");
                 }
-            } else
+            } else if (this.checkaccount == false)
             {
                 statusTxtBox.Text = "Authenticating";
 
@@ -1653,10 +1703,9 @@ namespace BingRewardsBot
                 this.dashboardta = false;
                 this.ldashboardta = false;
                 this.Csearch = false;
-                this.timer_auth.Enabled = true;                                                                
-            } 
+                this.timer_auth.Enabled = true;
 
-            if (this.checkaccount == true)
+            } else if (this.checkaccount == true)
             {
                 if (this.timer_auth != null)
                 {
@@ -2833,9 +2882,7 @@ namespace BingRewardsBot
         private void check_button_Click(object sender, EventArgs e)
         {
             BingRewardsBot.Properties.Settings.Default.Save();
-            this.ClearCache();
             this.checkaccount = true;
-            //MessageBox.Show(this.checkaccount == true ? "true" : "false");
             this.authLock = false;
             this.authCallback(null, null);
         }
@@ -3426,14 +3473,37 @@ namespace BingRewardsBot
                     {
                         browser.Navigate(new Uri("http://www.google.com"));
 
-                    } else
+                    }
+                    else
                     {
                         browser.Navigate(new Uri(browserUrlTxtbox.Text));
                     }
                 }
+                else if ((browserUrlTxtbox.Text.Contains(@"https://account.live.com/identity/confirm")
+                  || browserUrlTxtbox.Text.Contains(@"https://account.live.com/recover")
+                  || browserUrlTxtbox.Text.Contains(@"https://account.live.com/Abuse")
+                  || (browserUrlTxtbox.Text.Contains(@"https://www.bing.com")
+                  && this.statusTxtBox.Text != "Connected"
+                  && this.statusTxtBox.Text != "Working"
+                  && this.statusTxtBox.Text != "Dashboard"
+                  && this.statusTxtBox.Text != "Desktopsearches"
+                  && this.statusTxtBox.Text != "Mobilesearches")
+                  && !this.toolStripStatusLabel1.Text.Contains(@"Connected")
+                  )
+                  && chkbox_autorotate.Checked == true
+                  && this.button1.Text == "Stop"
+                  )
+                {
+                    this.accountVisited[this.accountNum] = true;
+                    ++this.accountVisitedX;
+
+                    this.restartAuth();
+                }
                 else if (this.button1.Text == "Stop"
-                   && (this.statusTxtBox.Text == "Authenticating" && this.toolStripStatusLabel1.Text.Contains(@"PC")
-                   && !this.toolStripStatusLabel1.Text.Contains(@"Init"))
+                   && this.statusTxtBox.Text == "Authenticating"
+                   && this.toolStripStatusLabel1.Text.Contains(@"PC")
+                   && !this.toolStripStatusLabel1.Text.Contains(@"Init")
+                   && !this.toolStripStatusLabel1.Text.Contains(@"Connected")
                    && this.chkbox_autorotate.Checked == true
                    && this.authLock == true
                    && this.timer_auth.Enabled == false
@@ -3444,32 +3514,57 @@ namespace BingRewardsBot
 
                 }
                 else if (this.button1.Text == "Stop"
-                    && (this.statusTxtBox.Text == "Working" || this.toolStripStatusLabel1.Text.Contains(@"Working##"))
+                    && (this.statusTxtBox.Text == "Working" ||
+                    (this.toolStripStatusLabel1.Text.Contains(@"Working##") && this.statusTxtBox.Text != "Connected"))
                     && this.chkbox_autorotate.Checked == true
-                    && this.authLock == true 
+                    && this.authLock == true
                     && this.timer_auth.Enabled == false
                     && !this.browserUrlTxtbox.Text.Contains(@"landing")
                     )
                 {
-                    this.restartAuth();
+                    this.accountVisited[this.accountNum] = true;
+                    ++this.accountVisitedX;
 
+                    this.restartAuth();
                 }
-                else if ((browserUrlTxtbox.Text.Contains(@"https://account.live.com/identity/confirm")
-                  || browserUrlTxtbox.Text.Contains(@"https://account.live.com/recover")
-                  || browserUrlTxtbox.Text.Contains(@"https://account.live.com/Abuse")
-                  || browserUrlTxtbox.Text.Contains(@"https://login.live.com/ppsecure/post.srf")
-                  || (browserUrlTxtbox.Text.Contains(@"https://www.bing.com")
-                  && this.statusTxtBox.Text != "Working"
-                  && this.statusTxtBox.Text != "Dashboard"
-                  && this.statusTxtBox.Text != "Desktopsearches"
-                  && this.statusTxtBox.Text != "Mobilesearches"
-                  ))
-                  && chkbox_autorotate.Checked == true
-                  && this.button1.Text == "Stop"
+                else if (this.button1.Text == "Stop"
+                  && this.authLock == true
+                  && this.chkbox_autorotate.Checked == true
+                  && !this.browserUrlTxtbox.Text.Contains(@"Finalize")
                   )
                 {
-                    this.restartAuth();
-                }
+                    statusTxtBox.Text = "Dashboard";
+
+                    if (timer_searches != null)
+                    {
+                        this.timer_searches.Enabled = false;
+
+                        this.Csearch = false;
+                    }
+
+                    if (this.timer_auth != null)
+                    {
+                        this.timer_auth.Enabled = false;
+                    }
+
+                    if (this.timer_tor != null)
+                    {
+                        this.timer_tor.Enabled = false;
+                    }
+
+                    string[] authstr = this.accounts[this.accountNum].Split('/');
+                    this.username = authstr[0];
+                    this.password = authstr[1];
+
+                    accountNameTxtBox.Text = this.username;
+                    accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
+
+                    this.toolStripStatusLabel1.Text = "Initial dashboard tasks!";
+                    this.dashboardta = true;
+
+                    browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+
+                } 
                 else if (this.button1.Text == "Stop"
                 && this.statusTxtBox.Text == "Dashboard"
                 && this.chkbox_autorotate.Checked == true
@@ -3488,7 +3583,7 @@ namespace BingRewardsBot
 
                     this.timer_dashboardta.Enabled = true;
 
-                    this.statusDebug("Restat DB:");
+                    this.statusDebug("Restart DBT:");
 
                 }
 
@@ -3577,8 +3672,8 @@ namespace BingRewardsBot
             }
             else
             {
-                this.accountVisited[this.accountNum] = true;
-                ++this.accountVisitedX;
+                //this.accountVisited[this.accountNum] = true;
+                //++this.accountVisitedX;
 
                 this.statusDebug("Restart Auth:");
 
