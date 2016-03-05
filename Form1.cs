@@ -807,8 +807,9 @@ namespace BingRewardsBot
                     && !url.Contains(@"https://www.bing.com/account/general")
                     )
                 {
-                    if (this.dashboardta == false
+                    if (this.dashboardta == false 
                         && !url.Contains(@"https://www.bing.com/rewards")
+                        && !url.Contains(@"http://www.bing.com")
                         && this.ldashboardta == false
                         )
                     {
@@ -1071,8 +1072,7 @@ namespace BingRewardsBot
                     {
                         HtmlElementCollection links = wb.Document.Links;
                         foreach (HtmlElement ele in links)
-                        {
-                       
+                        {                       
                             if ((ele.GetAttribute("href") != null)
                             && ele.GetAttribute("href").Contains(@"sig=")
                             )
