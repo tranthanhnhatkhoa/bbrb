@@ -1152,8 +1152,8 @@ namespace BingRewardsBot
                     //Thread.Sleep(SLEEPPTS);
                     ++this.logtries;
 
-                    if (this.logtries > DOCUMENTLOADED)
-                    {
+                    //if (this.logtries > DOCUMENTLOADED)
+                    //{
                         this.logtries = 0;
                         bool a = false;
 
@@ -1281,7 +1281,7 @@ namespace BingRewardsBot
 
                     //    browser.Navigate(new Uri(browserUrlTxtbox.Text));
 
-                    }
+                    //}
                     //else if (this.altUrl != browserUrlTxtbox.Text)
                     //{
                     //    this.altUrl = browserUrlTxtbox.Text;
@@ -3479,6 +3479,76 @@ namespace BingRewardsBot
                         browser.Navigate(new Uri(browserUrlTxtbox.Text));
                     }
                 }
+                else if (browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/?lang=en-US&refd=account.live.com&refp=landing"))
+                {
+                    bool a = false;
+
+                    try
+                    {
+                        // extract url       
+                        HtmlElementCollection links = browser.Document.Links;
+                        foreach (HtmlElement ele in links)
+                        {
+
+                            if ((ele.GetAttribute("href") != null)
+                            && ele.GetAttribute("href").Contains(@"id=")
+                            && ele.GetAttribute("href").Contains(@"login.live.com")
+                            && !ele.GetAttribute("href").Contains(@"signup.live.com")
+                            )
+                            {
+                                string text = ele.GetAttribute("href");
+                                browser.Navigate(new Uri(text));
+                                a = true;
+                            }
+                        }
+                    }
+                    catch { }
+
+                    //prepare connection
+                    if (this.accountVisited[this.accountNum] == false
+                        && chkbox_autorotate.Checked == true
+                        && this.checkaccount == false
+                        && a == false
+                        )
+                    {
+                        if (this.timer_auth != null)
+                        {
+                            this.timer_auth.Enabled = false;
+                        }
+
+                        this.accountVisited[this.accountNum] = true;
+                        ++this.accountVisitedX;
+
+                        string[] authstr = this.accounts[this.accountNum].Split('/');
+                        this.username = authstr[0];
+                        this.password = authstr[1];
+
+                        accountNameTxtBox.Text = this.username;
+                        accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
+
+                        this.prevpts = 0;
+                        this.pts = 0;
+                        this.pts_txtbox.Text = "0";
+
+                        statusTxtBox.Text = "Connected";
+                        counterTxtBox.Text = "0/0";
+
+                        this.dxloops = 0;
+                        this.mxloops = 0;
+                        this.logtries = 0;
+
+                        this.authLock = true;
+                        this.iniSearch = false;
+                        this.dashboardta = false;
+                        this.ldashboardta = false;
+                        this.Csearch = false;
+
+                        this.initUserSQL();
+
+                        // first step after user auth (very important) navigate bing.com or bing.com/rewards
+                        browser.Navigate(new Uri("https://www.bing.com/rewards"));
+                    }
+                }
                 else if ((browserUrlTxtbox.Text.Contains(@"https://account.live.com/identity/confirm")
                   || browserUrlTxtbox.Text.Contains(@"https://account.live.com/recover")
                   || browserUrlTxtbox.Text.Contains(@"https://account.live.com/Abuse")
@@ -3564,7 +3634,7 @@ namespace BingRewardsBot
 
                     browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
 
-                } 
+                }
                 else if (this.button1.Text == "Stop"
                 && this.statusTxtBox.Text == "Dashboard"
                 && this.chkbox_autorotate.Checked == true
