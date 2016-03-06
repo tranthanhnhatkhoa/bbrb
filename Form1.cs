@@ -3600,7 +3600,8 @@ namespace BingRewardsBot
                 else if (this.button1.Text == "Stop"
                   && this.authLock == true
                   && this.chkbox_autorotate.Checked == true
-                  && !this.browserUrlTxtbox.Text.Contains(@"Finalize")
+                  && (this.statusTxtBox.Text == "Dashboard" || this.toolStripStatusLabel1.Text.Contains(@"Finalize"))
+                  && !this.toolStripStatusLabel1.Text.Contains(@"Searching")
                   )
                 {
                     statusTxtBox.Text = "Dashboard";
@@ -3654,52 +3655,7 @@ namespace BingRewardsBot
                     this.timer_dashboardta.Enabled = true;
 
                     this.statusDebug("Restart DBT:");
-
                 }
-
-                //else if (this.button1.Text == "Stop"
-                //     && this.statusTxtBox.Text == "Working"
-                //    && this.chkbox_autorotate.Checked == true
-                //    && this.timer_auth.Enabled == false )
-                //{
-                //    this.restartAuth();
-                //}
-
-                    //else if (this.button1.Text == "Stop"
-                    //     && this.statusTxtBox.Text == "Connected"
-                    //    && this.chkbox_autorotate.Checked == true
-                    //    && this.timer_auth.Enabled == false
-                    //)
-                    //{
-                    //    if (this.timer_auth != null)
-                    //    {
-                    //        this.timer_auth.Enabled = false;
-                    //        //this.timer_auth.Stop();
-                    //    }
-
-                    //    this.statusDebug("Restart searches1:");
-
-                    //    if (!this.timer_searches.Enabled)
-                    //    {
-                    //        this.timer_searches.Enabled = false;
-                    //        this.timer_searches.Stop();
-                    //        
-
-                    //        this.timer_searches = new System.Timers.Timer();
-                    //        this.timer_searches.AutoReset = false;
-                    //        this.timer_searches.Elapsed += new ElapsedEventHandler(searchCallback);
-
-                    //        string[] wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
-                    //        this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]),
-                    //            Convert.ToInt32(wait[1])) * 1000;
-                    //        this.timer_searches.Enabled = true;
-                    //        //this.timer_searches.Start();
-                    //    }
-
-                    //    this.Csearch = true;
-
-                    //    browser.Navigate(new Uri(browserUrlTxtbox.Text));
-                    //}
             }
         }
 
