@@ -133,7 +133,7 @@ Better Bing Rewards Bot is an automation tool to search Bing to earn Microsoft p
 - Supports multiple accounts: Auto rotate through all accounts. A text file with the credentials is required.
 - Supports auto and manual mode for auto and manual searches.
 - Supports an individual wordlist. A text file is required.
-- Supports multithreading (requires multiple Windows users).
+- Supports multithreading (Proxy settings &amp; requires multiple Windows users).
 - Supports Tor (Proxy settings and Identity switcher).
 - Supports Ip2location database (IP geolocation and to force US IP and US country). 
 - Support individual and searches in desktop and mobile version of Bing.
@@ -148,12 +148,12 @@ Better Bing Rewards Bot is an automation tool to search Bing to earn Microsoft p
 - Stealthier: Simulate real user and real key strokes and real mouse button clicks.
 - Shows earned Microsoft points for each searches.
 - Faster: Stop searches when all points are earned. 
-- Max income: Continues searches until all points are earned (ignores searches count up to 2x)
-- NEW! Dashboard tasks: earns all dashboard tasks!
-- NEW! Custom Desktop &amp; Mobile User Agent!
-- NEW! Faster: Auto select US market (requires Tor)!
+- Maximize income: Continues searches until all points are earned (ignores searches count up to 2x)
+- NEW! Maximize income: Dashboard tasks: earn special dashboard tasks (not the quiz)!
+- NEW! Stealthier: Custom Desktop &amp; Mobile User Agent!
+- NEW! Faster: Auto detect &amp; select US market!
 - NEW! Faster: Auto skip temporarily suspended accounts!
-- NEW! Faster: Checks earns Microsoft points!
+- NEW! Faster: Check earned Microsoft points!
 
 2. Requirements
 -Windows 10 x32/x64
@@ -180,7 +180,7 @@ Words.txt file is required.
 4.8. Enjoy!
 
 4.9. Browser url bar
-4.9.1 The browser url bar supports some commands. Type the following commands:
+4.9.1 The browser url bar supports special commands. Type the following commands:
 4.9.2 "geolocation": Finds the users geolocation (navigate to iplocation.net)
 4.9.3 "bingr": Navigate to Bing rewards homepage
 4.9.4 "mobile": Change user agent to mobile bing version
