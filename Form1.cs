@@ -144,6 +144,13 @@ namespace BingRewardsBot
         Thread myThread;
         Thread rThread;
 
+        //http://stackoverflow.com/questions/904478/how-to-fix-the-memory-leak-in-ie-webbrowser-control
+        [DllImport("KERNEL32.DLL", EntryPoint = "SetProcessWorkingSetSize", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
+        internal static extern bool SetProcessWorkingSetSize(IntPtr pProcess, int dwMinimumWorkingSetSize, int dwMaximumWorkingSetSize);
+
+        [DllImport("KERNEL32.DLL", EntryPoint = "GetCurrentProcess", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
+        internal static extern IntPtr GetCurrentProcess();
+
         //http://stackoverflow.com/questions/9770522/how-to-handle-message-boxes-while-using-webbrowser-in-c
         [DllImport("user32.dll", SetLastError = true)]
         static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
@@ -1512,8 +1519,7 @@ namespace BingRewardsBot
             }
             return;
         }
-
- 
+        
         //**********************
         // Earn dashboardta
         //***********************
@@ -1570,7 +1576,7 @@ namespace BingRewardsBot
         }
     
         //**********************
-        // Mainsearch Auth loop
+        // Main Auth Callback
         //***********************
 
         private void authCallback(object sender, EventArgs e)
@@ -1657,7 +1663,15 @@ namespace BingRewardsBot
 
                 if (pts < 25 && 
                     this.accountVisited[this.accountNum] == false && this.country == "US")
-                {                                    
+                {
+
+                    //http://stackoverflow.com/questions/904478/how-to-fix-the-memory-leak-in-ie-webbrowser-control
+                    IntPtr pHandle = GetCurrentProcess();
+                    SetProcessWorkingSetSize(pHandle, -1, -1);
+
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
 
                     if (this.timer_auth != null)
                     {
@@ -1832,9 +1846,9 @@ namespace BingRewardsBot
             return;
         }
 
-        //*******************
-        // Mainsearch loop
-        //*******************
+        //*********************
+        // Mainsearch Callback
+        //*********************
 
         private void searchCallback(object sender, EventArgs e)
         {   
@@ -2618,10 +2632,7 @@ namespace BingRewardsBot
                 }
             }
 
-            //if (this.searchesLock == false)
-            //{
-            //    browser.Navigate(new Uri(browserUrlTxtbox.Text));
-            //}
+
             ++this.pccounter;
             this.toolStripStatusLabel1.Text += "+";
             return;
