@@ -87,7 +87,6 @@ namespace BingRewardsBot
         private long pccounter = 0;
         private string[] rlink = new string[40];
         private const string MAXACCOUNTSPERIPLIMIT = "Not a valid IP. Maximum number of accounts per IP limit reached!";
-        //private const int DOCUMENTLOADED = 5;
 
         private int startbtn = 0;
         private const int MAXACCOUNTPERIP = 5;
@@ -106,10 +105,8 @@ namespace BingRewardsBot
         private int qpage = 0;
         private const int SLEEPTOR = 8 * 1000;
         private const int SLEEPPTS = 5 * 1000;
-        private const int MAXIPSLEEP = 5 * 1000;
-        private const int SLEEPDP = 15 * 1000;
-        private const int SLEEPDASHBOARD = 25 * 1000;
-        private const int SLEEPRD = 60 * 1000;
+        private const int SLEEPDP = 20 * 1000;
+        private const int SLEEPDASHBOARD = 27 * 1000;
         private const int SLEEPMAIN = 60 * 1000;
         private const int AUTHSHORT = 26 * 1000;
         private int vrndnum = 0;
@@ -126,8 +123,6 @@ namespace BingRewardsBot
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
         private string query;
-        //private System.Timers.Timer timer_auth;
-        //private System.Timers.Timer timer_searches;
         private int timer_auth;
         private int timer_searches;
         private System.Timers.Timer timer_tor;
@@ -143,8 +138,8 @@ namespace BingRewardsBot
         private string wordsFile;
         private List<string> accounts = new List<string>();
         private List<string> words = new List<string>();
-        Thread myThread;
-        Thread rThread;
+        Thread doublePost;
+        Thread mainThread;
 
         //http://stackoverflow.com/questions/904478/how-to-fix-the-memory-leak-in-ie-webbrowser-control
         [DllImport("KERNEL32.DLL", EntryPoint = "SetProcessWorkingSetSize", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
@@ -192,17 +187,20 @@ namespace BingRewardsBot
         public Form1()
         {
             InitializeComponent();
-            myThread = new Thread(new ThreadStart(ClickOKButton));
-            myThread.IsBackground = true;
-            myThread.Start();
+            doublePost = new Thread(new ThreadStart(ClickOKButton));
+            doublePost.IsBackground = true;
+            doublePost.Start();
 
-            rThread = new Thread(new ThreadStart(mainT));
-            rThread.IsBackground = true;
-            rThread.Start();            
+            mainThread = new Thread(new ThreadStart(mainT));
+            mainThread.IsBackground = true;
+            mainThread.Start();
 
             //http://stackoverflow.com/questions/204804/disable-image-loading-from-webbrowser-control-before-the-documentcompleted-event
             //RegistryKey RegKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\Main", true);
             //RegKey.SetValue("Display Inline Images", "no");
+
+            RegistryKey RegKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\Main", true);
+            RegKey.SetValue("Play_Animations", "no");
 
             browser.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(browser_DocumentCompleted);
             browser.ProgressChanged += new WebBrowserProgressChangedEventHandler(browser_ProgressChanged);
@@ -432,6 +430,9 @@ namespace BingRewardsBot
             //http://stackoverflow.com/questions/204804/disable-image-loading-from-webbrowser-control-before-the-documentcompleted-event
             //RegistryKey RegKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\Main", true);
             //RegKey.SetValue("Display Inline Images", "yes");
+
+            RegistryKey RegKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\Main", true);
+            RegKey.SetValue("Play_Animations", "yes");
 
             BingRewardsBot.Properties.Settings.Default.set_autorotate = chkbox_tor.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.set_tor = chkbox_autorotate.Checked == true ? true : false;
@@ -2199,6 +2200,10 @@ namespace BingRewardsBot
                     && !browserUrlTxtbox.Text.Contains(@"dashboard")
                     )
                 {
+                    //extra time for browser (loading)
+                    Thread.Sleep(4 * 1000);
+
+                    //individual time
                     Thread.Sleep(this.timer_auth);
 
                     string[] authstr = new string[4];
@@ -2215,6 +2220,8 @@ namespace BingRewardsBot
                         && (this.authLock == false)
                         )
                     {
+                        this.subgetip();
+
                         int a = 0;
                         int i = 0;
                         int[] v = new int[accountVisited.Count];
@@ -2284,9 +2291,7 @@ namespace BingRewardsBot
                             }
                             dbcon.Close();
                         }
-
-                        this.subgetip();
-
+                        
                         if (pts < 25 &&
                             this.accountVisited[this.accountNum] == false && this.country == "US")
                         {
@@ -3409,6 +3414,8 @@ namespace BingRewardsBot
         {
             while (true)
             {
+                Thread.Sleep(SLEEPDP);
+
                 // double post error
                 IntPtr hwnd = FindWindow("#32770", "Web Browser");
                 //hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Retry");
@@ -3420,10 +3427,8 @@ namespace BingRewardsBot
                 hwnd = FindWindow("#32770", "Message from webpage");
                 hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Cancel");
                 message = 0xf5;
-                SendMessage(hwnd, message, IntPtr.Zero, IntPtr.Zero);              
-
-                Thread.Sleep(SLEEPDP);
- 
+                SendMessage(hwnd, message, IntPtr.Zero, IntPtr.Zero);
+                
             }
         }
 
