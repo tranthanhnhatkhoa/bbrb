@@ -108,7 +108,7 @@ namespace BingRewardsBot
         private const int SLEEPPTS = 5 * 1000;
         private const int SLEEPDP = 20 * 1000;
         private const int SLEEPDASHBOARD = 27 * 1000;
-        private const int SLEEPMAIN = 10 * 1000;
+        private const int SLEEPMAIN = 15 * 1000;
         private const int AUTHSHORT = 26 * 1000;
         private int vrndnum = 0;
         private int accountVisitedX = 0;
@@ -648,7 +648,6 @@ namespace BingRewardsBot
                     }
                     else
                     {
-
                         if (this.timer_tor != null)
                         {
                             this.timer_tor.Enabled = false;
@@ -749,7 +748,7 @@ namespace BingRewardsBot
                     }
 
                     //********************************
-                    // Init dashboard & searches
+                    // Initial dashboard & searches
                     //********************************
                 }
                 else if ((!url.Contains(@"https://www.bing.com/rewards") || this.dashboardta == true)
@@ -761,7 +760,8 @@ namespace BingRewardsBot
                     && !url.Contains(@"https://www.bing.com/rewards/unsupportedmarket")
                     && !url.Contains(@"https://www.bing.com/account/general")
                     )
-                {
+                {                  
+
                     if (this.dashboardta == false
                         && !url.Contains(@"https://www.bing.com/rewards")
                         && !url.Contains(@"http://www.bing.com")
@@ -889,7 +889,7 @@ namespace BingRewardsBot
                         } else
                         {
                             statusTxtBox.Text = "Dashboard";
-                        this.statusDebug("Dashboard:");
+                            this.statusDebug("Dashboard:");
                             browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
                         }
                     }
@@ -929,7 +929,8 @@ namespace BingRewardsBot
                     {
                         statusTxtBox.Text = "Dashboard";
                         this.statusDebug("Dashboard:");
-                        browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                        //browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                        browser.Navigate(new Uri("https://www.bing.com/"));
                     }
 
                     //*************************
@@ -1308,7 +1309,10 @@ namespace BingRewardsBot
                         browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
                     }
                 }
-                catch { }
+                catch
+                {
+                    browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                }
 
                 // Restart timer
                 //this.timer_dashboardta.Enabled = true;
@@ -2128,7 +2132,7 @@ namespace BingRewardsBot
                     Thread.Sleep(this.timer_auth);
 
                     string[] authstr = new string[4];
-                    this.statusDebug("Init Auth:");
+                    this.statusDebug("Initial Auth:");
 
                     ++this.vrndnum;
 
@@ -2505,7 +2509,6 @@ namespace BingRewardsBot
                 {
                     this.statusDebug("Thread:");
                     this.toolStripStatusLabel1.Text += "+";
-                    browser.Navigate(new Uri(browserUrlTxtbox.Text));
                 }
             }
         }
@@ -2753,7 +2756,7 @@ namespace BingRewardsBot
                     
                     this.authLock = false;                                                                                      
 
-                    this.statusDebug("Init Autorotate:");
+                    this.statusDebug("Initial AutoR:");
                 }
             }
         }
