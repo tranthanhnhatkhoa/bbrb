@@ -756,6 +756,15 @@ namespace BingRewardsBot
                     {
                         statusTxtBox.Text = "Dashboard";
                         this.statusDebug("Dashboard:");
+
+                        this.dxloops = 0;
+                        this.mxloops = 0;
+                        this.authLock = true;
+                        this.iniSearch = false;
+                        this.dashboardta = false;
+                        this.ldashboardta = false;
+                        this.Csearch = false;
+
                         //browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
                         browser.Navigate(new Uri("https://www.bing.com/"));
                     }
@@ -992,8 +1001,6 @@ namespace BingRewardsBot
                         else
                         {
                             // very important
-                            //browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
-                            //browser.Navigate(new Uri("https://www.bing.com/rewards"));
                             browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
                         }
 
