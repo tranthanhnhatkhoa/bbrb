@@ -15,7 +15,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 //using System.Text.RegularExpressions;
-//using System.Threading.Tasks;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.IO;
@@ -107,9 +107,9 @@ namespace BingRewardsBot
         private const int SLEEPTOR = 8 * 1000;
         private const int SLEEPPTS = 5 * 1000;
         private const int SLEEPDP = 20 * 1000;
-        private const int SLEEPDASHBOARD = 27 * 1000;
-        private const int SLEEPMAIN = 15 * 1000;
-        private const int AUTHSHORT = 26 * 1000;
+        private const int SLEEPDASHBOARD = 28 * 1000;
+        private const int SLEEPMAIN = 8 * 1000;
+        private const int AUTHSHORT = 28 * 1000;
         private int vrndnum = 0;
         private int accountVisitedX = 0;
         private List<bool> accountVisited;
@@ -510,7 +510,7 @@ namespace BingRewardsBot
                     )
                 {
                     browser.Navigate(new Uri(BRM + this.siguid));
-
+                    
                     //****************************************************
                     // surpress wb dialog box & double post problem
                     //****************************************************
@@ -541,7 +541,7 @@ namespace BingRewardsBot
                         this.updateUserPts(4242);
 
                         statusTxtBox.Text = "Authenticating";
-                        
+
                         string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
 
                         int z = randomNumber(Convert.ToInt32(auth[0]),
@@ -556,196 +556,25 @@ namespace BingRewardsBot
                         this.dashboardta = false;
                         this.ldashboardta = false;
                         this.Csearch = false;
-
                         this.statusDebug("PC4:");
 
                         //browser.Navigate(new Uri("https://www.google.com"));
-
                         browser.Navigate(new Uri("https://login.live.com/logout.srf"));
                     }
-                 
+
                     //*********************
                     // Continue searches 
                     //*********************
-                }
-                else if (this.checkaccount == false
-                    && (this.Csearch == true || this.clicklist == true)
-                    && this.authLock == true
-                    && (url.Contains(@"search?q=")
-                            || wb.Document.GetElementById("sb_form_q") != null)
-                    && this.statusTxtBox.Text != "Dashboard"
-                    )
-                {
-                    bool autorotate = this.chkbox_autorotate.Checked == true ? true : false;
-
-                    // callback search bot
-                    if (this.pts >= 25 && autorotate == true)
-                    {
-
-                        if (this.timer_tor != null)
-                        {
-                            this.timer_tor.Enabled = false;
-                        }
-
-                        if (this.timer_dashboardta != null)
-                        {
-                            this.timer_dashboardta.Enabled = false;
-                        }
-
-                        string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
-
-                        int z = randomNumber(Convert.ToInt32(auth[0]),
-                            Convert.ToInt32(auth[1]));
-
-                        this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
-                        counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "26 sec.";
-
-                        statusTxtBox.Text = "Authenticating";
-                        this.pts_txtbox.Text = "0";
-
-                        this.authLock = false;
-                        this.counterDx = 0;
-                        this.counterMx = 0;
-                        this.dxloops = 0;
-                        this.mxloops = 0;
-                        
-                        this.vrndnum = 0;
-                        this.iniSearch = false;
-                        this.dashboardta = false;
-                        this.ldashboardta = false;
-                        this.Csearch = false;
-                        this.pts = 0;                        
-
-                        this.statusDebug("Stopped1:");
-
-                    }
-                    else if (this.pts >= 25 && autorotate == false)
-                    {
-                        if (this.timer_tor != null)
-                        {
-                            this.timer_tor.Enabled = false;
-                        }                                              
-
-                        if (this.timer_dashboardta != null)
-                        {
-                            this.timer_dashboardta.Enabled = false;
-                        }
-
-                        this.button1.Text = "Start";
-                        statusTxtBox.Text = "Stop";
-                        counterTxtBox.Text = "0/0";
-                        this.pts_txtbox.Text = "0";
-
-                        this.dxloops = 0;
-                        this.mxloops = 0;
-                        
-                        this.authLock = false;
-                        this.iniSearch = false;
-                        this.dashboardta = false;
-                        this.ldashboardta = false;
-                        this.Csearch = false;
-                        this.statusDebug("Stopped2:");
-                    }
-                    else
-                    {
-                        if (this.timer_tor != null)
-                        {
-                            this.timer_tor.Enabled = false;
-                        }
-                        
-                        if (this.timer_dashboardta != null)
-                        {
-                            this.timer_dashboardta.Enabled = false;
-                        }
-                        
-                        string[] wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
-                        this.timer_searches = randomNumber(Convert.ToInt32(wait[0]),
-                            Convert.ToInt32(wait[1])) * 1000;
-
-                        this.Csearch = false;
-
-                        this.statusDebug("Searching:");
-                    }
-
-                    if (wb.Document.GetElementById("id_rc").InnerText != null)
-                    {
-                        //Thread.Sleep(1000);
-                        int pts = Convert.ToInt32(wb.Document.GetElementById("id_rc").InnerText);
-
-                        //MessageBox.Show(string.Format("Curr P. {0} pts", pts), "Results", MessageBoxButtons.OK);
-                        //MessageBox.Show(string.Format("Prev P. {0} pts", this.prevpts), "Results", MessageBoxButtons.OK);
-
-                        if (pts == 0 || this.pts_txtbox.Text == "-")
-                        {
-                            Thread.Sleep(SLEEPPTS);
-                            pts = Convert.ToInt32(wb.Document.GetElementById("id_rc").InnerText);
-                            if (pts > 0)
-                            {
-                                this.pts_txtbox.Text = Convert.ToString(pts);
-                            }
-                        }
-
-                        //string[] str = this.pts_txtbox.Text.Split(' ');
-                        //if (Convert.ToInt32(str[0]) == 0 || Convert.ToInt32(this.pts_txtbox.Text) == 0 || this.prevpts == 0)
-                        if ((Convert.ToInt32(this.pts_txtbox.Text) == 0 || this.prevpts == 0))
-                        //if ((!this.pts_txtbox.Text.Contains(@"(") && !this.pts_txtbox.Text.Contains(@"-")) || this.prevpts == 0)
-                        {
-                            this.prevpts = pts;
-                            //MessageBox.Show(string.Format("{0} Bing Points", this.prevpts), "Results", MessageBoxButtons.OK);
-                            this.pts_txtbox.Text = "-";
-                        }
-                        else if (pts > this.prevpts)
-                        {
-                            int delta = pts - this.prevpts;
-                            //MessageBox.Show(string.Format("Curr P. {0} delta", delta), "Results", MessageBoxButtons.OK);
-                            this.prevpts = pts;
-                            this.pts += delta;
-
-                            if (delta >= 1 && delta < 4 && this.pts <= 25)
-                            {
-                                int num = this.numIpDate();
-
-                                if (num == 0)
-                                {
-                                    SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                                    dbcon.Open();
-                                    DateTime dateTime = DateTime.UtcNow.Date;
-                                    SQLiteCommand command = new SQLiteCommand("insert into searches (date, ip, account, points) values ('" +
-                                        dateTime.ToString("yyyyMMdd") +
-                                        "','" +
-                                        this.ip +
-                                        "','" +
-                                        this.username +
-                                        "','0')",
-                                        dbcon);
-                                    command.ExecuteNonQuery();
-                                    dbcon.Close();
-                                }
-                                else
-                                {
-                                    SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                                    dbcon.Open();
-                                    DateTime dateTime = DateTime.UtcNow.Date;
-                                    SQLiteCommand command = new SQLiteCommand("update searches set points='" +
-                                        Convert.ToString(this.pts) +
-                                        "' WHERE ip='" +
-                                        this.ip +
-                                        "' and date='" +
-                                        dateTime.ToString("yyyyMMdd") +
-                                        "' and account='" +
-                                        this.username +
-                                        "'",
-                                        dbcon);
-                                    command.ExecuteNonQuery();
-                                    dbcon.Close();
-                                }
-                            }
-
-                            //this.pts_txtbox.Text = Convert.ToString(this.prevpts+this.pts)+" ("+ Convert.ToString(this.pts)+")";
-                            //this.pts_txtbox.Text = Convert.ToString(this.pts) + " (" + Convert.ToString(this.prevpts + this.pts) + ")";
-                            this.pts_txtbox.Text = Convert.ToString(this.pts);
-                        }
-                    }
+                //}
+                //else if (this.checkaccount == false
+                //    && (this.Csearch == true || this.clicklist == true)
+                //    && this.authLock == true
+                //    && (url.Contains(@"search?q=")
+                //            || wb.Document.GetElementById("sb_form_q") != null)
+                //    && this.statusTxtBox.Text != "Dashboard"
+                //    )
+                //{
+                   
 
                     //********************************
                     // Initial dashboard & searches
@@ -760,8 +589,7 @@ namespace BingRewardsBot
                     && !url.Contains(@"https://www.bing.com/rewards/unsupportedmarket")
                     && !url.Contains(@"https://www.bing.com/account/general")
                     )
-                {                  
-
+                {
                     if (this.dashboardta == false
                         && !url.Contains(@"https://www.bing.com/rewards")
                         && !url.Contains(@"http://www.bing.com")
@@ -770,12 +598,12 @@ namespace BingRewardsBot
                     {
                         statusTxtBox.Text = "Dashboard";
                         this.Csearch = false;
-                        
+
                         if (this.timer_tor != null)
                         {
                             this.timer_tor.Enabled = false;
                         }
-                        
+
                         string[] authstr = this.accounts[this.accountNum].Split('/');
                         this.username = authstr[0];
                         this.password = authstr[1];
@@ -787,7 +615,6 @@ namespace BingRewardsBot
                         this.dashboardta = true;
 
                         browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
- 
                     }
                     else if (this.dashboardta == true && this.ldashboardta == false)
                     {
@@ -808,22 +635,21 @@ namespace BingRewardsBot
                             {
                                 HtmlElementCollection links = wb.Document.Links;
                                 foreach (HtmlElement ele in links)
-                                {                               
-                                   if ((ele.GetAttribute("href") != null)
-                                        && ele.GetAttribute("href").Contains(@"state=Active")
-                                        )
-                                        {
-                                            this.toolStripStatusLabel1.Text = ele.GetAttribute("href");
-                                            this.rlink[this.numdashboardta++] = ele.GetAttribute("href");
-                                        }
+                                {
+                                    if ((ele.GetAttribute("href") != null)
+                                         && ele.GetAttribute("href").Contains(@"state=Active")
+                                         )
+                                    {
+                                        this.toolStripStatusLabel1.Text = ele.GetAttribute("href");
+                                        this.rlink[this.numdashboardta++] = ele.GetAttribute("href");
                                     }
                                 }
+                            }
                             catch
                             {
                             }
                             finally
                             {
-      
                             }
 
                             // search parameter
@@ -849,7 +675,7 @@ namespace BingRewardsBot
                             }
                             catch { }
 
-                            Thread.Sleep(SLEEPPTS);
+                            //Thread.Sleep(SLEEPPTS);
                             try
                             {
                                 if (wb.Document.GetElementById("mobsrch1-2-10-NOT_T1T3_Control-Exist").InnerHtml.Contains(@"close-check"))
@@ -886,7 +712,8 @@ namespace BingRewardsBot
                             this.ldashboardta = true;
                             this.timer_dashboardta.Enabled = true;
 
-                        } else
+                        }
+                        else
                         {
                             statusTxtBox.Text = "Dashboard";
                             this.statusDebug("Dashboard:");
@@ -898,7 +725,7 @@ namespace BingRewardsBot
                         if (this.timer_dashboardta != null)
                         {
                             this.timer_dashboardta.Enabled = false;
-                        }                                             
+                        }
 
                         if (this.timer_tor != null)
                         {
@@ -922,7 +749,7 @@ namespace BingRewardsBot
 
                         this.Csearch = false;
                         this.authLock = true;
-                        
+
                         this.statusDebug("Initial searches:");
                     }
                     else
@@ -938,8 +765,8 @@ namespace BingRewardsBot
                     //**************************
                     //&& !String.IsNullOrEmpty(this.siguid) && !String.IsNullOrWhiteSpace(this.siguid)
                 }
-                else if ((url.Contains(@"https://www.bing.com/rewards/dashboard") 
-                    || browserUrlTxtbox.Text == "https://www.bing.com/rewards/dashboard")                    
+                else if ((url.Contains(@"https://www.bing.com/rewards/dashboard")
+                    || browserUrlTxtbox.Text == "https://www.bing.com/rewards/dashboard")
                     && !url.Contains(@"login.live.com")
                     && chkbox_autorotate.Checked == true
                     && this.dashboardta == false
@@ -977,7 +804,7 @@ namespace BingRewardsBot
                         //browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
                         browser.Navigate(new Uri("https://www.bing.com/"));
                     }
-                 
+
                     //********************************
                     // Sign-in 6/5: Extract user sig
                     //********************************
@@ -989,9 +816,9 @@ namespace BingRewardsBot
                     && !url.Contains(@"login.live.com"))
                     && this.dashboardta == false
                 )
-                {   
+                {
                     try
-                    {  
+                    {
                         HtmlElementCollection links = wb.Document.Links;
                         foreach (HtmlElement ele in links)
                         {
@@ -1010,7 +837,7 @@ namespace BingRewardsBot
                                     }
                                 }
                             }
-                        }                        
+                        }
                     }
                     catch { }
 
@@ -1071,7 +898,6 @@ namespace BingRewardsBot
                 }
                 else if (url.Contains(@"https://account.microsoft.com/?lang=en-US&refd=account.live.com&refp=landing"))
                 {
-
                     bool a = false;
 
                     try
@@ -1094,7 +920,6 @@ namespace BingRewardsBot
                         }
                     }
                     catch { }
-
 
                     //prepare extraction & connection
                     if (this.accountVisited[this.accountNum] == false
@@ -1132,7 +957,6 @@ namespace BingRewardsBot
 
                         // first step after user auth (very important) navigate bing.com or bing.com/rewards
                         browser.Navigate(new Uri("https://www.bing.com/rewards"));
-
                     }
                     else if (chkbox_autorotate.Checked == false || this.checkaccount == true
                          && a == false
@@ -1186,16 +1010,13 @@ namespace BingRewardsBot
                         wb.Document.GetElementById("i0116").SetAttribute("value", this.username);
                         wb.Document.GetElementById("i0118").SetAttribute("value", this.password);
                         wb.Document.GetElementById("idSIButton9").InvokeMember("click");
-
-                        this.toolStripStatusLabel1.Text = statusTxtBox.Text = "Working";                                                
+                        this.toolStripStatusLabel1.Text = statusTxtBox.Text = "Working";
                     }
                     else
                     {
                         statusTxtBox.Text = "Error";
                     }
-
-                    //Thread.Sleep(SLEEPPTS);
-
+                    
                     //*********************
                     // Sign-in Step 6/2
                     //*********************
@@ -1221,12 +1042,10 @@ namespace BingRewardsBot
                         this.authLock = false;
                         this.iniSearch = false;
                         this.Csearch = false;
-
                         this.ClearCache();
 
                         // first step before sign-in
                         browser.Navigate(new Uri("https://www.google.com"));
-
                     }
                     else
                     {
@@ -1278,13 +1097,1085 @@ namespace BingRewardsBot
                 }
 
                 ++this.pccounter;
-                this.toolStripStatusLabel1.Text += "#"; 
+                this.toolStripStatusLabel1.Text += "#";
                 // Dispose the WebBrowser now that the task is complete. 
                 //((WebBrowser)sender).Dispose();
             }
             return;
         }
         
+        private void SubmitSearch()
+        {
+            try
+            {
+                if (browser.Document.GetElementById("sb_form_q") != null)
+                {
+                    browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
+
+                    if (browser.Document.GetElementById("sbBtn") != null)
+                    {
+                        browser.Document.GetElementById("sbBtn").InvokeMember("click");
+                    }
+                    else if (browser.Document.GetElementById("sb_form_go") != null)
+                    {
+                        browser.Document.GetElementById("sb_form_go").InvokeMember("click");
+                    }
+                    else
+                    {
+                        browser.Navigate("http://bing.com/search?q=" + this.query);
+                    }
+                }
+            }
+            catch
+            {
+                browser.Navigate("http://bing.com/search?q=" + this.query);
+            }
+        }
+
+        //http://stackoverflow.com/questions/18303758/can-i-wait-for-a-webbrowser-to-finish-navigating-using-a-for-loop
+        async Task DoSearchAsync()
+        {
+            TaskCompletionSource<bool> tcsNavigation = null;
+            TaskCompletionSource<bool> tcsDocument = null;
+
+            browser.Navigated += (s, e) =>
+             {
+                 if (tcsNavigation.Task.IsCompleted)
+                     return;
+                 tcsNavigation.SetResult(true);
+             };
+
+            browser.DocumentCompleted += (s, e) =>
+            {
+                if (this.browser.ReadyState != WebBrowserReadyState.Complete)
+                    return;
+                if (tcsDocument.Task.IsCompleted)
+                    return;
+                tcsDocument.SetResult(true);
+            };
+
+            bool autorotate = BingRewardsBot.Properties.Settings.Default.set_autorotate;
+            bool mobile = BingRewardsBot.Properties.Settings.Default.set_mobile;
+            bool desktop = BingRewardsBot.Properties.Settings.Default.set_desktop;
+
+            // trial version
+            if ((this.trialCountDownReg - (this.trialCountUp * DIVIDE)) < 0 && this.trialstopped == false)
+            {
+                this.trialstopped = true;
+                MessageBox.Show(TRIALOVER);
+
+                // autorotate
+            }
+            else if ((this.counterDx <= 1 && this.counterMx <= 1 && autorotate == true && this.trialstopped == false)
+                || (this.counterDx <= 1 && mobile == false && autorotate == true && this.trialstopped == false)
+                || (this.counterMx <= 1 && desktop == false && autorotate == true && this.trialstopped == false)
+                && this.pts >= 25
+                )
+            {
+                this.Csearch = false;
+
+                if (this.timer_dashboardta != null)
+                {
+                    this.timer_dashboardta.Enabled = false;
+                }
+
+                // accounts visited
+                int v = 0;
+                //for (int i = 0, b = this.accountVisited.Count; i < b; i++)
+                //{
+                //    if (this.accountVisited[i] == false)
+                //    {
+                //        ++v;
+                //    }
+                //}
+                foreach (bool ele in this.accountVisited)
+                {
+                    if (ele == false)
+                    {
+                        ++v;
+                    };
+                }
+
+                if (v > 0)
+                {
+                    string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
+                    int z = randomNumber(Convert.ToInt32(auth[0]),
+                        Convert.ToInt32(auth[1]));
+
+                    this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
+                    counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "26 sec.";
+
+                    this.accountVisited[this.accountNum] = true;
+                    ++this.accountVisitedX;
+
+                    this.qpage = 0;
+                    this.dxloops = 0;
+                    this.mxloops = 0;
+
+                    this.vrndnum = 0;
+                    this.iniSearch = false;
+                    this.dashboardta = false;
+                    this.ldashboardta = false;
+                    this.Csearch = false;
+                    this.authLock = false;
+
+                    this.statusTxtBox.Text = "Authenticating";
+
+                    this.prevpts = 0;
+                    this.pts = 0;
+                    this.pts_txtbox.Text = "0";
+
+                    this.statusDebug("Visited1:");
+                    this.ClearCache();
+
+                    //browser.Navigate(new Uri("http://www.google.com"));
+                    browser.Navigate(new Uri("https://login.live.com/logout.srf"));
+
+                }
+                else
+                {
+                    if (Convert.ToInt16(pts_txtbox.Text) >= 25
+                        || String.IsNullOrEmpty(pts_txtbox.Text)
+                        || pts_txtbox.Text == "0"
+                        || pts_txtbox.Text == "-")
+                    {
+                        SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                        dbcon.Open();
+                        DateTime dateTime = DateTime.UtcNow.Date;
+                        SQLiteCommand command = new SQLiteCommand("update searches set points='4242' WHERE ip='" +
+                            this.ip +
+                            "' and date='" +
+                            dateTime.ToString("yyyyMMdd") +
+                            "' and account='" +
+                            this.username +
+                            "'",
+                            dbcon);
+                        command.ExecuteNonQuery();
+                        dbcon.Close();
+                    }
+
+                    this.button1.Text = "Start";
+                    statusTxtBox.Text = "Stop";
+                    counterTxtBox.Text = "0/0";
+                    this.dxloops = 0;
+                    this.mxloops = 0;
+                    this.vrndnum = 0;
+                    this.authLock = false;
+                    this.iniSearch = false;
+                    this.dashboardta = false;
+                    this.ldashboardta = false;
+                    this.Csearch = false;
+                    this.statusDebug("Completed2:");
+                }
+
+                // semi-automatic
+            }
+            else if (this.counterDx <= 1 && this.counterMx <= 1 && autorotate == false && this.trialstopped == false
+                || (this.counterDx <= 1 && mobile == false && autorotate == false && this.trialstopped == false)
+                || (this.counterMx <= 1 && desktop == false && autorotate == false && this.trialstopped == false)
+                && this.pts >= 25
+                )
+            {
+                this.qpage = 0;
+
+                // full searches
+                //this.checkaccount = false;
+                this.Csearch = false;
+
+                if (this.timer_dashboardta != null)
+                {
+                    this.timer_dashboardta.Enabled = false;
+                }
+
+                this.button1.Text = "Start";
+                statusTxtBox.Text = "Stop";
+                counterTxtBox.Text = "0/0";
+                this.dxloops = 0;
+                this.mxloops = 0;
+                this.vrndnum = 0;
+                this.authLock = false;
+                this.iniSearch = false;
+                this.dashboardta = false;
+                this.ldashboardta = false;
+                this.Csearch = false;
+            }
+            else if (this.trialstopped == false)
+            {
+                this.Csearch = false;
+
+                // max out
+                if (this.counterDx <= 1 && this.dxloops < MAXLOOPS)
+                {
+                    this.dxloops++;
+                    string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                    this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                        Convert.ToInt32(wait[1]));
+                }
+
+                if (this.counterMx <= 1 && this.mxloops < MAXLOOPS)
+                {
+                    this.mxloops++;
+                    string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                    this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                        Convert.ToInt32(wait[1]));
+                }
+
+                // searches loop
+                ++this.trialCountUp;
+                double x = (double)100 / FREEX;
+                double z = x * (this.trialCountDownReg - (this.trialCountUp * DIVIDE));
+                this.Text = TITLE + Math.Round(z) + "% Shareware";
+
+                //**************************
+                // default search
+                //**************************
+                if (randomNumber(0, 11) > randomNumber(0, 3))
+                {
+                    this.qpage = 0;
+
+                    this.query = this.words[randomNumber(0, this.words.Count)];
+                    if (randomNumber(0, 12) > (randomNumber(0, 6)))
+                    {
+                        this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                    }
+                    if (randomNumber(0, 12) > (randomNumber(0, 3)))
+                    {
+                        this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                    }
+
+                    // mobile searches
+                    if ((randomNumber(0, 9) > (randomNumber(3, 7)) && this.counterMx >= 0 && mobile == true) ||
+                        ((mobile == true && this.counterDx <= 0) || (mobile == true && desktop == false))
+                        )
+                    {
+                        statusTxtBox.Text = "Mobilesearches";
+                        --this.counterMx;
+                        counterTxtBox.Text = (this.countDownMobile - this.counterMx) +
+                            "/" + this.countDownMobile;
+                        this.Csearch = true;
+
+                        try
+                        {
+                            if (browser.Document.GetElementById("sb_form_q") != null)
+                            {
+                                this.ChangeUserAgent(this.txtboxcustommobile.Text);
+
+                                if (browser.Document.GetElementById("sb_form_q") != null)
+                                {
+                                    browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
+
+                                    if (browser.Document.GetElementById("sbBtn") != null)
+                                    {
+                                        browser.Document.GetElementById("sbBtn").InvokeMember("click");
+                                    }
+                                    else if (browser.Document.GetElementById("sb_form_go") != null)
+                                    {
+                                        browser.Document.GetElementById("sb_form_go").InvokeMember("click");
+                                    }
+                                    else
+                                    {
+                                        browser.Navigate("http://bing.com/search?q=" + this.query);
+                                    }
+                                }
+                            }
+                            else if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
+                            {
+                                this.clicklist = false;
+                                browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                    + this.clickref);
+                            }
+                            else
+                            {
+                                this.clicklist = false;
+                                browser.Navigate("http://bing.com/search?q=" + this.query);
+
+                            }
+                        }
+                        catch
+                        {
+                            if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
+                            {
+                                this.clicklist = false;
+                                browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                    + this.clickref);
+                            }
+                            else
+                            {
+                                this.clicklist = false;
+                                browser.Navigate("http://bing.com/search?q=" + this.query);
+                            }
+                        }
+
+                        // desktop searches
+                    }
+                    else if (this.counterDx >= 0 && desktop == true)
+                    {
+                        statusTxtBox.Text = "Desktopsearches";
+                        --this.counterDx;
+                        counterTxtBox.Text = (this.countDownDesktop - this.counterDx) + "/"
+                            + this.countDownDesktop;
+                        this.Csearch = true;
+
+                        try
+                        {
+                            if (browser.Document.GetElementById("sb_form_q") != null)
+                            {
+                                this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
+
+                                if (browser.Document.GetElementById("sb_form_q") != null)
+                                {
+                                    browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
+
+                                    if (browser.Document.GetElementById("sbBtn") != null)
+                                    {
+                                        browser.Document.GetElementById("sbBtn").InvokeMember("click");
+                                    }
+                                    else if (browser.Document.GetElementById("sb_form_go") != null)
+                                    {
+                                        browser.Document.GetElementById("sb_form_go").InvokeMember("click");
+                                    }
+                                    else
+                                    {
+                                        browser.Navigate("http://bing.com/search?q=" + this.query);
+                                    }
+                                }
+                            }
+                            else if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
+                            {
+                                this.clicklist = false;
+                                browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                    + this.clickref);
+                            }
+                            else
+                            {
+                                this.clicklist = false;
+                                browser.Navigate("http://bing.com/search?q=" + this.query);
+                            }
+                        }
+                        catch
+                        {
+                            if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
+                            {
+                                this.clicklist = false;
+                                browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: " +
+                                    this.clickref);
+                            }
+                            else
+                            {
+                                this.clicklist = false;
+                                browser.Navigate("http://bing.com/search?q=" + this.query);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    //**************************
+                    // special search
+                    //**************************
+
+                    if (statusTxtBox.Text == "Mobilesearches")
+                    {
+                        this.ChangeUserAgent(this.txtboxcustommobile.Text);
+                    }
+                    else
+                    {
+                        this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
+                    }
+
+                    //**************************
+                    // human search (click)
+                    //**************************
+                    this.Csearch = true;
+
+                    if (randomNumber(0, 7) > randomNumber(0, 9))
+                    {
+                        // Creates an HtmlDocument object from an URL
+                        //HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                        //doc.LoadHtml(browser.Document.All);
+
+                        int c = 0;
+                        string[] links = new string[10];
+
+                        try
+                        {
+                            HtmlElementCollection elemColl = browser.Document.Links;
+                            if (elemColl.Count > 0)
+                            {
+                                foreach (HtmlElement ele in elemColl)
+                                {
+                                    if (ele.Parent.TagName == "H2" && c < 10)
+                                    {
+                                        links[c++] = ele.GetAttribute("href");
+                                    }
+                                    //MessageBox.Show(ele.InnerText + ele.Parent.TagName);
+                                }
+                            }
+                        }
+                        catch { }
+
+
+                        if (c == 0)
+                        {
+                            this.qpage = 0;
+
+                            if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
+                            {
+                                this.clicklist = false;
+                                this.Csearch = true;
+                                browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                    + this.clickref);
+                            }
+                            else if (statusTxtBox.Text == "Mobilesearches")
+                            {
+                                // mobile
+                                --this.counterMx;
+                                counterTxtBox.Text = (this.countDownMobile - this.counterMx) + "/"
+                                    + this.countDownMobile;
+                                this.Csearch = true;
+                                this.clicklist = false;
+
+                                this.query = this.words[randomNumber(0, this.words.Count)];
+                                if (randomNumber(0, 12) > (randomNumber(0, 6)))
+                                {
+                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                }
+                                if (randomNumber(0, 12) > (randomNumber(0, 3)))
+                                {
+                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                }
+
+                                this.SubmitSearch();
+                            }
+                            else
+                            {
+                                // desktop
+                                --this.counterDx;
+                                counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
+                                    + "/" + this.countDownDesktop;
+                                this.Csearch = true;
+                                this.clicklist = false;
+
+                                this.query = this.words[randomNumber(0, this.words.Count)];
+                                if (randomNumber(0, 12) > (randomNumber(0, 6)))
+                                {
+                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                }
+                                if (randomNumber(0, 12) > (randomNumber(0, 3)))
+                                {
+                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                }
+
+                                this.SubmitSearch();
+                            }
+                        }
+                        else if (c == 1)
+                        {
+                            //this.clicklist = true;
+                            this.clicklink = this.browserUrlTxtbox.Text;
+                            try
+                            {
+                                this.clickref = links[0];
+                                if (!String.IsNullOrEmpty(this.clicklink))
+                                {
+                                    this.Csearch = true;
+                                    browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                        + this.clickref);
+                                }
+                            }
+                            catch { }
+
+                        }
+                        else if (c > 1)
+                        {
+                            c = randomNumber(0, c - 1);
+                            this.clicklink = this.browserUrlTxtbox.Text;
+
+                            try
+                            {
+                                this.clickref = links[c];
+                                if (!String.IsNullOrEmpty(this.clicklink))
+                                {
+                                    this.Csearch = true;
+                                    browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                        + this.clickref);
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+                    else
+
+                    {   //****************
+                        // pagination
+                        //****************
+
+                        int c = 0; int j = 0; string[] links = new string[4];
+
+                        try
+                        {
+                            HtmlElementCollection elemColl = browser.Document.Links;
+                            foreach (HtmlElement ele in elemColl)
+                            {
+                                if (ele.Parent.TagName == "LI" && Int32.TryParse(ele.InnerText, out j))
+                                {
+                                    //MessageBox.Show(ele.InnerText + ele.Parent.TagName);
+                                    if (j >= 1 && j <= 10 && c < 4)
+                                    {
+                                        links[c++] = ele.GetAttribute("href");
+                                    }
+                                }
+                            }
+                        }
+                        catch { }
+
+                        if (c == 0)
+                        {
+                            this.qpage = 0;
+
+                            if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
+                            {
+                                this.clicklist = false;
+                                this.Csearch = true;
+                                browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                    + this.clickref);
+                            }
+                            else if (statusTxtBox.Text == "Mobilesearches")
+                            {
+                                // mobile
+                                --this.counterMx;
+                                counterTxtBox.Text = (this.countDownMobile - this.counterMx)
+                                    + "/" + this.countDownMobile;
+                                this.Csearch = true;
+                                this.clicklist = false;
+
+                                this.query = this.words[randomNumber(0, this.words.Count)];
+                                if (randomNumber(0, 12) > (randomNumber(0, 6)))
+                                {
+                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                }
+                                if (randomNumber(0, 12) > (randomNumber(0, 3)))
+                                {
+                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                }
+
+                                this.SubmitSearch();
+                            }
+                            else
+                            {
+                                // desktop
+                                --this.counterDx;
+                                counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
+                                    + "/" + this.countDownDesktop;
+                                this.Csearch = true;
+                                this.clicklist = false;
+
+                                this.query = this.words[randomNumber(0, this.words.Count)];
+                                if (randomNumber(0, 12) > (randomNumber(0, 6)))
+                                {
+                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                }
+                                if (randomNumber(0, 12) > (randomNumber(0, 3)))
+                                {
+                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                }
+                                this.SubmitSearch();
+                            }
+                        }
+                        else if (c > 0)
+                        {
+                            this.Csearch = true;
+                            try
+                            {
+                                if (this.qpage == 0 && !String.IsNullOrEmpty(links[0]))
+                                {
+                                    this.qpage = 1;
+                                    browser.Navigate(new Uri(links[0]));
+                                }
+                                else if (this.qpage == 1 && !String.IsNullOrEmpty(links[1]))
+                                {
+                                    this.qpage = 2;
+                                    browser.Navigate(new Uri(links[1]));
+                                }
+                                else if (this.qpage == 2 && !String.IsNullOrEmpty(links[2]))
+                                {
+                                    this.qpage = 3;
+                                    browser.Navigate(new Uri(links[2]));
+                                }
+                                else if (this.qpage == 3)
+                                {
+                                    this.qpage = 0;
+
+                                    this.query = this.words[randomNumber(0, this.words.Count)];
+                                    if (randomNumber(0, 12) > (randomNumber(0, 6)))
+                                    {
+                                        this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                    }
+                                    if (randomNumber(0, 12) > (randomNumber(0, 3)))
+                                    {
+                                        this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                                    }
+
+                                    if (statusTxtBox.Text == "Mobilesearches")
+                                    {
+                                        // mobile
+                                        --this.counterMx;
+                                        counterTxtBox.Text = (this.countDownMobile - this.counterMx)
+                                            + "/" + this.countDownMobile;
+                                        this.Csearch = true;
+                                        this.SubmitSearch();
+                                    }
+                                    else
+                                    {
+                                        // desktop
+                                        --this.counterDx;
+                                        counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
+                                            + "/" + this.countDownDesktop;
+                                        this.Csearch = true;
+                                        this.SubmitSearch();
+                                    }
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+                }
+            }
+            await tcsNavigation.Task;
+            await tcsDocument.Task;
+
+            autorotate = this.chkbox_autorotate.Checked == true ? true : false;
+
+            // callback search bot
+            if (this.pts >= 25 && autorotate == true)
+            {
+                if (this.timer_tor != null)
+                {
+                    this.timer_tor.Enabled = false;
+                }
+
+                if (this.timer_dashboardta != null)
+                {
+                    this.timer_dashboardta.Enabled = false;
+                }
+
+                string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
+
+                int z = randomNumber(Convert.ToInt32(auth[0]),
+                    Convert.ToInt32(auth[1]));
+
+                this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
+                counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "26 sec.";
+
+                statusTxtBox.Text = "Authenticating";
+                this.pts_txtbox.Text = "0";
+                this.authLock = false;
+                this.counterDx = 0;
+                this.counterMx = 0;
+                this.dxloops = 0;
+                this.mxloops = 0;
+                this.vrndnum = 0;
+                this.iniSearch = false;
+                this.dashboardta = false;
+                this.ldashboardta = false;
+                this.Csearch = false;
+                this.pts = 0;
+                this.statusDebug("Stopped1:");
+            }
+            else if (this.pts >= 25 && autorotate == false)
+            {
+                if (this.timer_tor != null)
+                {
+                    this.timer_tor.Enabled = false;
+                }
+
+                if (this.timer_dashboardta != null)
+                {
+                    this.timer_dashboardta.Enabled = false;
+                }
+
+                this.button1.Text = "Start";
+                statusTxtBox.Text = "Stop";
+                counterTxtBox.Text = "0/0";
+                this.pts_txtbox.Text = "0";
+                this.dxloops = 0;
+                this.mxloops = 0;
+                this.authLock = false;
+                this.iniSearch = false;
+                this.dashboardta = false;
+                this.ldashboardta = false;
+                this.Csearch = false;
+                this.statusDebug("Stopped2:");
+            }
+            else
+            {
+                if (this.timer_tor != null)
+                {
+                    this.timer_tor.Enabled = false;
+                }
+
+                if (this.timer_dashboardta != null)
+                {
+                    this.timer_dashboardta.Enabled = false;
+                }
+
+                string[] wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
+                this.timer_searches = randomNumber(Convert.ToInt32(wait[0]),
+                    Convert.ToInt32(wait[1])) * 1000;
+
+                this.Csearch = false;
+                this.statusDebug("Searching:");
+            }
+
+            if (browser.Document.GetElementById("id_rc").InnerText != null)
+            {
+                //Thread.Sleep(1000);
+                int pts = Convert.ToInt32(browser.Document.GetElementById("id_rc").InnerText);
+
+                //MessageBox.Show(string.Format("Curr P. {0} pts", pts), "Results", MessageBoxButtons.OK);
+                //MessageBox.Show(string.Format("Prev P. {0} pts", this.prevpts), "Results", MessageBoxButtons.OK);
+
+                if (pts == 0 || this.pts_txtbox.Text == "-")
+                {
+                    //Thread.Sleep(SLEEPPTS);
+                    pts = Convert.ToInt32(browser.Document.GetElementById("id_rc").InnerText);
+                    if (pts > 0)
+                    {
+                        this.pts_txtbox.Text = Convert.ToString(pts);
+                    }
+                }
+
+                //string[] str = this.pts_txtbox.Text.Split(' ');
+                //if (Convert.ToInt32(str[0]) == 0 || Convert.ToInt32(this.pts_txtbox.Text) == 0 || this.prevpts == 0)
+                if ((Convert.ToInt32(this.pts_txtbox.Text) == 0 || this.prevpts == 0))
+                //if ((!this.pts_txtbox.Text.Contains(@"(") && !this.pts_txtbox.Text.Contains(@"-")) || this.prevpts == 0)
+                {
+                    this.prevpts = pts;
+                    //MessageBox.Show(string.Format("{0} Bing Points", this.prevpts), "Results", MessageBoxButtons.OK);
+                    this.pts_txtbox.Text = "-";
+                }
+                else if (pts > this.prevpts)
+                {
+                    int delta = pts - this.prevpts;
+                    //MessageBox.Show(string.Format("Curr P. {0} delta", delta), "Results", MessageBoxButtons.OK);
+                    this.prevpts = pts;
+                    this.pts += delta;
+
+                    if (delta >= 1 && delta < 4 && this.pts <= 25)
+                    {
+                        int num = this.numIpDate();
+
+                        if (num == 0)
+                        {
+                            SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                            dbcon.Open();
+                            DateTime dateTime = DateTime.UtcNow.Date;
+                            SQLiteCommand command = new SQLiteCommand("insert into searches (date, ip, account, points) values ('" +
+                                dateTime.ToString("yyyyMMdd") +
+                                "','" +
+                                this.ip +
+                                "','" +
+                                this.username +
+                                "','0')",
+                                dbcon);
+                            command.ExecuteNonQuery();
+                            dbcon.Close();
+                        }
+                        else
+                        {
+                            SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                            dbcon.Open();
+                            DateTime dateTime = DateTime.UtcNow.Date;
+                            SQLiteCommand command = new SQLiteCommand("update searches set points='" +
+                                Convert.ToString(this.pts) +
+                                "' WHERE ip='" +
+                                this.ip +
+                                "' and date='" +
+                                dateTime.ToString("yyyyMMdd") +
+                                "' and account='" +
+                                this.username +
+                                "'",
+                                dbcon);
+                            command.ExecuteNonQuery();
+                            dbcon.Close();
+                        }
+                    }
+
+                    //this.pts_txtbox.Text = Convert.ToString(this.prevpts+this.pts)+" ("+ Convert.ToString(this.pts)+")";
+                    //this.pts_txtbox.Text = Convert.ToString(this.pts) + " (" + Convert.ToString(this.prevpts + this.pts) + ")";
+                    this.pts_txtbox.Text = Convert.ToString(this.pts);
+                }
+            }
+
+            //await tcsNavigation.Task;
+            //await tcsDocument.Task;
+ 
+        }
+
+        async Task DoAuthAsync()
+        {
+            TaskCompletionSource<bool> tcsNavigation = null;
+            TaskCompletionSource<bool> tcsDocument = null;
+
+            this.browser.Navigated += (s, e) =>
+            {
+                if (tcsNavigation.Task.IsCompleted)
+                    return;
+                tcsNavigation.SetResult(true);
+            };
+
+            this.browser.DocumentCompleted += (s, e) =>
+            {
+                if (this.browser.ReadyState != WebBrowserReadyState.Complete)
+                    return;
+                if (tcsDocument.Task.IsCompleted)
+                    return;
+                tcsDocument.SetResult(true);
+            };
+
+            string[] authstr = new string[4];
+            this.statusDebug("Initial Auth:");
+
+            ++this.vrndnum;
+
+            //********************
+            // random visited
+            //********************
+
+            if (this.vrndnum < accounts.Count()
+                && this.checkaccount == false
+                && (this.authLock == false)
+                )
+            {
+                this.subgetip();
+
+                int a = 0;
+                int i = 0;
+                int[] v = new int[accountVisited.Count];
+
+                //for (int i = 0, b = this.accountVisited.Count; i < b; i++)
+                //{
+                //    if (this.accountVisited[i] == false)
+                //    {
+                //        v[a++] = i;
+                //    }
+                //}
+
+                foreach (bool ele in this.accountVisited)
+                {
+                    if (ele == false)
+                    {
+                        v[a++] = i;
+                    };
+                    ++i;
+                }
+
+                this.accountNum = v[this.randomNumber(0, a)];
+
+                Array.Clear(authstr, 0, authstr.Length);
+                authstr = this.accounts[this.accountNum].Split('/');
+
+                this.username = authstr[0];
+                this.password = authstr[1];
+
+                SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                dbcon.Open();
+                DateTime dateTime = DateTime.UtcNow.Date;
+                SQLiteCommand command = new SQLiteCommand("select count(*) from searches where account='" +
+                    this.username +
+                    "' and date='" +
+                    dateTime.ToString("yyyyMMdd") +
+                    "'",
+                    dbcon);
+                SQLiteDataReader reader = command.ExecuteReader();
+
+                int num = 0;
+                while (reader.Read())
+                {
+                    num = Convert.ToInt32(reader["count(*)"]);
+                }
+                dbcon.Close();
+
+                if (num > 0)
+                {
+                    dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                    dbcon.Open();
+                    command = new SQLiteCommand("select * from searches where date='" +
+                        dateTime.ToString("yyyyMMdd") +
+                        "' and points<>4242" +
+                        " and account='" +
+                        this.username +
+                        "' order by ip,points",
+                        dbcon);
+                    reader = command.ExecuteReader();
+
+                    int pts = 0;
+                    while (reader.Read())
+                    {
+                        if (reader["points"] != null)
+                        {
+                            pts += Convert.ToInt32(reader["points"]);
+                        }
+                    }
+                    dbcon.Close();
+                }
+
+                if (pts < 25 &&
+                    this.accountVisited[this.accountNum] == false && this.country == "US")
+                {
+                    //http://stackoverflow.com/questions/904478/how-to-fix-the-memory-leak-in-ie-webbrowser-control
+                    IntPtr pHandle = GetCurrentProcess();
+                    SetProcessWorkingSetSize(pHandle, -1, -1);
+
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+
+                    // use global variable 
+                    this.authLock = true;
+                    this.vrndnum = 0;
+                    this.dashboardta = false;
+                    this.ldashboardta = false;
+                    this.iniSearch = false;
+
+                    string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                    this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                        Convert.ToInt32(wait[1]));
+                    this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                        Convert.ToInt32(wait[1]));
+
+                    this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
+
+                    this.statusDebug("PC1:");
+                    this.toolStripStatusLabel1.Text += "|pts:" + pts;
+
+                    // first step before sign-in
+                    browser.Navigate(new Uri("https://login.live.com/logout.srf"));
+                }
+                else
+                {
+                    ++this.accountVisitedX;
+                    this.accountVisited[this.accountNum] = false;
+
+                    if (randomNumber(0, 12) > (randomNumber(0, 6)))
+                    {
+                        this.toridswitcher();
+                    }
+
+                    this.dxloops = 0;
+                    this.mxloops = 0;
+                    this.iniSearch = false;
+                    this.dashboardta = false;
+                    this.ldashboardta = false;
+                    this.Csearch = false;
+
+                    try
+                    {
+                        num = this.numIpDate();
+
+                        if (num == 0)
+                        {
+                            dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                            dbcon.Open();
+                            dateTime = DateTime.UtcNow.Date;
+                            command = new SQLiteCommand("insert into searches (date, ip, account, points) values ('" +
+                                dateTime.ToString("yyyyMMdd") +
+                                "','" +
+                                this.ip +
+                                "','" +
+                                this.username +
+                                "','4242')",
+                                dbcon);
+                            command.ExecuteNonQuery();
+                            dbcon.Close();
+                        }
+                        //else
+                        //{
+                        //    dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                        //    dbcon.Open();
+                        //    dateTime = DateTime.UtcNow.Date;
+                        //    command = new SQLiteCommand("update searches set points=4242 WHERE ip='" +
+                        //         this.ip +
+                        //         "' and date='" +
+                        //         dateTime.ToString("yyyyMMdd") +
+                        //         "' and account='" +
+                        //         this.username +
+                        //         "';", dbcon);
+                        //    command.ExecuteNonQuery();
+                        //    dbcon.Close();
+                        //}                        
+                    }
+                    catch { }
+
+                    if ((this.country != "US"
+                       && chkbox_tor.Checked == true))
+                    {
+                        this.toridswitcher();
+                    }
+
+                    statusTxtBox.Text = "Authenticating";
+
+                    string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
+
+                    int z = randomNumber(Convert.ToInt32(auth[0]),
+                        Convert.ToInt32(auth[1]));
+
+                    this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
+                    counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "26 sec.";
+
+                    this.authLock = false;
+                    this.statusDebug("PC3:");
+                }
+            }
+            else if (this.checkaccount == false)
+            {
+                statusTxtBox.Text = "Authenticating";
+
+                string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
+                int z = randomNumber(Convert.ToInt32(auth[0]),
+                    Convert.ToInt32(auth[1]));
+
+                this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
+                counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "26 sec.";
+
+                this.authLock = false;
+                this.iniSearch = false;
+                this.dashboardta = false;
+                this.ldashboardta = false;
+                this.Csearch = false;
+                this.statusDebug("PC5:");
+            }
+            else if (this.checkaccount == true)
+            {
+                string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                    Convert.ToInt32(wait[1]));
+                this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                    Convert.ToInt32(wait[1]));
+
+                authstr = this.accounts[this.accountNum].Split('/');
+                this.username = authstr[0];
+                this.password = authstr[1];
+
+                this.dxloops = 0;
+                this.mxloops = 0;
+                this.authLock = true;
+                this.dashboardta = false;
+                this.ldashboardta = false;
+                this.iniSearch = false;
+
+                this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
+                this.ClearCache();
+
+                // first step before sign-in
+                this.browser.Navigate(new Uri("https://login.live.com/logout.srf"));
+            }
+
+            await tcsNavigation.Task;
+            await tcsDocument.Task;
+
+        }
+
         //**********************
         // Earn dashboardta
         //***********************
@@ -1358,764 +2249,26 @@ namespace BingRewardsBot
                 if (this.iniSearch == true && this.authLock == true && this.button1.Text == "Stop")
                 {
                     //extra time for browser (loading)
-                    Thread.Sleep(15*1000);
+                    //Thread.Sleep(15*1000);
 
                     //individual time
                     Thread.Sleep(this.timer_searches);
 
-                    bool autorotate = BingRewardsBot.Properties.Settings.Default.set_autorotate;
-                    bool mobile = BingRewardsBot.Properties.Settings.Default.set_mobile;
-                    bool desktop = BingRewardsBot.Properties.Settings.Default.set_desktop;
+                    // if context is null, an exception of
+                    // The current SynchronizationContext may not be used as a TaskScheduler.
+                    // will be thrown
+                    if (SynchronizationContext.Current == null)
+                        SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
-                    // trial version
-                    if ((this.trialCountDownReg - (this.trialCountUp * DIVIDE)) < 0 && this.trialstopped == false)
+                    //TaskScheduler.FromCurrentSynchronizationContext();
+
+                    var task = DoSearchAsync();
+                    task.ContinueWith((t) =>
                     {
-                        this.trialstopped = true;
-                        MessageBox.Show(TRIALOVER);
+                        this.statusDebug("Searching:");
 
-                        // autorotate
-                    }
-                    else if ((this.counterDx <= 1 && this.counterMx <= 1 && autorotate == true && this.trialstopped == false)
-                        || (this.counterDx <= 1 && mobile == false && autorotate == true && this.trialstopped == false)
-                        || (this.counterMx <= 1 && desktop == false && autorotate == true && this.trialstopped == false)
-                        && this.pts >= 25
-                        )
-                    {
-                        this.Csearch = false;
+                    }, TaskScheduler.FromCurrentSynchronizationContext());
 
-                        if (this.timer_dashboardta != null)
-                        {
-                            this.timer_dashboardta.Enabled = false;
-                        }
-
-                        // accounts visited
-                        int v = 0;
-                        //for (int i = 0, b = this.accountVisited.Count; i < b; i++)
-                        //{
-                        //    if (this.accountVisited[i] == false)
-                        //    {
-                        //        ++v;
-                        //    }
-                        //}
-                        foreach (bool ele in this.accountVisited)
-                        {
-                            if (ele == false)
-                            {
-                                ++v;
-                            };
-                        }
-
-                        if (v > 0)
-                        {
-                            string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
-                            int z = randomNumber(Convert.ToInt32(auth[0]),
-                                Convert.ToInt32(auth[1]));
-
-                            this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
-                            counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "26 sec.";
-
-                            this.accountVisited[this.accountNum] = true;
-                            ++this.accountVisitedX;
-
-                            this.qpage = 0;
-                            this.dxloops = 0;
-                            this.mxloops = 0;
-
-                            this.vrndnum = 0;
-                            this.iniSearch = false;
-                            this.dashboardta = false;
-                            this.ldashboardta = false;
-                            this.Csearch = false;
-                            this.authLock = false;
-
-                            this.statusTxtBox.Text = "Authenticating";
-
-                            this.prevpts = 0;
-                            this.pts = 0;
-                            this.pts_txtbox.Text = "0";
-
-                            this.statusDebug("Visited1:");
-                            this.ClearCache();
-
-                            //browser.Navigate(new Uri("http://www.google.com"));
-                            browser.Navigate(new Uri("https://login.live.com/logout.srf"));
-
-                        }
-                        else
-                        {
-                            if (Convert.ToInt16(pts_txtbox.Text) >= 25
-                                || String.IsNullOrEmpty(pts_txtbox.Text)
-                                || pts_txtbox.Text == "0"
-                                || pts_txtbox.Text == "-")
-                            {
-                                SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                                dbcon.Open();
-                                DateTime dateTime = DateTime.UtcNow.Date;
-                                SQLiteCommand command = new SQLiteCommand("update searches set points='4242' WHERE ip='" +
-                                    this.ip +
-                                    "' and date='" +
-                                    dateTime.ToString("yyyyMMdd") +
-                                    "' and account='" +
-                                    this.username +
-                                    "'",
-                                    dbcon);
-                                command.ExecuteNonQuery();
-                                dbcon.Close();
-                            }
-
-                            this.button1.Text = "Start";
-                            statusTxtBox.Text = "Stop";
-                            counterTxtBox.Text = "0/0";
-                            this.dxloops = 0;
-                            this.mxloops = 0;
-                            this.vrndnum = 0;
-                            this.authLock = false;
-                            this.iniSearch = false;
-                            this.dashboardta = false;
-                            this.ldashboardta = false;
-                            this.Csearch = false;
-                            this.statusDebug("Completed2:");
-                        }
-
-                        // semi-automatic
-                    }
-                    else if (this.counterDx <= 1 && this.counterMx <= 1 && autorotate == false && this.trialstopped == false
-                        || (this.counterDx <= 1 && mobile == false && autorotate == false && this.trialstopped == false)
-                        || (this.counterMx <= 1 && desktop == false && autorotate == false && this.trialstopped == false)
-                        && this.pts >= 25
-                        )
-                    {
-                        this.qpage = 0;
-
-                        // full searches
-                        //this.checkaccount = false;
-                        this.Csearch = false;
-
-                        if (this.timer_dashboardta != null)
-                        {
-                            this.timer_dashboardta.Enabled = false;
-                        }
-
-                        this.button1.Text = "Start";
-                        statusTxtBox.Text = "Stop";
-                        counterTxtBox.Text = "0/0";
-                        this.dxloops = 0;
-                        this.mxloops = 0;
-                        this.vrndnum = 0;
-                        this.authLock = false;
-                        this.iniSearch = false;
-                        this.dashboardta = false;
-                        this.ldashboardta = false;
-                        this.Csearch = false;
-                    }
-                    else if (this.trialstopped == false)
-                    {
-                        this.Csearch = false;
-
-                        // max out
-                        if (this.counterDx <= 1 && this.dxloops < MAXLOOPS)
-                        {
-                            this.dxloops++;
-                            string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
-                            this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
-                                Convert.ToInt32(wait[1]));
-                        }
-
-                        if (this.counterMx <= 1 && this.mxloops < MAXLOOPS)
-                        {
-                            this.mxloops++;
-                            string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
-                            this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
-                                Convert.ToInt32(wait[1]));
-                        }
-
-                        // searches loop
-                        ++this.trialCountUp;
-                        double x = (double)100 / FREEX;
-                        double z = x * (this.trialCountDownReg - (this.trialCountUp * DIVIDE));
-                        this.Text = TITLE + Math.Round(z) + "% Shareware";
-
-                        //**************************
-                        // default search
-                        //**************************
-                        if (randomNumber(0, 11) > randomNumber(0, 3))
-                        {
-                            this.qpage = 0;
-
-                            this.query = this.words[randomNumber(0, this.words.Count)];
-                            if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                            {
-                                this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                            }
-                            if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                            {
-                                this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                            }
-
-                            // mobile searches
-                            if ((randomNumber(0, 9) > (randomNumber(3, 7)) && this.counterMx >= 0 && mobile == true) ||
-                                ((mobile == true && this.counterDx <= 0) || (mobile == true && desktop == false))
-                                )
-                            {
-                                statusTxtBox.Text = "Mobilesearches";
-                                --this.counterMx;
-                                counterTxtBox.Text = (this.countDownMobile - this.counterMx) +
-                                    "/" + this.countDownMobile;
-                                this.Csearch = true;
-
-                                try
-                                {
-                                    if (browser.Document.GetElementById("sb_form_q") != null)
-                                    {
-                                        this.ChangeUserAgent(this.txtboxcustommobile.Text);
-
-                                        if (browser.Document.GetElementById("sb_form_q") != null)
-                                        {
-                                            browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-
-                                            if (browser.Document.GetElementById("sbBtn") != null)
-                                            {
-                                                browser.Document.GetElementById("sbBtn").InvokeMember("click");
-                                            }
-                                            else if (browser.Document.GetElementById("sb_form_go") != null)
-                                            {
-                                                browser.Document.GetElementById("sb_form_go").InvokeMember("click");
-                                            }
-                                            else
-                                            {
-                                                browser.Navigate("http://bing.com/search?q=" + this.query);
-                                            }
-                                        }
-                                    }
-                                    else if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
-                                    {
-                                        this.clicklist = false;
-                                        browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                            + this.clickref);
-                                    }
-                                    else
-                                    {
-                                        this.clicklist = false;
-                                        browser.Navigate("http://bing.com/search?q=" + this.query);
-
-                                    }
-                                }
-                                catch
-                                {
-                                    if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
-                                    {
-                                        this.clicklist = false;
-                                        browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                            + this.clickref);
-                                    }
-                                    else
-                                    {
-                                        this.clicklist = false;
-                                        browser.Navigate("http://bing.com/search?q=" + this.query);
-                                    }
-                                }
-
-                                // desktop searches
-                            }
-                            else if (this.counterDx >= 0 && desktop == true)
-                            {
-                                statusTxtBox.Text = "Desktopsearches";
-                                --this.counterDx;
-                                counterTxtBox.Text = (this.countDownDesktop - this.counterDx) + "/"
-                                    + this.countDownDesktop;
-                                this.Csearch = true;
-
-                                try
-                                {
-                                    if (browser.Document.GetElementById("sb_form_q") != null)
-                                    {
-                                        this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
-
-                                        if (browser.Document.GetElementById("sb_form_q") != null)
-                                        {
-                                            browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-
-                                            if (browser.Document.GetElementById("sbBtn") != null)
-                                            {
-                                                browser.Document.GetElementById("sbBtn").InvokeMember("click");
-                                            }
-                                            else if (browser.Document.GetElementById("sb_form_go") != null)
-                                            {
-                                                browser.Document.GetElementById("sb_form_go").InvokeMember("click");
-                                            }
-                                            else
-                                            {
-                                                browser.Navigate("http://bing.com/search?q=" + this.query);
-                                            }
-                                        }
-                                    }
-                                    else if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
-                                    {
-                                        this.clicklist = false;
-                                        browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                            + this.clickref);
-                                    }
-                                    else
-                                    {
-                                        this.clicklist = false;
-                                        browser.Navigate("http://bing.com/search?q=" + this.query);
-                                    }
-                                }
-                                catch
-                                {
-                                    if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
-                                    {
-                                        this.clicklist = false;
-                                        browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: " +
-                                            this.clickref);
-                                    }
-                                    else
-                                    {
-                                        this.clicklist = false;
-                                        browser.Navigate("http://bing.com/search?q=" + this.query);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //**************************
-                            // special search
-                            //**************************
-
-                            if (statusTxtBox.Text == "Mobilesearches")
-                            {
-                                this.ChangeUserAgent(this.txtboxcustommobile.Text);
-                            }
-                            else
-                            {
-                                this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
-                            }
-
-                            //**************************
-                            // human search (click)
-                            //**************************
-                            this.Csearch = true;
-
-                            if (randomNumber(0, 7) > randomNumber(0, 9))
-                            {
-                                // Creates an HtmlDocument object from an URL
-                                //HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                                //doc.LoadHtml(browser.Document.All);
-
-                                int c = 0;
-                                string[] links = new string[10];
-
-                                try
-                                {
-                                    HtmlElementCollection elemColl = browser.Document.Links;
-                                    if (elemColl.Count > 0)
-                                    {
-                                        foreach (HtmlElement ele in elemColl)
-                                        {
-                                            if (ele.Parent.TagName == "H2" && c < 10)
-                                            {
-                                                links[c++] = ele.GetAttribute("href");
-                                            }
-                                            //MessageBox.Show(ele.InnerText + ele.Parent.TagName);
-                                        }
-                                    }
-                                }
-                                catch { }
-
-
-                                if (c == 0)
-                                {
-                                    this.qpage = 0;
-
-                                    if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
-                                    {
-                                        this.clicklist = false;
-                                        this.Csearch = true;
-                                        browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                            + this.clickref);
-                                    }
-                                    else if (statusTxtBox.Text == "Mobilesearches")
-                                    {
-                                        // mobile
-                                        --this.counterMx;
-                                        counterTxtBox.Text = (this.countDownMobile - this.counterMx) + "/"
-                                            + this.countDownMobile;
-                                        this.Csearch = true;
-                                        this.clicklist = false;
-
-                                        this.query = this.words[randomNumber(0, this.words.Count)];
-                                        if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                                        {
-                                            this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                        }
-                                        if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                                        {
-                                            this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                        }
-
-                                        try
-                                        {
-                                            //browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-                                            //browser.Document.GetElementById("sbBtn").InvokeMember("click");
-
-                                            if (browser.Document.GetElementById("sb_form_q") != null)
-                                            {
-                                                browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-
-                                                if (browser.Document.GetElementById("sbBtn") != null)
-                                                {
-                                                    browser.Document.GetElementById("sbBtn").InvokeMember("click");
-                                                }
-                                                else if (browser.Document.GetElementById("sb_form_go") != null)
-                                                {
-                                                    browser.Document.GetElementById("sb_form_go").InvokeMember("click");
-                                                }
-                                                else
-                                                {
-                                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-                                                }
-                                            }
-                                        }
-                                        catch
-                                        {
-                                            browser.Navigate("http://bing.com/search?q=" + this.query);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // desktop
-                                        --this.counterDx;
-                                        counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
-                                            + "/" + this.countDownDesktop;
-                                        this.Csearch = true;
-                                        this.clicklist = false;
-
-                                        this.query = this.words[randomNumber(0, this.words.Count)];
-                                        if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                                        {
-                                            this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                        }
-                                        if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                                        {
-                                            this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                        }
-
-                                        try
-                                        {
-                                            //browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-                                            //browser.Document.GetElementById("sb_form_go").InvokeMember("click");
-
-                                            if (browser.Document.GetElementById("sb_form_q") != null)
-                                            {
-                                                browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-
-                                                if (browser.Document.GetElementById("sbBtn") != null)
-                                                {
-                                                    browser.Document.GetElementById("sbBtn").InvokeMember("click");
-                                                }
-                                                else if (browser.Document.GetElementById("sb_form_go") != null)
-                                                {
-                                                    browser.Document.GetElementById("sb_form_go").InvokeMember("click");
-                                                }
-                                                else
-                                                {
-                                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-                                                }
-                                            }
-                                        }
-                                        catch
-                                        {
-                                            browser.Navigate("http://bing.com/search?q=" + this.query);
-                                        }
-                                    }
-                                }
-                                else if (c == 1)
-                                {
-                                    //this.clicklist = true;
-                                    this.clicklink = this.browserUrlTxtbox.Text;
-                                    try
-                                    {
-                                        this.clickref = links[0];
-                                        if (!String.IsNullOrEmpty(this.clicklink))
-                                        {
-                                            this.Csearch = true;
-                                            browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                                + this.clickref);
-                                        }
-                                    }
-                                    catch { }
-
-                                }
-                                else if (c > 1)
-                                {
-                                    c = randomNumber(0, c - 1);
-                                    this.clicklink = this.browserUrlTxtbox.Text;
-
-                                    try
-                                    {
-                                        this.clickref = links[c];
-                                        if (!String.IsNullOrEmpty(this.clicklink))
-                                        {
-                                            this.Csearch = true;
-                                            browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                                + this.clickref);
-                                        }
-                                    }
-                                    catch { }
-                                }
-                            }
-                            else
-                            {   //****************
-                                // pagination
-                                //****************
-
-                                int c = 0;
-                                int j = 0;
-                                string[] links = new string[4];
-
-                                try
-                                {
-                                    HtmlElementCollection elemColl = browser.Document.Links;
-                                    foreach (HtmlElement ele in elemColl)
-                                    {
-                                        if (ele.Parent.TagName == "LI" && Int32.TryParse(ele.InnerText, out j))
-                                        {
-                                            //MessageBox.Show(ele.InnerText + ele.Parent.TagName);
-                                            if (j >= 1 && j <= 10 && c < 4)
-                                            {
-                                                links[c++] = ele.GetAttribute("href");
-                                            }
-                                        }
-                                    }
-                                }
-                                catch { }
-
-
-                                if (c == 0)
-                                {
-                                    this.qpage = 0;
-
-                                    if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
-                                    {
-                                        this.clicklist = false;
-                                        this.Csearch = true;
-                                        browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                            + this.clickref);
-                                    }
-                                    else if (statusTxtBox.Text == "Mobilesearches")
-                                    {
-                                        // mobile
-                                        --this.counterMx;
-                                        counterTxtBox.Text = (this.countDownMobile - this.counterMx)
-                                            + "/" + this.countDownMobile;
-                                        this.Csearch = true;
-                                        this.clicklist = false;
-
-                                        this.query = this.words[randomNumber(0, this.words.Count)];
-                                        if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                                        {
-                                            this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                        }
-                                        if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                                        {
-                                            this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                        }
-
-                                        try
-                                        {
-                                            //browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-                                            //browser.Document.GetElementById("sbBtn").InvokeMember("click");
-
-                                            if (browser.Document.GetElementById("sb_form_q") != null)
-                                            {
-                                                browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-
-                                                if (browser.Document.GetElementById("sbBtn") != null)
-                                                {
-                                                    browser.Document.GetElementById("sbBtn").InvokeMember("click");
-                                                }
-                                                else if (browser.Document.GetElementById("sb_form_go") != null)
-                                                {
-                                                    browser.Document.GetElementById("sb_form_go").InvokeMember("click");
-                                                }
-                                                else
-                                                {
-                                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-                                                }
-                                            }
-                                        }
-                                        catch
-                                        {
-                                            browser.Navigate("http://bing.com/search?q=" + this.query);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // desktop
-                                        --this.counterDx;
-                                        counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
-                                            + "/" + this.countDownDesktop;
-                                        this.Csearch = true;
-                                        this.clicklist = false;
-
-                                        this.query = this.words[randomNumber(0, this.words.Count)];
-                                        if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                                        {
-                                            this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                        }
-                                        if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                                        {
-                                            this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                        }
-
-                                        try
-                                        {
-                                            //browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-                                            //browser.Document.GetElementById("sb_form_go").InvokeMember("click");
-
-                                            if (browser.Document.GetElementById("sb_form_q") != null)
-                                            {
-                                                browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-
-                                                if (browser.Document.GetElementById("sbBtn") != null)
-                                                {
-                                                    browser.Document.GetElementById("sbBtn").InvokeMember("click");
-                                                }
-                                                else if (browser.Document.GetElementById("sb_form_go") != null)
-                                                {
-                                                    browser.Document.GetElementById("sb_form_go").InvokeMember("click");
-                                                }
-                                                else
-                                                {
-                                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-
-                                                }
-                                            }
-                                        }
-                                        catch
-                                        {
-                                            browser.Navigate("http://bing.com/search?q=" + this.query);
-
-                                        }
-                                    }
-                                }
-                                else if (c > 0)
-                                {
-                                    this.Csearch = true;
-                                    try
-                                    {
-                                        if (this.qpage == 0 && !String.IsNullOrEmpty(links[0]))
-                                        {
-                                            this.qpage = 1;
-                                            browser.Navigate(new Uri(links[0]));
-                                        }
-                                        else if (this.qpage == 1 && !String.IsNullOrEmpty(links[1]))
-                                        {
-                                            this.qpage = 2;
-                                            browser.Navigate(new Uri(links[1]));
-                                        }
-                                        else if (this.qpage == 2 && !String.IsNullOrEmpty(links[2]))
-                                        {
-                                            this.qpage = 3;
-                                            browser.Navigate(new Uri(links[2]));
-                                        }
-                                        else if (this.qpage == 3)
-                                        {
-                                            this.qpage = 0;
-
-                                            this.query = this.words[randomNumber(0, this.words.Count)];
-                                            if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                                            {
-                                                this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                            }
-                                            if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                                            {
-                                                this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                            }
-
-                                            if (statusTxtBox.Text == "Mobilesearches")
-                                            {
-                                                // mobile
-                                                --this.counterMx;
-                                                counterTxtBox.Text = (this.countDownMobile - this.counterMx)
-                                                    + "/" + this.countDownMobile;
-                                                this.Csearch = true;
-
-                                                try
-                                                {
-                                                    //browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-                                                    //browser.Document.GetElementById("sbBtn").InvokeMember("click");
-
-                                                    if (browser.Document.GetElementById("sb_form_q") != null)
-                                                    {
-                                                        browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-
-                                                        if (browser.Document.GetElementById("sbBtn") != null)
-                                                        {
-                                                            browser.Document.GetElementById("sbBtn").InvokeMember("click");
-                                                        }
-                                                        else if (browser.Document.GetElementById("sb_form_go") != null)
-                                                        {
-                                                            browser.Document.GetElementById("sb_form_go").InvokeMember("click");
-                                                        }
-                                                        else
-                                                        {
-                                                            browser.Navigate("http://bing.com/search?q=" + this.query);
-
-                                                        }
-                                                    }
-                                                }
-                                                catch
-                                                {
-                                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                // desktop
-                                                --this.counterDx;
-                                                counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
-                                                    + "/" + this.countDownDesktop;
-                                                this.Csearch = true;
-
-                                                try
-                                                {
-                                                    //browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-                                                    //browser.Document.GetElementById("sb_form_go").InvokeMember("click");
-
-                                                    if (browser.Document.GetElementById("sb_form_q") != null)
-                                                    {
-                                                        browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-
-                                                        if (browser.Document.GetElementById("sbBtn") != null)
-                                                        {
-                                                            browser.Document.GetElementById("sbBtn").InvokeMember("click");
-                                                        }
-                                                        else if (browser.Document.GetElementById("sb_form_go") != null)
-                                                        {
-                                                            browser.Document.GetElementById("sb_form_go").InvokeMember("click");
-                                                        }
-                                                        else
-                                                        {
-                                                            browser.Navigate("http://bing.com/search?q=" + this.query);
-
-                                                        }
-                                                    }
-                                                }
-                                                catch
-                                                {
-                                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-
-                                                }
-                                            }
-                                        }
-                                    }
-                                    catch { }
-                                }
-                            }
-                        }
-                    }
                 }
                 else if (this.iniSearch == false
                     && this.authLock == false
@@ -2126,247 +2279,26 @@ namespace BingRewardsBot
                     )
                 {
                     //extra time for browser (loading)
-                    Thread.Sleep(5 * 1000);
+                    //Thread.Sleep(5 * 1000);
 
                     //individual time
                     Thread.Sleep(this.timer_auth);
 
-                    string[] authstr = new string[4];
-                    this.statusDebug("Initial Auth:");
+                    // if context is null, an exception of
+                    // The current SynchronizationContext may not be used as a TaskScheduler.
+                    // will be thrown
+                    if (SynchronizationContext.Current == null)
+                        SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
-                    ++this.vrndnum;
+                    //TaskScheduler.FromCurrentSynchronizationContext();
 
-                    //********************
-                    // random visited
-                    //********************
-
-                    if (this.vrndnum < accounts.Count()
-                        && this.checkaccount == false
-                        && (this.authLock == false)
-                        )
+                    var task = DoAuthAsync();
+                    task.ContinueWith((t) =>
                     {
-                        this.subgetip();
+                        this.statusDebug("Auth:");
 
-                        int a = 0;
-                        int i = 0;
-                        int[] v = new int[accountVisited.Count];
+                    }, TaskScheduler.FromCurrentSynchronizationContext());
 
-                        //for (int i = 0, b = this.accountVisited.Count; i < b; i++)
-                        //{
-                        //    if (this.accountVisited[i] == false)
-                        //    {
-                        //        v[a++] = i;
-                        //    }
-                        //}
-
-                        foreach (bool ele in this.accountVisited)
-                        {                            
-                            if (ele == false) {
-                                v[a++] = i;
-                            };
-                            ++i;
-                        }                                        
-
-                        this.accountNum = v[this.randomNumber(0, a)];
-
-                        Array.Clear(authstr, 0, authstr.Length);
-                        authstr = this.accounts[this.accountNum].Split('/');
-
-                        this.username = authstr[0];
-                        this.password = authstr[1];
-
-                        SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                        dbcon.Open();
-                        DateTime dateTime = DateTime.UtcNow.Date;
-                        SQLiteCommand command = new SQLiteCommand("select count(*) from searches where account='" +
-                            this.username +
-                            "' and date='" +
-                            dateTime.ToString("yyyyMMdd") +
-                            "'",
-                            dbcon);
-                        SQLiteDataReader reader = command.ExecuteReader();
-
-                        int num = 0;
-                        while (reader.Read())
-                        {
-                            num = Convert.ToInt32(reader["count(*)"]);
-                        }
-                        dbcon.Close();
-
-                        if (num > 0)
-                        {
-                            dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                            dbcon.Open();
-                            command = new SQLiteCommand("select * from searches where date='" +
-                                dateTime.ToString("yyyyMMdd") +
-                                "' and points<>4242" +
-                                " and account='" +
-                                this.username +
-                                "' order by ip,points",
-                                dbcon);
-                            reader = command.ExecuteReader();
-
-                            int pts = 0;
-                            while (reader.Read())
-                            {
-                                if (reader["points"] != null)
-                                {
-                                    pts += Convert.ToInt32(reader["points"]);
-                                }
-                            }
-                            dbcon.Close();
-                        }
-                        
-                        if (pts < 25 &&
-                            this.accountVisited[this.accountNum] == false && this.country == "US")
-                        {
-                            //http://stackoverflow.com/questions/904478/how-to-fix-the-memory-leak-in-ie-webbrowser-control
-                            IntPtr pHandle = GetCurrentProcess();
-                            SetProcessWorkingSetSize(pHandle, -1, -1);
-
-                            GC.Collect();
-                            GC.WaitForPendingFinalizers();
-                            GC.Collect();
-
-                            // use global variable 
-                            this.authLock = true;
-                            this.vrndnum = 0;
-                            this.dashboardta = false;
-                            this.ldashboardta = false;
-                            this.iniSearch = false;
-
-                            string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
-                            this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
-                                Convert.ToInt32(wait[1]));
-                            this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
-                                Convert.ToInt32(wait[1]));
-
-                            this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
-
-                            this.statusDebug("PC1:");
-                            this.toolStripStatusLabel1.Text += "|pts:" + pts;
-
-                            // first step before sign-in
-                            browser.Navigate(new Uri("https://login.live.com/logout.srf"));
-                        }
-                        else
-                        {
-                            ++this.accountVisitedX;
-                            this.accountVisited[this.accountNum] = false;
-
-                            if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                            {
-                                this.toridswitcher();
-                            }
-
-                            this.dxloops = 0;
-                            this.mxloops = 0;
-                            this.iniSearch = false;
-                            this.dashboardta = false;
-                            this.ldashboardta = false;
-                            this.Csearch = false;
-
-                            try
-                            {
-                                num = this.numIpDate();
-
-                                if (num == 0)
-                                {
-                                    dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                                    dbcon.Open();
-                                    dateTime = DateTime.UtcNow.Date;
-                                    command = new SQLiteCommand("insert into searches (date, ip, account, points) values ('" +
-                                        dateTime.ToString("yyyyMMdd") +
-                                        "','" +
-                                        this.ip +
-                                        "','" +
-                                        this.username +
-                                        "','4242')",
-                                        dbcon);
-                                    command.ExecuteNonQuery();
-                                    dbcon.Close();
-                                }
-                                //else
-                                //{
-                                //    dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                                //    dbcon.Open();
-                                //    dateTime = DateTime.UtcNow.Date;
-                                //    command = new SQLiteCommand("update searches set points=4242 WHERE ip='" +
-                                //         this.ip +
-                                //         "' and date='" +
-                                //         dateTime.ToString("yyyyMMdd") +
-                                //         "' and account='" +
-                                //         this.username +
-                                //         "';", dbcon);
-                                //    command.ExecuteNonQuery();
-                                //    dbcon.Close();
-                                //}                        
-                            }
-                            catch { }
-
-                            if ((this.country != "US"
-                               && chkbox_tor.Checked == true))
-                            {
-                                this.toridswitcher();
-                            }
-
-                            statusTxtBox.Text = "Authenticating";
-
-                            string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
-
-                            int z = randomNumber(Convert.ToInt32(auth[0]),
-                                Convert.ToInt32(auth[1]));
-
-                            this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
-                            counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "26 sec.";
-
-                            this.authLock = false;
-                            this.statusDebug("PC3:");
-                        }
-                    }
-                    else if (this.checkaccount == false)
-                    {
-                        statusTxtBox.Text = "Authenticating";
-
-                        string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
-                        int z = randomNumber(Convert.ToInt32(auth[0]),
-                            Convert.ToInt32(auth[1]));
-
-                        this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
-                        counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "26 sec.";
-
-                        this.authLock = false;
-                        this.iniSearch = false;
-                        this.dashboardta = false;
-                        this.ldashboardta = false;
-                        this.Csearch = false;
-                        this.statusDebug("PC5:");
-                    }
-                    else if (this.checkaccount == true)
-                    {
-                        string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
-                        this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
-                            Convert.ToInt32(wait[1]));
-                        this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
-                            Convert.ToInt32(wait[1]));
-
-                        authstr = this.accounts[this.accountNum].Split('/');
-                        this.username = authstr[0];
-                        this.password = authstr[1];
-
-                        this.dxloops = 0;
-                        this.mxloops = 0;
-                        this.authLock = true;
-                        this.dashboardta = false;
-                        this.ldashboardta = false;
-                        this.iniSearch = false;
-
-                        this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
-                        this.ClearCache();
-
-                        // first step before sign-in
-                        browser.Navigate(new Uri("https://login.live.com/logout.srf"));
-                    }
                 }
                 else if ((browserUrlTxtbox.Text.Contains(@"https://www.bing.com/rewards") || this.dashboardta == true)
                   && browserUrlTxtbox.Text.Contains(@"https://www.bing.com")
@@ -2385,7 +2317,6 @@ namespace BingRewardsBot
                 else if (browserUrlTxtbox.Text == "https://account.microsoft.com/?lang=en-US&refd=account.live.com&refp=landing")
                 {
                     bool a = false;
-
                     try
                     {
                         // extract url       
