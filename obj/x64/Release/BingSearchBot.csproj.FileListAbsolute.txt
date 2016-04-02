@@ -1,0 +1,11 @@
+D:\Users\Dokumente\Visual Studio 2015\Projects\BingSearchBot\BingSearchBot\bin\x64\Release\BBRB.exe.config
+D:\Users\Dokumente\Visual Studio 2015\Projects\BingSearchBot\BingSearchBot\bin\x64\Release\BBRB.exe
+D:\Users\Dokumente\Visual Studio 2015\Projects\BingSearchBot\BingSearchBot\bin\x64\Release\BBRB.pdb
+D:\Users\Dokumente\Visual Studio 2015\Projects\BingSearchBot\BingSearchBot\bin\x64\Release\IP2Location.dll
+D:\Users\Dokumente\Visual Studio 2015\Projects\BingSearchBot\BingSearchBot\bin\x64\Release\System.Data.SQLite.dll
+D:\Users\Dokumente\Visual Studio 2015\Projects\BingSearchBot\BingSearchBot\bin\x64\Release\System.Data.SQLite.xml
+D:\Users\Dokumente\Visual Studio 2015\Projects\BingSearchBot\BingSearchBot\obj\x64\Release\BingRewardsBot.Form1.resources
+D:\Users\Dokumente\Visual Studio 2015\Projects\BingSearchBot\BingSearchBot\obj\x64\Release\BingRewardsBot.Properties.Resources.resources
+D:\Users\Dokumente\Visual Studio 2015\Projects\BingSearchBot\BingSearchBot\obj\x64\Release\BingSearchBot.csproj.GenerateResource.Cache
+D:\Users\Dokumente\Visual Studio 2015\Projects\BingSearchBot\BingSearchBot\obj\x64\Release\BBRB.exe
+D:\Users\Dokumente\Visual Studio 2015\Projects\BingSearchBot\BingSearchBot\obj\x64\Release\BBRB.pdb

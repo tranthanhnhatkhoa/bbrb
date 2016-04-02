@@ -535,7 +535,7 @@ namespace BingRewardsBot
             }
 
             // artificial delay for AJAX
-            await Task.Delay(3500);
+            await Task.Delay(1000);
 
             //http://stackoverflow.com/questions/11512373/findwindow-and-setforegroundwindow-alternatives
             //http://dotnet-snippets.de/snippet/form-in-den-windowsvordergrund-bringen/582 
@@ -550,28 +550,28 @@ namespace BingRewardsBot
             htmlDoc.all.item("i0116").Focus();
 
             // artificial delay for AJAX
-            await Task.Delay(150);
+            await Task.Delay(100);
 
             ////http://stackoverflow.com/questions/6009955/use-sendkeys-with-string-in-c
             foreach (char c in this.username)
             {
                 SendKeys.SendWait(c.ToString());
-                await Task.Delay(150);
+                await Task.Delay(50);
             }              
 
             htmlDoc.all.item("i0118").Focus();
 
             // artificial delay for AJAX
-            await Task.Delay(150);
+            await Task.Delay(100);
 
             ////http://stackoverflow.com/questions/6009955/use-sendkeys-with-string-in-c
             foreach (char c in this.password)
             {
                 SendKeys.SendWait(c.ToString());
-                await Task.Delay(150);
+                await Task.Delay(50);
             }
 
-            await Task.Delay(150);
+            await Task.Delay(100);
 
             //htmlDoc.all.item("i0116").SetAttribute("value", this.username);
             //htmlDoc.all.item("i0118").SetAttribute("value", this.password);
