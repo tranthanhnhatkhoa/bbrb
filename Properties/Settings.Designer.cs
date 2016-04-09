@@ -145,8 +145,8 @@ namespace BingRewardsBot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Mozilla / 5.0(Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chro" +
-            "me/45.0.2454.93 Safari/537.36")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
+            "Chrome/42.0.2311.135 Safari/537.36 Edge/12.246Chrome/45.0.2454.93 Safari/537.36")]
         public string set_uadesktop {
             get {
                 return ((string)(this["set_uadesktop"]));

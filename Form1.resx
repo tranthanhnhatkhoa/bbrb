@@ -143,7 +143,7 @@ Better Bing Rewards Bot is an automation tool to search Bing to earn Microsoft p
 - Stealthier: Random searches count: Set a random number of searches "30-50" for searches.
 - Stealthier: Random sleep between authentification "2-5" minutes to wait between accounts.
 - Stealthier: In auto mode random order of account.
-- Stealthier: In all searches random click in searches.
+- Stealthier: random click in search result.
 - Supports auto start through a scheduled task.
 - Stealthier: Simulate real user and real key strokes and real mouse button clicks.
 - Shows earned Microsoft points for each searches.
@@ -151,9 +151,11 @@ Better Bing Rewards Bot is an automation tool to search Bing to earn Microsoft p
 - Maximize income: Continues searches until all points are earned (ignores searches count up to 2x)
 - NEW! Maximize income: Dashboard tasks: earn special dashboard tasks (not the quiz)!
 - NEW! Stealthier: Custom Desktop &amp; Mobile User Agent!
-- NEW! Faster: Auto detect &amp; select US market!
+- NEW! Faster: Auto detect &amp; select US language/market!
 - NEW! Faster: Auto skip temporarily suspended accounts!
 - NEW! Faster: Check earned Microsoft points!
+- NEW! Stealthier: individual proxy settings for each account!
+- NEW! Stealthier: New user authenticate with keystrokes!
 
 2. Requirements
 -Windows 10 x32/x64

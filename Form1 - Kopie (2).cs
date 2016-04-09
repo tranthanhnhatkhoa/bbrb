@@ -109,14 +109,14 @@ namespace BingRewardsBot
         private const int SLEEPTOR = 8 * 1000;
         private const int SLEEPPTS = 5 * 1000;
         private const int SLEEPDP = 20 * 1000;
-        private const int SLEEPDASHBOARD = 30 * 1000;
+        private const int SLEEPDASHBOARD = 18 * 1000;
         private const int SLEEPMAIN = 10 * 1000;
         private const int REFRESH = 10;
         private const int AUTHSHORT = 25 * 1000;
         private int vrndnum = 0;
         private int accountVisitedX = 0;
         private List<bool> accountVisited;
-        private const string TRIALOVER = "Too bad the trial period is over. If my program is helpful please consider to donate!";
+        private const string TRIALOVER = "Too bad the trial period is over. If my program is helpful please consider to donate! Thank you very much!";
         private const string TITLE = "Better Bing Rewards Bot by Elephant7 : ";
         private const string MYIP = "My IP address: ";
         private bool trialstopped = false;
@@ -633,7 +633,7 @@ namespace BingRewardsBot
                             this.timer_dashboardta.Enabled = false;
                         }
                                                
-                        statusTxtBox.Text = "Authenticate";
+                        statusTxtBox.Text = "Authenticating";
                         this.pts_txtbox.Text = "0";
 
                         this.authLock = false;
@@ -2450,6 +2450,7 @@ namespace BingRewardsBot
                     && this.authLock == false
                     && this.button1.Text == "Stop"
                     && !browserUrlTxtbox.Text.Contains(@"landing")
+                    && !browserUrlTxtbox.Text.Contains(@"search?q=")
                     && !browserUrlTxtbox.Text.Contains(@"dashboard")
                     )
                 {   
@@ -2848,214 +2849,86 @@ namespace BingRewardsBot
                 if (this.refcounter>REFRESH)
                 {
                     this.refcounter = 0;
-                    if (this.button1.Text == "Stop"
-                        && this.statusTxtBox.Text != "Authenticate"
-                        && this.statusTxtBox.Text != "Stop"
-                        && this.authLock == true
-                        && this.Csearch == true
-                        && !this.browserUrlTxtbox.Text.Contains(@"landing")
-                        )
-                    {
-                        this.statusDebug("Refresh:");
 
-                        if (this.timer_searches == null)
-                        {
-                            this.timer_searches = new System.Timers.Timer();
-                            this.timer_searches.AutoReset = false;
-                            this.timer_searches.Elapsed += new ElapsedEventHandler(DoSearch);
-                        }
-
-                        string[] wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
-                        this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]),
-                        Convert.ToInt32(wait[1])) * 1000;
-
-                        this.Csearch = true;
-
-                        this.timer_searches.Enabled = true;
-                        //this.timer_searches.Start();
-
-                        //https://login.live.com/ppsecure/post.srf
-                        if (browserUrlTxtbox.Text.Contains(@"https://account.live.com/identity/confirm")
+                    if ((browserUrlTxtbox.Text.Contains(@"https://account.live.com/identity/confirm")
                         || browserUrlTxtbox.Text.Contains(@"https://account.live.com/recover")
                         || browserUrlTxtbox.Text.Contains(@"https://account.live.com/Abuse")
-                        || browserUrlTxtbox.Text.Contains(@"https://login.live.com/ppsecure/post.srf")
-                          && !this.browserUrlTxtbox.Text.Contains(@"landing")
+                        || browserUrlTxtbox.Text.Contains(@"https://login.live.com/logout.srf?lc=1033&flowtoken")
                         )
-                        {
-                            browser.Navigate(new Uri("http://www.google.com"));
-                        }
-                        else
-                        {
-                            browser.Navigate(new Uri(browserUrlTxtbox.Text));
-                        }
-                    }
-                    else if (browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/?lang=en-US&refd=account.live.com&refp=landing"))
-                    {
-                        bool a = false;
-
-                        //try
-                        //{
-                        //    // extract url       
-                        //    HtmlElementCollection links = browser.Document.Links;
-                        //    foreach (HtmlElement ele in links)
-                        //    {
-
-                        //        if ((ele.GetAttribute("href") != null)
-                        //        && ele.GetAttribute("href").Contains(@"id=")
-                        //        && ele.GetAttribute("href").Contains(@"login.live.com")
-                        //        && !ele.GetAttribute("href").Contains(@"signup.live.com")
-                        //        )
-                        //        {
-                        //            string text = ele.GetAttribute("href");
-                        //            browser.Navigate(new Uri(text));
-                        //            a = true;
-                        //        }
-                        //    }
-                        //}
-                        //catch { }
-
-                        //prepare connection
-                        if (chkbox_autorotate.Checked == true
-                            && a == false
-                            )
-                        {
-                           
-                            this.accountVisited[this.accountNum] = true;
-                            ++this.accountVisitedX;
-
-                            string[] authstr = this.accounts[this.accountNum].Split('/');
-                            this.username = authstr[0];
-                            this.password = authstr[1];
-
-                            accountNameTxtBox.Text = this.username;
-                            accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
-
-                            this.prevpts = 0;
-                            this.pts = 0;
-                            this.pts_txtbox.Text = "0";
-
-                            statusTxtBox.Text = "Connected";
-                            counterTxtBox.Text = "0/0";
-
-                            this.dxloops = 0;
-                            this.mxloops = 0;                          
-
-                            this.authLock = true;
-                            this.iniSearch = false;
-                            this.dashboardta = false;
-                            this.ldashboardta = false;
-                            this.Csearch = false;
-
-                            this.initUserSQL();
-
-                            // first step after user auth (very important) navigate bing.com or bing.com/rewards
-                            browser.Navigate(new Uri("https://www.bing.com/rewards"));
-                        }
-
-                    }
-                    else if ((browserUrlTxtbox.Text.Contains(@"https://account.live.com/identity/confirm")
-                      || browserUrlTxtbox.Text.Contains(@"https://account.live.com/recover")
-                      || browserUrlTxtbox.Text.Contains(@"https://account.live.com/Abuse")
-                      || browserUrlTxtbox.Text.Contains(@"https://login.live.com/ppsecure/post.srf")
-                      || (browserUrlTxtbox.Text.Contains(@"https://www.bing.com")
-                      && this.statusTxtBox.Text != "Connected"
-                      && this.statusTxtBox.Text != "Working"
-                      && this.statusTxtBox.Text != "Dashboard"
-                      && this.statusTxtBox.Text != "Desktopsearches"
-                      && this.statusTxtBox.Text != "Mobilesearches")
-                      && !this.toolStripStatusLabel1.Text.Contains(@"Connected")
-                      )
-                      && chkbox_autorotate.Checked == true
-                      && this.button1.Text == "Stop"
-                      )
-                    {
-                        this.accountVisited[this.accountNum] = true;
-                        ++this.accountVisitedX;
-
-                        this.restartAuth();
-                    }
-                    else if (this.button1.Text == "Stop"
-                       && this.statusTxtBox.Text == "Authenticate"
-                       && this.toolStripStatusLabel1.Text.Contains(@"PC")
-                       && !this.toolStripStatusLabel1.Text.Contains(@"Init")
-                       && !this.toolStripStatusLabel1.Text.Contains(@"Connected")
-                       && this.chkbox_autorotate.Checked == true
-                       && this.authLock == false
-                       && !this.browserUrlTxtbox.Text.Contains(@"landing")
-                       )
-                    {
-                        this.restartAuth();
-
-                    }
-                    else if (this.button1.Text == "Stop"
-                        && (this.statusTxtBox.Text == "Working" ||
-                        (this.toolStripStatusLabel1.Text.Contains(@"Working##") && this.statusTxtBox.Text != "Connected"))
-                        && this.chkbox_autorotate.Checked == true
-                        && this.authLock == true
-                        && !this.browserUrlTxtbox.Text.Contains(@"landing")
+                        && chkbox_autorotate.Checked == true
                         )
                     {
-                        this.accountVisited[this.accountNum] = true;
-                        ++this.accountVisitedX;
+                        this.authLock = true;
+                        this.vrndnum = 0;
+                        this.dashboardta = false;
+                        this.ldashboardta = false;
+                        this.iniSearch = false;
 
-                        this.restartAuth();
+                        this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
+                        this.ClearCache();
+
+                        // first step before sign-in
+                        browser.Navigate(new Uri("https://login.live.com/logout.srf"));
+
+                        //DownloadAsync("https://login.live.com/logout.srf").ContinueWith(
+                        //    (task) => this.statusDebug("PC1:"),
+                        //        TaskScheduler.FromCurrentSynchronizationContext());
+
                     }
-                    else if (this.button1.Text == "Stop"
-                      && this.authLock == true
-                      && this.chkbox_autorotate.Checked == true
-                      && (this.statusTxtBox.Text == "Dashboard"
-                      || this.toolStripStatusLabel1.Text.Contains(@"Finalize"))
-                      && !this.toolStripStatusLabel1.Text.Contains(@"Searching")
-                      )
+                    //browser.Navigate(new Uri(browserUrlTxtbox.Text));
+                    else if (browserUrlTxtbox.Text == "https://account.microsoft.com/?lang=en-US&refd=account.live.com&refp=landing")
                     {
-                        statusTxtBox.Text = "Dashboard";
+                        DownloadAsync("https://www.bing.com/rewards/dashboard").ContinueWith(
+                          (task) => this.statusDebug("Refresh:"),
+                            TaskScheduler.FromCurrentSynchronizationContext());
 
-                        if (timer_searches != null)
-                        {
-                            this.timer_searches.Enabled = false;
-                            this.Csearch = false;
-                        }                                              
-
-                        if (this.timer_tor != null)
-                        {
-                            this.timer_tor.Enabled = false;
-                        }
-
-                        string[] authstr = this.accounts[this.accountNum].Split('/');
-                        this.username = authstr[0];
-                        this.password = authstr[1];
-
-                        accountNameTxtBox.Text = this.username;
-                        accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
-
-                        this.toolStripStatusLabel1.Text = "Initial dashboard tasks!";
-                        this.dashboardta = true;
-
-                        browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
-
-                    }
-                    else if (this.button1.Text == "Stop"
-                    && this.statusTxtBox.Text == "Dashboard"
-                    && this.chkbox_autorotate.Checked == true
-                    && this.numdashboardta < -1
-                    && !this.browserUrlTxtbox.Text.Contains(@"landing")
-                    )
+                        //} else if (this.dashboardta == false && this.ldashboardta == false)
+                    } else if (statusTxtBox.Text == "Authenticate" 
+                        || browserUrlTxtbox.Text == "https://login.live.com"
+                        || (statusTxtBox.Text == "Working" && this.authLock == true))
                     {
-                        if (this.timer_dashboardta == null)
-                        {
-                            this.timer_dashboardta = new System.Timers.Timer();
-                            this.timer_dashboardta.AutoReset = true;
-                            this.timer_dashboardta.Elapsed += new ElapsedEventHandler(earndashboardta);
-                        }
+                        this.authLock = true;
+                        this.vrndnum = 0;
+                        this.dashboardta = false;
+                        this.ldashboardta = false;
+                        this.iniSearch = false;
 
-                        this.timer_dashboardta.Interval = SLEEPDASHBOARD;   // Timer will tick every 10 seconds
+                        string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                        this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                            Convert.ToInt32(wait[1]));
+                        this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                            Convert.ToInt32(wait[1]));
 
-                        this.timer_dashboardta.Enabled = true;
+                        this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
+                        this.ClearCache();
 
-                        this.statusDebug("Restart DBT:");
+                        //this.statusDebug("PC1:");
+                        this.toolStripStatusLabel1.Text += "|pts:" + pts;
+
+                        // first step before sign-in
+                        browser.Navigate(new Uri("https://login.live.com/logout.srf"));
+
+                        //DownloadAsync("https://login.live.com/logout.srf").ContinueWith(
+                        //    (task) => this.statusDebug("PC1:"),
+                        //        TaskScheduler.FromCurrentSynchronizationContext());
                     }
+                    else if  (this.authLock == true 
+                                && this.iniSearch==true 
+                                && this.dashboardta == false 
+                                && this.ldashboardta == false) 
+                    {                        
+ 
+                        this.Csearch = false;
+                        DoSearch(null, null);                        
 
-
+                    }
+                    else
+                    {
+                        DownloadAsync(browserUrlTxtbox.Text).ContinueWith(
+                         (task) => this.statusDebug("Refresh:"),
+                            TaskScheduler.FromCurrentSynchronizationContext());
+                    }
+                   
                 } else
                 {
                     ++this.refcounter;                    
@@ -3086,73 +2959,6 @@ namespace BingRewardsBot
                     this.statusDebug("PC:");
                     this.toolStripStatusLabel1.Text += "+";
                 }
-            }
-        }
-
-
-        private void restartAuth()
-        {
-            int v = 0;
-            for (int i = 0, b = this.accountVisited.Count; i < b; i++)
-            {
-                if (this.accountVisited[i] == false)
-                {
-                    ++v;
-                }
-            }
-
-            if (v == 0)
-            {
-                if (this.dxloops >= MAXLOOPS && this.mxloops >= MAXLOOPS)
-                {
-                    
-                    this.button1.Text = "Start";
-                    statusTxtBox.Text = "Stop";
-                    counterTxtBox.Text = "0/0";
-
-                    //this.dxloops = 0;
-                    //this.mxloops = 0;
-                    //this.logtries = 0;
-                    //this.vrndnum = 0;
-                    this.authLock = false;
-
-                    //this.accountVisitedX = 0;
-                    this.iniSearch = false;
-                    this.dashboardta = false;
-                    this.ldashboardta = false;
-                    this.Csearch = false;
-
-                    this.statusDebug("Stop:");
-                }
-            }
-            else
-            {
-                //this.accountVisited[this.accountNum] = true;
-                //++this.accountVisitedX;
-                
-                string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
-                int z = randomNumber(Convert.ToInt32(auth[0]),
-                    Convert.ToInt32(auth[1]));
-
-                this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
-                counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "some sec.";
-
-                this.statusDebug("Restart:");
-                this.statusTxtBox.Text = "Authenticate";
-
-                this.authLock = false;
-                this.vrndnum = 0;
-                this.iniSearch = false;
-                this.dashboardta = false;
-                this.ldashboardta = false;
-                this.Csearch = false;
-
-                browser.Navigate(new Uri("https://login.live.com/logout.srf"));
-                this.ClearCache();
-
-                //browser.Navigate(new Uri("http://www.google.com"));
-
-                //authCallback(null, null);
             }
         }
 
