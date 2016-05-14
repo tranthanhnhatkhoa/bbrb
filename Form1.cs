@@ -122,7 +122,8 @@ namespace BingRewardsBot
         private bool trialstopped = false;
         private bool checkaccount = false;
         private string trialRegKey;
-        private const int FREEX = 500000;
+        private const int FREEX = 5500000;
+        private const int FREEA = 5;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
@@ -179,6 +180,12 @@ namespace BingRewardsBot
         // http://stackoverflow.com/questions/11402643/sendkey-send-not-working
         [DllImport("user32.dll", SetLastError = true)]
         static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+
+        //http://stackoverflow.com/questions/2738982/how-can-i-tell-if-a-given-hwnd-is-still-valid
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool IsWindow(IntPtr hWnd);
+        
         public static void PressKey(Keys key, bool up)
         {
             const int KEYEVENTF_EXTENDEDKEY = 0x1;
@@ -299,7 +306,7 @@ namespace BingRewardsBot
                 Application.Exit();
             }
 
-            ReadFile(this.accountsFile, this.accounts);
+            ReadFile(this.accountsFile, this.accounts,FREEA);
             ReadFile(this.wordsFile, this.words);
 
             this.accountNrTxtBox.Text = "1/" + this.accounts.Count;
@@ -2654,9 +2661,7 @@ namespace BingRewardsBot
                             }
 
                             statusTxtBox.Text = "Authenticate";
-
                             string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
-
                             int z = randomNumber(Convert.ToInt32(auth[0]),
                                 Convert.ToInt32(auth[1]));
 
@@ -2984,6 +2989,9 @@ namespace BingRewardsBot
                        && !this.browserUrlTxtbox.Text.Contains(@"landing")
                        )
                     {
+                        this.accountVisited[this.accountNum] = true;
+                        ++this.accountVisitedX;
+
                         this.restartAuth();
 
                     }
@@ -3136,23 +3144,34 @@ namespace BingRewardsBot
 
                 this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
                 counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "some sec.";
+                
+                string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                    Convert.ToInt32(wait[1]));
+                this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                    Convert.ToInt32(wait[1]));
 
-                this.statusDebug("Restart:");
-                this.statusTxtBox.Text = "Authenticate";
+                this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
+                this.ClearCache();
 
-                this.authLock = false;
+                this.authLock = true;
                 this.vrndnum = 0;
                 this.iniSearch = false;
                 this.dashboardta = false;
                 this.ldashboardta = false;
                 this.Csearch = false;
 
-                browser.Navigate(new Uri("https://login.live.com/logout.srf"));
-                this.ClearCache();
+                this.statusDebug("Restart:");
+                this.statusTxtBox.Text = "Authenticate";
 
+                // first step before sign-in
+                //browser.Navigate(new Uri("https://login.live.com/logout.srf"));
+
+                DownloadAsync("https://login.live.com/logout.srf").ContinueWith(
+                    (task) => this.statusDebug("PC1:"),
+                        TaskScheduler.FromCurrentSynchronizationContext());
+               
                 //browser.Navigate(new Uri("http://www.google.com"));
-
-                //authCallback(null, null);
             }
         }
 
@@ -4047,7 +4066,6 @@ namespace BingRewardsBot
             catch { }            
         }
               
-
         //http://stackoverflow.com/questions/9770522/how-to-handle-message-boxes-while-using-webbrowser-in-c
 
         //****************************************************
@@ -4063,18 +4081,29 @@ namespace BingRewardsBot
                 Thread.Sleep(SLEEPDP);
 
                 // double post error
-                IntPtr hwnd = FindWindow("#32770", "Web Browser");                                
-                //hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Retry");                
-                hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Cancel");
-                uint message = 0xf5;
-                SendMessage(hwnd, message, IntPtr.Zero, IntPtr.Zero);
+                IntPtr hwnd = FindWindow("#32770", "Web Browser");      
+                if (IsWindow(hwnd))
+                {
+                    //hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Retry");                
+                    hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Cancel");
+                    uint message = 0xf5;
+                    SendMessage(hwnd, message, IntPtr.Zero, IntPtr.Zero);
+                    browser.Navigate(new Uri("https://www.google.com/"));
+                    this.accountVisited[this.accountNum] = true;
+                    ++this.accountVisitedX;
+
+                    this.restartAuth();
+                }                          
+               
 
                 // gps location
                 hwnd = FindWindow("#32770", "Message from webpage");
-                hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Cancel");
-                message = 0xf5;
-                SendMessage(hwnd, message, IntPtr.Zero, IntPtr.Zero);
-                
+                if (IsWindow(hwnd))
+                {
+                    hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Cancel");
+                    uint message = 0xf5;
+                    SendMessage(hwnd, message, IntPtr.Zero, IntPtr.Zero);
+                }
             }
         }
 
@@ -4202,7 +4231,7 @@ namespace BingRewardsBot
             return random.Next(min, max);
         }
 
-        private void ReadFile(string name, List<string> list)
+        private void ReadFile(string name, List<string> list, int count=100000000)
         {
             try
             {
@@ -4210,10 +4239,11 @@ namespace BingRewardsBot
                 {
                     string rLine;
                     int i = 0;
-                    while ((rLine = r.ReadLine()) != null)
+                    while ((rLine = r.ReadLine()) != null && count>0)
                     {
                         list.Add(rLine);
                         ++i;
+                        --count;
                     }
                 }
             }
