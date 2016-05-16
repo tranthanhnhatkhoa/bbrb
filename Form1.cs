@@ -4088,11 +4088,35 @@ namespace BingRewardsBot
                     hwnd = FindWindowEx(hwnd, IntPtr.Zero, "Button", "Cancel");
                     uint message = 0xf5;
                     SendMessage(hwnd, message, IntPtr.Zero, IntPtr.Zero);
-                    browser.Navigate(new Uri("https://www.google.com/"));
-                    this.accountVisited[this.accountNum] = true;
-                    ++this.accountVisitedX;
 
-                    this.restartAuth();
+                    //browser.Navigate(new Uri("https://www.google.com/"));
+
+                    //Thread.Sleep(SLEEPMAIN);
+
+                    //this.accountVisited[this.accountNum] = true;
+                    //++this.accountVisitedX;
+
+                    //this.restartAuth();
+
+                    //this.ClearCache();
+
+                    this.authLock = false;
+                    this.vrndnum = 0;
+                    this.iniSearch = false;
+                    this.dashboardta = false;
+                    this.ldashboardta = false;
+                    this.Csearch = false;
+
+                    //this.statusDebug("Restart:");
+                    this.statusTxtBox.Text = "Restart";
+
+                    // first step before sign-in
+                    browser.Navigate(new Uri("https://login.live.com/logout.srf"));
+
+                    //DownloadAsync("https://www.google.com/").ContinueWith(
+                    //   (task) => this.statusDebug("PC1:"),
+                    //       TaskScheduler.FromCurrentSynchronizationContext());
+
                 }                          
                
 
