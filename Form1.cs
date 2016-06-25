@@ -122,7 +122,7 @@ namespace BingRewardsBot
         private bool trialstopped = false;
         private bool checkaccount = false;
         private string trialRegKey;
-        private const int FREEX = 5500000;
+        private const int FREEX = 25500000;
         private const int FREEA = 5;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
@@ -1323,7 +1323,7 @@ namespace BingRewardsBot
                     // Sign-in Step 6/2
                     //*********************
                 }
-                else if (url.Contains(@"https://www.google.com"))
+                else if (url.Contains(@"https://www.google"))
                 {
                     // first step before sign-in
                     //browser.Navigate(new Uri("https://login.live.com"));
@@ -1343,7 +1343,7 @@ namespace BingRewardsBot
                     || url.Contains(@"https://login.live.com/logout.srf")
                     ))
                 {
-                    if (this.country == "US" || chkbox_tor.Checked == false)
+                    if (this.country == "US" || this.country == "IN" || chkbox_tor.Checked == false)
                     {
                         this.authLock = true;
                         this.iniSearch = false;
@@ -2564,7 +2564,7 @@ namespace BingRewardsBot
                         }
 
                         if (pts < 25 &&
-                            this.accountVisited[this.accountNum] == false && this.country == "US")
+                            this.accountVisited[this.accountNum] == false && (this.country == "US" || this.country == "IN" || chkbox_tor.Checked == false))
                         {
                             //http://stackoverflow.com/questions/904478/how-to-fix-the-memory-leak-in-ie-webbrowser-control
                             IntPtr pHandle = GetCurrentProcess();
@@ -2654,8 +2654,7 @@ namespace BingRewardsBot
                             }
                             catch { }
 
-                            if ((this.country != "US"
-                               && chkbox_tor.Checked == true))
+                            if ((this.country != "US" || this.country != "IN") && chkbox_tor.Checked == true)
                             {
                                 this.toridswitcher();
                             }
@@ -3597,7 +3596,7 @@ namespace BingRewardsBot
         {           
             this.toridswitcher();
 
-            if (this.country != "US")
+            if (this.country != "US" || this.country != "IN")
             {
                 SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                 dbcon.Open();
@@ -3799,7 +3798,7 @@ namespace BingRewardsBot
         }
         private void newUsIp()
         {
-            if (this.country == "US")
+            if (this.country == "US" || this.country == "IN")
             {
                 SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                 dbcon.Open();
