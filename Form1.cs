@@ -4306,7 +4306,7 @@ namespace BingRewardsBot
                 //strIPAddress = "90.243.0.29";
                 if (strIPAddress != "")
                 {
-                    oIP2Location.IPDatabasePath = "geoip.bin";
+                    oIP2Location.IPDatabasePath = "IP2LOCATION-LITE-DB11.BIN";
 
                     //Set License Path
                     //oIP2Location.IPLicensePath = @"C:\Program Files\IP2Location\License.key";

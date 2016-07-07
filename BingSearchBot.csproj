@@ -79,8 +79,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IP2Location">
-      <HintPath>..\..\ip2location-dot-net-component-dotnet4\IP2Location.dll</HintPath>
+    <Reference Include="IP2Location, Version=4.0.0.0, Culture=neutral, PublicKeyToken=eeb027f31f3f12f2, processorArchitecture=MSIL">
+      <HintPath>..\packages\IP2Location.IPGeolocation.7.0.0\lib\net40\IP2Location.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
