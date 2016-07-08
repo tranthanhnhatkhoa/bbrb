@@ -37,7 +37,7 @@ Better Bing Rewards Bot is an automation tool to search Bing to earn Microsoft p
 -words.txt file
 -Microsoft Bing Rewards accounts
 
-. Installation
+3. Installation
 Download Better Bing Rewards Bot. Double-click bbrb.exe and run the bot. Have fun!
 
 4. Tutorial
