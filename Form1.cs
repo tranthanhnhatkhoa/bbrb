@@ -93,6 +93,7 @@ namespace BingRewardsBot
 
         private int startbtn = 0;
         private const int MAXACCOUNTPERIP = 5;
+        private const int MSPOINTS = 250;
         private string country = "";
         private string ip = "";
         private const int TORTRIES = 10;
@@ -123,7 +124,7 @@ namespace BingRewardsBot
         private bool checkaccount = false;
         private string trialRegKey;
         private const int FREEX = 25500000;
-        private const int FREEA = 5;
+        private const int FREEA = 15;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
@@ -622,7 +623,7 @@ namespace BingRewardsBot
                     bool autorotate = this.chkbox_autorotate.Checked == true ? true : false;
 
                     // callback search bot
-                    if (this.pts >= 25 && autorotate == true)
+                    if (this.pts >= MSPOINTS && autorotate == true)
                     {
 
                         if (this.timer_tor != null)
@@ -658,7 +659,7 @@ namespace BingRewardsBot
                         this.statusDebug("Stop1:");
 
                     }
-                    else if (this.pts >= 25 && autorotate == false)
+                    else if (this.pts >= MSPOINTS && autorotate == false)
                     {
                         if (this.timer_tor != null)
                         {
@@ -757,7 +758,7 @@ namespace BingRewardsBot
                             this.prevpts = pts;
                             this.pts += delta;
 
-                            if (delta >= 1 && delta < 4 && this.pts <= 25)
+                            if (delta >= 1 && delta < (4*5) && this.pts <= MSPOINTS)
                             {
                                 int num = this.numIpDate();
 
@@ -807,19 +808,19 @@ namespace BingRewardsBot
                     // Initial dashboard & searches
                     //********************************
                 }
-                else if ((!url.Contains(@"https://www.bing.com/rewards") || this.dashboardta == true)
-                    && url.Contains(@"https://www.bing.com")
+                else if ((!url.Contains(@"https://account.microsoft.com/rewards") || !url.Contains(@"https://bing.com/rewards") || this.dashboardta == true)
+                    && (url.Contains(@"https://account.microsoft.com") || url.Contains(@"https://bing.com")) 
                     && !url.Contains(@"search?q=")
                     && this.checkaccount == false
                     && this.authLock == true
                     && (this.button1.Text == "Stop" || this.button1.Text == "Auto")
-                    && !url.Contains(@"https://www.bing.com/rewards/unsupportedmarket")
-                    && !url.Contains(@"https://www.bing.com/account/general")
+                    && !url.Contains(@"https://account.microsoft.com/rewards/unsupportedmarket")
+                    && !url.Contains(@"https://account.microsoft.com/account/general")
                     )
                 {
                     if (this.dashboardta == false
-                        && !url.Contains(@"https://www.bing.com/rewards")
-                        && !url.Contains(@"http://www.bing.com")
+                        && !url.Contains(@"https://account.microsoft.com/rewards")
+                        && (!url.Contains(@"https://account.microsoft.com") || !url.Contains(@"https://bing.com"))
                         && this.ldashboardta == false
                         )
                     {
@@ -933,7 +934,7 @@ namespace BingRewardsBot
 
                             if (this.mxloops == MAXLOOPS && this.dxloops == MAXLOOPS)
                             {
-                                this.updateUserPts(25);
+                                this.updateUserPts(MSPOINTS);
                             }
 
                             this.toolStripStatusLabel1.Text += "|No. Dashboard tasks (" +
@@ -1042,8 +1043,8 @@ namespace BingRewardsBot
                     //**************************
                     //&& !String.IsNullOrEmpty(this.siguid) && !String.IsNullOrWhiteSpace(this.siguid)
                 }
-                else if ((url.Contains(@"https://www.bing.com/rewards/dashboard")
-                        || browserUrlTxtbox.Text == "https://www.bing.com/rewards/dashboard")
+                else if ((url.Contains(@"https://account.microsoft.com/rewards/dashboard")
+                        || browserUrlTxtbox.Text == "https://account.microsoft.com/rewards/dashboard")
                         && !url.Contains(@"login.live.com")
                         && chkbox_autorotate.Checked == true
                         && this.dashboardta == false
@@ -1098,7 +1099,7 @@ namespace BingRewardsBot
                     // Sign-in 6/5: Extract user sig
                     //********************************
                 }
-                else if (url.Contains(@"https://www.bing.com/rewards/dashboard")
+                else if ((url.Contains(@"https://www.bing.com/rewards/dashboard") || url.Contains(@"https://accounts.microsoft.com/rewards/dashboard"))
                     && (String.IsNullOrEmpty(wb.Document.GetElementById("id_n").InnerText)
                         || String.IsNullOrWhiteSpace(wb.Document.GetElementById("id_n").InnerText)
                     && String.IsNullOrEmpty(this.siguid) && String.IsNullOrWhiteSpace(this.siguid)
@@ -1590,7 +1591,7 @@ namespace BingRewardsBot
             else if ((this.counterDx <= 1 && this.counterMx <= 1 && autorotate == true && this.trialstopped == false)
                 || (this.counterDx <= 1 && mobile == false && autorotate == true && this.trialstopped == false)
                 || (this.counterMx <= 1 && desktop == false && autorotate == true && this.trialstopped == false)
-                && this.pts >= 25
+                && this.pts >= MSPOINTS
                 )
             {
                 this.Csearch = false;
@@ -1663,7 +1664,7 @@ namespace BingRewardsBot
                 }
                 else
                 {
-                    if (Convert.ToInt16(pts_txtbox.Text) >= 25
+                    if (Convert.ToInt16(pts_txtbox.Text) >= MSPOINTS
                         || String.IsNullOrEmpty(pts_txtbox.Text)
                         || pts_txtbox.Text == "0"
                         || pts_txtbox.Text == "-")
@@ -1702,7 +1703,7 @@ namespace BingRewardsBot
             else if (this.counterDx <= 1 && this.counterMx <= 1 && autorotate == false && this.trialstopped == false
                 || (this.counterDx <= 1 && mobile == false && autorotate == false && this.trialstopped == false)
                 || (this.counterMx <= 1 && desktop == false && autorotate == false && this.trialstopped == false)
-                && this.pts >= 25
+                && this.pts >= MSPOINTS
                 )
             {
                 this.qpage = 0;
@@ -2563,7 +2564,7 @@ namespace BingRewardsBot
                             dbcon.Close();
                         }
 
-                        if (pts < 25 &&
+                        if (pts < MSPOINTS &&
                             this.accountVisited[this.accountNum] == false && (this.country == "US" || this.country == "IN" || chkbox_tor.Checked == false))
                         {
                             //http://stackoverflow.com/questions/904478/how-to-fix-the-memory-leak-in-ie-webbrowser-control
@@ -2848,8 +2849,8 @@ namespace BingRewardsBot
                 Thread.Sleep(SLEEPMAIN);
                 
                 ++this.pccounter;
-                
-                if (this.refcounter>REFRESH)
+
+                if (this.refcounter > REFRESH)
                 {
                     this.refcounter = 0;
                     if (this.button1.Text == "Stop"
@@ -2923,7 +2924,7 @@ namespace BingRewardsBot
                             && a == false
                             )
                         {
-                           
+
                             this.accountVisited[this.accountNum] = true;
                             ++this.accountVisitedX;
 
@@ -2942,7 +2943,7 @@ namespace BingRewardsBot
                             counterTxtBox.Text = "0/0";
 
                             this.dxloops = 0;
-                            this.mxloops = 0;                          
+                            this.mxloops = 0;
 
                             this.authLock = true;
                             this.iniSearch = false;
@@ -3021,7 +3022,7 @@ namespace BingRewardsBot
                         {
                             this.timer_searches.Enabled = false;
                             this.Csearch = false;
-                        }                                              
+                        }
 
                         if (this.timer_tor != null)
                         {
@@ -3039,7 +3040,6 @@ namespace BingRewardsBot
                         this.dashboardta = true;
 
                         browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
-
                     }
                     else if (this.button1.Text == "Stop"
                     && this.statusTxtBox.Text == "Dashboard"
@@ -3061,8 +3061,15 @@ namespace BingRewardsBot
 
                         this.statusDebug("Restart DBT:");
                     }
-
-
+                    else if (this.button1.Text == "Stop"
+                    && this.statusTxtBox.Text == "Connected"
+                    && this.chkbox_autorotate.Checked == true
+                    && this.numdashboardta < -1
+                    && this.iniSearch == true
+                    )
+                    {
+                        browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                    }
                 } else
                 {
                     ++this.refcounter;                    
