@@ -53,6 +53,8 @@
             this.accountNameTxtBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label21 = new System.Windows.Forms.Label();
+            this.listBox1 = new System.Windows.Forms.ListBox();
             this.txtbox_torsettings = new System.Windows.Forms.TextBox();
             this.label20 = new System.Windows.Forms.Label();
             this.txtbox_customaccounts = new System.Windows.Forms.TextBox();
@@ -90,8 +92,6 @@
             this.passwd_txtbox = new System.Windows.Forms.TextBox();
             this.regcode_txtbox = new System.Windows.Forms.TextBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.label21 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.btn_ip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -383,6 +383,29 @@
             this.tabPage2.Size = new System.Drawing.Size(728, 486);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Settings";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.label21.Location = new System.Drawing.Point(6, 58);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(64, 14);
+            this.label21.TabIndex = 42;
+            this.label21.Text = "Language:";
+            // 
+            // listBox1
+            // 
+            this.listBox1.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.ItemHeight = 14;
+            this.listBox1.Items.AddRange(new object[] {
+            "US english",
+            "India"});
+            this.listBox1.Location = new System.Drawing.Point(353, 58);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(131, 32);
+            this.listBox1.TabIndex = 41;
             // 
             // txtbox_torsettings
             // 
@@ -747,29 +770,6 @@
             // 
             this.notifyIcon1.Text = "notifyIcon1";
             this.notifyIcon1.Visible = true;
-            // 
-            // listBox1
-            // 
-            this.listBox1.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 14;
-            this.listBox1.Items.AddRange(new object[] {
-            "US english",
-            "India"});
-            this.listBox1.Location = new System.Drawing.Point(353, 58);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(131, 32);
-            this.listBox1.TabIndex = 41;
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label21.Location = new System.Drawing.Point(6, 58);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(60, 14);
-            this.label21.TabIndex = 42;
-            this.label21.Text = "Language";
             // 
             // Form1
             // 
