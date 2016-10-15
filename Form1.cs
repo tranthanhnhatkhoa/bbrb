@@ -4088,7 +4088,7 @@ namespace BingRewardsBot
                         "|" + Convert.ToString(this.checkaccount) +
                         "|" + Convert.ToString(this.iniSearch) +
                         "|" + Convert.ToString(this.accountVisitedX) +
-                        "|" + Convert.ToString(v) +
+                        "|" + Convert.ToString(v+1) +
                         "|" + Convert.ToString(this.vrndnum) +
                         "|" + Convert.ToString(this.accounts.Count) +
                         "|" + Convert.ToString(this.accountNum) +
@@ -4106,7 +4106,7 @@ namespace BingRewardsBot
                       "|" + Convert.ToString(this.checkaccount) +
                       "|" + Convert.ToString(this.iniSearch) +
                       "|" + Convert.ToString(this.accountVisitedX) +
-                      "|" + Convert.ToString(v) +
+                      "|" + Convert.ToString(v+1) +
                       "|" + Convert.ToString(this.vrndnum) +
                       "|" + Convert.ToString(this.accounts.Count) +
                       "|" + Convert.ToString(this.accountNum) +
