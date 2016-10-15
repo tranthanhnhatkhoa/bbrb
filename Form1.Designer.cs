@@ -61,7 +61,6 @@
             this.label18 = new System.Windows.Forms.Label();
             this.txtboxcustomdesktop = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.txtbox_proxy = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.chkbox_tor = new System.Windows.Forms.CheckBox();
@@ -91,6 +90,8 @@
             this.passwd_txtbox = new System.Windows.Forms.TextBox();
             this.regcode_txtbox = new System.Windows.Forms.TextBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.label21 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.btn_ip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -345,6 +346,8 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage2.Controls.Add(this.label21);
+            this.tabPage2.Controls.Add(this.listBox1);
             this.tabPage2.Controls.Add(this.txtbox_torsettings);
             this.tabPage2.Controls.Add(this.label20);
             this.tabPage2.Controls.Add(this.txtbox_customaccounts);
@@ -353,7 +356,6 @@
             this.tabPage2.Controls.Add(this.label18);
             this.tabPage2.Controls.Add(this.txtboxcustomdesktop);
             this.tabPage2.Controls.Add(this.label17);
-            this.tabPage2.Controls.Add(this.linkLabel1);
             this.tabPage2.Controls.Add(this.txtbox_proxy);
             this.tabPage2.Controls.Add(this.label15);
             this.tabPage2.Controls.Add(this.chkbox_tor);
@@ -455,18 +457,6 @@
             this.label17.Size = new System.Drawing.Size(163, 14);
             this.label17.TabIndex = 31;
             this.label17.Text = "Custom desktop user agent:";
-            // 
-            // linkLabel1
-            // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(442, 440);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(52, 14);
-            this.linkLabel1.TabIndex = 30;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Donate";
-            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // txtbox_proxy
             // 
@@ -668,7 +658,7 @@
             this.txtbox_counter.Location = new System.Drawing.Point(355, 197);
             this.txtbox_counter.Name = "txtbox_counter";
             this.txtbox_counter.Size = new System.Drawing.Size(61, 20);
-            this.txtbox_counter.TabIndex = 3;
+            this.txtbox_counter.TabIndex = 40;
             this.txtbox_counter.Text = "10-15";
             // 
             // txtbox_waitsearches
@@ -758,6 +748,29 @@
             this.notifyIcon1.Text = "notifyIcon1";
             this.notifyIcon1.Visible = true;
             // 
+            // listBox1
+            // 
+            this.listBox1.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.ItemHeight = 14;
+            this.listBox1.Items.AddRange(new object[] {
+            "US english",
+            "India"});
+            this.listBox1.Location = new System.Drawing.Point(353, 58);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(131, 32);
+            this.listBox1.TabIndex = 41;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.label21.Location = new System.Drawing.Point(6, 58);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(60, 14);
+            this.label21.TabIndex = 42;
+            this.label21.Text = "Language";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -838,7 +851,6 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TextBox txtbox_proxy;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.TextBox txtboxcustomdesktop;
         private System.Windows.Forms.TextBox txtboxcustommobile;
@@ -847,6 +859,8 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.TextBox txtbox_torsettings;
         private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.ListBox listBox1;
     }
 }
 

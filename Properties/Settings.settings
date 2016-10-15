@@ -41,5 +41,8 @@
     <Setting Name="set_torsettings" Type="System.String" Scope="User">
       <Value Profile="(Default)">127.0.0.1:9050</Value>
     </Setting>
+    <Setting Name="set_lang" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
