@@ -752,7 +752,15 @@ namespace BingRewardsBot
 
                         //string[] str = this.pts_txtbox.Text.Split(' ');
                         //if (Convert.ToInt32(str[0]) == 0 || Convert.ToInt32(this.pts_txtbox.Text) == 0 || this.prevpts == 0)
-                        if ((Convert.ToInt32(this.pts_txtbox.Text) == 0 || this.prevpts == 0))
+                        int cpts = 0;
+                        try
+                        {
+                            cpts = Convert.ToInt32(this.pts_txtbox.Text);
+                        } catch {
+
+                        }                        
+
+                        if (cpts == 0 || this.prevpts == 0)
                         //if ((!this.pts_txtbox.Text.Contains(@"(") && !this.pts_txtbox.Text.Contains(@"-")) || this.prevpts == 0)
                         {
                             this.prevpts = pts;
@@ -1656,7 +1664,14 @@ namespace BingRewardsBot
                 }
                 else
                 {
-                    if (Convert.ToInt16(pts_txtbox.Text) >= MSPOINTS
+                    int pts = 0;
+                    try
+                    {
+                        pts = Convert.ToInt32(pts_txtbox.Text);
+                    }
+                    catch { }
+
+                    if (pts >= MSPOINTS
                         || String.IsNullOrEmpty(pts_txtbox.Text)
                         || pts_txtbox.Text == "0"
                         || pts_txtbox.Text == "-")
@@ -2674,7 +2689,14 @@ namespace BingRewardsBot
                     }
                     else if (this.checkaccount == false)
                     {
-                        if (Convert.ToInt16(pts_txtbox.Text) >= MSPOINTS
+                        int pts = 0;
+                        try
+                        {
+                            pts = Convert.ToInt32(pts_txtbox.Text);
+                        }
+                        catch { }
+
+                        if (pts >= MSPOINTS
                             || String.IsNullOrEmpty(pts_txtbox.Text)
                             || pts_txtbox.Text == "0"
                             || pts_txtbox.Text == "-")
@@ -4188,7 +4210,13 @@ namespace BingRewardsBot
 
                     } else
                     {
-                        if (Convert.ToInt16(pts_txtbox.Text) >= MSPOINTS
+                        int pts = 0;
+                        try
+                        {
+                             pts = Convert.ToInt32(pts_txtbox.Text);
+                        } catch { }
+
+                        if ( pts >= MSPOINTS
                             || String.IsNullOrEmpty(pts_txtbox.Text)
                             || pts_txtbox.Text == "0"
                             || pts_txtbox.Text == "-")
