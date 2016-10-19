@@ -3013,7 +3013,7 @@ namespace BingRewardsBot
                         this.dashboardta = true;
 
                         browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
-                    }                   
+                    }
                     else if ((browserUrlTxtbox.Text.Contains(@"https://account.live.com/identity/confirm")
                       || browserUrlTxtbox.Text.Contains(@"https://account.live.com/recover")
                       || browserUrlTxtbox.Text.Contains(@"https://account.live.com/Abuse")
@@ -3032,6 +3032,16 @@ namespace BingRewardsBot
                       )
                     {
                         this.accountVisited[this.accountNum] = true;
+                        ++this.accountVisitedX;
+                        this.restartAuth();
+                    }
+                    else if (this.button1.Text == "Stop"
+                            && this.chkbox_autorotate.Checked == true
+                            && this.authLock == true
+                            && this.browserUrlTxtbox.Text.Contains("@https://login.live.com/ppsecure/post.srf?wa=wsignin")
+                            && this.statusTxtBox.Text == "Authenticate"
+                       )
+                    {
                         ++this.accountVisitedX;
                         this.restartAuth();
                     }
@@ -3164,7 +3174,9 @@ namespace BingRewardsBot
                     {
                         this.toolStripStatusLabel1.Text += "." + Convert.ToString(this.WDCounter);
 
-                    } else if (this.authLock == true && this.checkaccount==false && this.button1.Text=="Stop") 
+                    } else if (this.authLock == true
+                       && this.checkaccount==false 
+                       && this.button1.Text=="Stop") 
                     {
                         //this.authLock = false;
                         //this.dxloops = 0;
