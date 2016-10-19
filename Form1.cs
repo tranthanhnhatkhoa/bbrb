@@ -557,6 +557,7 @@ namespace BingRewardsBot
                     )
                 {
                     //browser.Navigate(new Uri(BRM + this.siguid));
+                    Thread.Sleep(SLEEPPTS);
 
                     if (listBox1.SelectedIndex == 0)
                     {
@@ -633,7 +634,6 @@ namespace BingRewardsBot
                     // callback search bot
                     if (this.pts >= MSPOINTS && autorotate == true)
                     {
-
                         if (this.timer_tor != null)
                         {
                             this.timer_tor.Enabled = false;
