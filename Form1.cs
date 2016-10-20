@@ -127,7 +127,7 @@ namespace BingRewardsBot
         private bool checkaccount = false;
         private string trialRegKey;
         private const int FREEX = 25500000;
-        private const int FREEA = 5;
+        private const int FREEA = 50;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
@@ -2508,6 +2508,7 @@ namespace BingRewardsBot
                     if (this.vrndnum < accounts.Count()
                         && this.checkaccount == false
                         && (this.authLock == false)
+                        && a >= 0
                         )
                     {
                         this.subgetip();
@@ -4398,9 +4399,25 @@ namespace BingRewardsBot
 
         private int randomNumber(int min, int max)
         {
+            if (min>max)
+            {
+                int bak = max;
+                max = min;
+                min = bak;
+            }
+
             DateTime dateTime = DateTime.UtcNow.Date;
             Random random = new Random(dateTime.Millisecond+Guid.NewGuid().GetHashCode());
-            return random.Next(min, max);
+
+            int rand = 0;
+            try
+            {
+                rand = random.Next(min, max); 
+            } catch
+            {
+            }
+
+            return rand; 
         }
 
         private void ReadFile(string name, List<string> list, int count=100000000)
