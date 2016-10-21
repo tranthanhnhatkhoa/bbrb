@@ -229,6 +229,16 @@ namespace BingRewardsBot
         {
             InitializeComponent();
 
+            // http://stackoverflow.com/questions/10441604/event-called-after-windows-maximized
+            this.SizeChanged += new EventHandler(Form1_SizeChanged);
+            FormMaximized += new EventHandler(Form1_FormMaximized);
+
+            _CurrentWindowState = this.WindowState;
+            if (_CurrentWindowState == FormWindowState.Maximized)
+            {
+                FireFormMaximized();
+            }
+
             doublePost = new Thread(new ThreadStart(ClickOKButton));
             doublePost.IsBackground = true;
             doublePost.Start();
@@ -458,6 +468,31 @@ namespace BingRewardsBot
             }
         }
 
+        public event EventHandler FormMaximized;
+        private void FireFormMaximized()
+        {
+            if (FormMaximized != null)
+            {
+                FormMaximized(this, EventArgs.Empty);
+            }
+        }
+
+        private FormWindowState _CurrentWindowState;
+        private void Form1_SizeChanged(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Maximized && _CurrentWindowState != FormWindowState.Maximized)
+            {
+                FireFormMaximized();
+            }
+            _CurrentWindowState = this.WindowState;
+        }
+
+        void Form1_FormMaximized(object sender, EventArgs e)
+        {
+            //TODO Put you're code here
+            MessageBox.Show("Max!");
+        }
+
         //***********************
         // onload&window resize
         //***********************
@@ -467,9 +502,30 @@ namespace BingRewardsBot
             this.TopMost = false;
         }
 
+
+        // http://stackoverflow.com/questions/10441604/event-called-after-windows-maximized
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Maximized)
+            {
+                MessageBox.Show("Max!");
+            }
+            base.OnSizeChanged(e);
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                doublePost.Abort();
+                mainThread.Abort();
+            }
+        }
+
         //https://msdn.microsoft.com/en-us/library/System.Timers.Timer.form.closing(v=vs.110).aspx
         private void Form1_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            
             //http://stackoverflow.com/questions/204804/disable-image-loading-from-webbrowser-control-before-the-documentcompleted-event
             //RegistryKey RegKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\Main", true);
             //RegKey.SetValue("Display Inline Images", "yes");
@@ -2446,7 +2502,7 @@ namespace BingRewardsBot
                 //                 TaskScheduler.FromCurrentSynchronizationContext());
             }
         }
-    
+
         //*********************
         // Main Thread
         //*********************
@@ -3185,11 +3241,16 @@ namespace BingRewardsBot
                         ++this.WDCounter;                    
                     }
 
-                    if (this.toolStripStatusLabel1.Text.Length < 70)
+                //http://stackoverflow.com/questions/7181756/invoke-or-begininvoke-cannot-be-called-on-a-control-until-the-window-handle-has#
+                //http://stackoverflow.com/questions/1127973/how-do-i-make-cross-threaded-calls-to-a-toolstripstatuslabel
+                //https://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k(EHInvalidOperation.WinForms.IllegalCrossThreadCall);k(TargetFrameworkMoniker-.NETFramework,Version%3Dv4.5.2);k(DevLang-csharp)&rd=true
+                if (this.toolStripStatusLabel1.Text.Length < 70)
                     {
-                        this.toolStripStatusLabel1.Text += "." + Convert.ToString(this.WDCounter);
+                    //this.toolStripStatusLabel1.Text += "." + Convert.ToString(this.WDCounter);
+                    if (IsHandleCreated)
+                        Invoke(new SetToolStripDelegate(SetToolStrip), "." + Convert.ToString(this.WDCounter));
 
-                    } else if (this.authLock == true
+                } else if (this.authLock == true
                        && this.checkaccount==false 
                        && this.button1.Text=="Stop") 
                     {
@@ -3204,16 +3265,26 @@ namespace BingRewardsBot
                         //this.Csearch = false;
                     
                         this.statusDebug("PCR1:");
-                        this.toolStripStatusLabel1.Text += "." + Convert.ToString(this.WDCounter);
+                    //this.toolStripStatusLabel1.Text += "." + Convert.ToString(this.WDCounter);
+                    if (IsHandleCreated)
+                        Invoke(new SetToolStripDelegate(SetToolStrip), "." + Convert.ToString(this.WDCounter));
 
-                    } else
+                } else
                     {
                         this.statusDebug("PCR2:");
-                        this.toolStripStatusLabel1.Text += "." + Convert.ToString(this.WDCounter);
-                    }
+                    //this.toolStripStatusLabel1.Text += "." + Convert.ToString(this.WDCounter);
+                    if (IsHandleCreated)
+                        Invoke(new SetToolStripDelegate(SetToolStrip), "." + Convert.ToString(this.WDCounter));
+                }
                 }
         }
 
+        private delegate void SetToolStripDelegate(string text);
+
+        private void SetToolStrip(string text)
+        {
+            this.toolStripStatusLabel1.Text += text;
+        }
 
         private void restartAuth()
         {
