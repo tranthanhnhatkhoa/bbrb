@@ -468,6 +468,10 @@ namespace BingRewardsBot
             }
         }
 
+        //***********************
+        // onload&window max
+        //***********************
+
         public event EventHandler FormMaximized;
         private void FireFormMaximized()
         {
@@ -490,7 +494,7 @@ namespace BingRewardsBot
         void Form1_FormMaximized(object sender, EventArgs e)
         {
             //TODO Put you're code here
-            MessageBox.Show("Max!");
+            //MessageBox.Show("1:Max!");
         }
 
         //***********************
@@ -508,7 +512,7 @@ namespace BingRewardsBot
         {
             if (this.WindowState == FormWindowState.Maximized)
             {
-                MessageBox.Show("Max!");
+                MessageBox.Show("2: Max!");
             }
             base.OnSizeChanged(e);
         }
@@ -3110,142 +3114,142 @@ namespace BingRewardsBot
                         && !this.browserUrlTxtbox.Text.Contains("@https://login.live.com/ppsecure/post.srf?wa=wsignin")
                         && this.statusTxtBox.Text == "Authenticate"
                    )
-                {
-                    ++this.accountVisitedX;
-                    this.restartAuth();
-                }
-                else if (this.button1.Text == "Stop"
-                   && this.statusTxtBox.Text == "Authenticate"
-                   && this.toolStripStatusLabel1.Text.Contains(@"PC")
-                   && !this.toolStripStatusLabel1.Text.Contains(@"Init")
-                   && !this.toolStripStatusLabel1.Text.Contains(@"Connected")
-                   && this.chkbox_autorotate.Checked == true
-                   && this.authLock == false
-                   && !this.browserUrlTxtbox.Text.Contains(@"landing")
-                   )
-                {
-                    this.accountVisited[this.accountNum] = true;
-                    ++this.accountVisitedX;
-                    this.restartAuth();
-
-                }
-                else if (this.button1.Text == "Stop"
-                    && (this.statusTxtBox.Text == "Working" ||
-                    (this.toolStripStatusLabel1.Text.Contains(@"Working##") && this.statusTxtBox.Text != "Connected"))
-                    && this.chkbox_autorotate.Checked == true
-                    && this.authLock == true
-                    && !this.browserUrlTxtbox.Text.Contains(@"landing")
-                    )
-                {
-                    this.accountVisited[this.accountNum] = true;
-                    ++this.accountVisitedX;
-                    this.restartAuth();
-                }
-                else if (this.button1.Text == "Stop"
-                         && this.chkbox_autorotate.Checked == true
-                        && browserUrlTxtbox.Text.Contains(@"https://www.google")
-                    && this.statusTxtBox.Text == "Authenticate"
-                    )
-                {
-                    // first step before sign-in
-                    NewLoginAsync(BRSIN2).ContinueWith(
-                        (task) => this.statusDebug("S2:"),
-                            TaskScheduler.FromCurrentSynchronizationContext());
-                }
-                else if (!this.browserUrlTxtbox.Text.Contains(@"&")
-                    && (this.browserUrlTxtbox.Text.Contains(@"http://login.live.com/logout.srf")
-                    || this.browserUrlTxtbox.Text.Contains(@"http://www.msn.com")
-                    || this.browserUrlTxtbox.Text.Contains(@"https://www.msn.com")
-                    || this.browserUrlTxtbox.Text.Contains(@"https://login.live.com/logout.srf")
-                    || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/about")
-                    || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/rewards/welcome")
-                    )
-                    && this.statusTxtBox.Text == "Authenticate"
-                    )
-                {
-                    if (this.country == "US" || this.country == "IN" || chkbox_tor.Checked == false)
                     {
-                        this.authLock = true;
-                        this.iniSearch = false;
-                        this.Csearch = false;
-                        this.ClearCache();
+                        ++this.accountVisitedX;
+                        this.restartAuth();
+                    }
+                    else if (this.button1.Text == "Stop"
+                       && this.statusTxtBox.Text == "Authenticate"
+                       && this.toolStripStatusLabel1.Text.Contains(@"PC")
+                       && !this.toolStripStatusLabel1.Text.Contains(@"Init")
+                       && !this.toolStripStatusLabel1.Text.Contains(@"Connected")
+                       && this.chkbox_autorotate.Checked == true
+                       && this.authLock == false
+                       && !this.browserUrlTxtbox.Text.Contains(@"landing")
+                       )
+                    {
+                        this.accountVisited[this.accountNum] = true;
+                        ++this.accountVisitedX;
+                        this.restartAuth();
 
+                    }
+                    else if (this.button1.Text == "Stop"
+                        && (this.statusTxtBox.Text == "Working" ||
+                        (this.toolStripStatusLabel1.Text.Contains(@"Working##") && this.statusTxtBox.Text != "Connected"))
+                        && this.chkbox_autorotate.Checked == true
+                        && this.authLock == true
+                        && !this.browserUrlTxtbox.Text.Contains(@"landing")
+                        )
+                    {
+                        this.accountVisited[this.accountNum] = true;
+                        ++this.accountVisitedX;
+                        this.restartAuth();
+                    }
+                    else if (this.button1.Text == "Stop"
+                             && this.chkbox_autorotate.Checked == true
+                            && browserUrlTxtbox.Text.Contains(@"https://www.google")
+                        && this.statusTxtBox.Text == "Authenticate"
+                        )
+                    {
                         // first step before sign-in
-                        DownloadAsync("https://www.google.com").ContinueWith(
-                          (task) => this.statusDebug("S1:"),
-                             TaskScheduler.FromCurrentSynchronizationContext());
+                        NewLoginAsync(BRSIN2).ContinueWith(
+                            (task) => this.statusDebug("S2:"),
+                                TaskScheduler.FromCurrentSynchronizationContext());
                     }
-                }
-                else if (this.button1.Text == "Stop"
-                      && this.authLock == true
-                      && this.chkbox_autorotate.Checked == true
-                      && (this.statusTxtBox.Text == "Dashboard"
-                      || this.toolStripStatusLabel1.Text.Contains(@"Finalize"))
-                      && !this.toolStripStatusLabel1.Text.Contains(@"Searching")
-                  )
-                {
-                    statusTxtBox.Text = "Dashboard";
-
-                    if (timer_searches != null)
+                    else if (!this.browserUrlTxtbox.Text.Contains(@"&")
+                        && (this.browserUrlTxtbox.Text.Contains(@"http://login.live.com/logout.srf")
+                        || this.browserUrlTxtbox.Text.Contains(@"http://www.msn.com")
+                        || this.browserUrlTxtbox.Text.Contains(@"https://www.msn.com")
+                        || this.browserUrlTxtbox.Text.Contains(@"https://login.live.com/logout.srf")
+                        || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/about")
+                        || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/rewards/welcome")
+                        )
+                        && this.statusTxtBox.Text == "Authenticate"
+                        )
                     {
-                        this.timer_searches.Enabled = false;
-                        this.Csearch = false;
-                    }
+                        if (this.country == "US" || this.country == "IN" || chkbox_tor.Checked == false)
+                        {
+                            this.authLock = true;
+                            this.iniSearch = false;
+                            this.Csearch = false;
+                            this.ClearCache();
 
-                    if (this.timer_tor != null)
+                            // first step before sign-in
+                            DownloadAsync("https://www.google.com").ContinueWith(
+                              (task) => this.statusDebug("S1:"),
+                                 TaskScheduler.FromCurrentSynchronizationContext());
+                        }
+                    }
+                    else if (this.button1.Text == "Stop"
+                          && this.authLock == true
+                          && this.chkbox_autorotate.Checked == true
+                          && (this.statusTxtBox.Text == "Dashboard"
+                          || this.toolStripStatusLabel1.Text.Contains(@"Finalize"))
+                          && !this.toolStripStatusLabel1.Text.Contains(@"Searching")
+                      )
                     {
-                        this.timer_tor.Enabled = false;
+                        statusTxtBox.Text = "Dashboard";
+
+                        if (timer_searches != null)
+                        {
+                            this.timer_searches.Enabled = false;
+                            this.Csearch = false;
+                        }
+
+                        if (this.timer_tor != null)
+                        {
+                            this.timer_tor.Enabled = false;
+                        }
+
+                        string[] authstr = this.accounts[this.accountNum].Split('/');
+                        this.username = authstr[0];
+                        this.password = authstr[1];
+
+                        accountNameTxtBox.Text = this.username;
+                        accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
+
+                        this.toolStripStatusLabel1.Text = "Initial dashboard tasks!";
+                        this.dashboardta = true;
+
+                        browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
                     }
+                    else if (this.button1.Text == "Stop"
+                        && this.statusTxtBox.Text == "Dashboard"
+                        && this.chkbox_autorotate.Checked == true
+                        && this.numdashboardta < -1
+                        && !this.browserUrlTxtbox.Text.Contains(@"landing")
+                        )
+                    {
+                        if (this.timer_dashboardta == null)
+                        {
+                            this.timer_dashboardta = new System.Timers.Timer();
+                            this.timer_dashboardta.AutoReset = true;
+                            this.timer_dashboardta.Elapsed += new ElapsedEventHandler(earndashboardta);
+                        }
 
-                    string[] authstr = this.accounts[this.accountNum].Split('/');
-                    this.username = authstr[0];
-                    this.password = authstr[1];
-
-                    accountNameTxtBox.Text = this.username;
-                    accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
-
-                    this.toolStripStatusLabel1.Text = "Initial dashboard tasks!";
-                    this.dashboardta = true;
-
-                    browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
-                }
-                else if (this.button1.Text == "Stop"
-                    && this.statusTxtBox.Text == "Dashboard"
-                    && this.chkbox_autorotate.Checked == true
-                    && this.numdashboardta < -1
-                    && !this.browserUrlTxtbox.Text.Contains(@"landing")
+                        this.timer_dashboardta.Interval = SLEEPDASHBOARD;   // Timer will tick every 10 seconds
+                        this.timer_dashboardta.Enabled = true;
+                        this.statusDebug("Restart DBT:");
+                    }
+                    else if (this.button1.Text == "Stop"
+                        && this.statusTxtBox.Text == "Connected"
+                        && this.chkbox_autorotate.Checked == true
+                        && this.numdashboardta < -1
+                        && this.iniSearch == true
                     )
-                {
-                    if (this.timer_dashboardta == null)
                     {
-                        this.timer_dashboardta = new System.Timers.Timer();
-                        this.timer_dashboardta.AutoReset = true;
-                        this.timer_dashboardta.Elapsed += new ElapsedEventHandler(earndashboardta);
+                        browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
                     }
-
-                    this.timer_dashboardta.Interval = SLEEPDASHBOARD;   // Timer will tick every 10 seconds
-                    this.timer_dashboardta.Enabled = true;
-                    this.statusDebug("Restart DBT:");
-                }
-                else if (this.button1.Text == "Stop"
-                    && this.statusTxtBox.Text == "Connected"
-                    && this.chkbox_autorotate.Checked == true
-                    && this.numdashboardta < -1
-                    && this.iniSearch == true
-                )
+                } else
                 {
-                    browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                    ++this.WDCounter;                    
                 }
-                    } else
-                    {
-                        ++this.WDCounter;                    
-                    }
 
                 //http://stackoverflow.com/questions/7181756/invoke-or-begininvoke-cannot-be-called-on-a-control-until-the-window-handle-has#
                 //http://stackoverflow.com/questions/1127973/how-do-i-make-cross-threaded-calls-to-a-toolstripstatuslabel
                 //https://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k(EHInvalidOperation.WinForms.IllegalCrossThreadCall);k(TargetFrameworkMoniker-.NETFramework,Version%3Dv4.5.2);k(DevLang-csharp)&rd=true
                 if (this.toolStripStatusLabel1.Text.Length < 70)
-                    {
+                {
                     //this.toolStripStatusLabel1.Text += "." + Convert.ToString(this.WDCounter);
                     if (IsHandleCreated)
                         Invoke(new SetToolStripDelegate(SetToolStrip), "." + Convert.ToString(this.WDCounter));
@@ -3270,13 +3274,13 @@ namespace BingRewardsBot
                         Invoke(new SetToolStripDelegate(SetToolStrip), "." + Convert.ToString(this.WDCounter));
 
                 } else
-                    {
+                {
                         this.statusDebug("PCR2:");
                     //this.toolStripStatusLabel1.Text += "." + Convert.ToString(this.WDCounter);
                     if (IsHandleCreated)
                         Invoke(new SetToolStripDelegate(SetToolStrip), "." + Convert.ToString(this.WDCounter));
                 }
-                }
+             }
         }
 
         private delegate void SetToolStripDelegate(string text);
