@@ -2525,7 +2525,7 @@ namespace BingRewardsBot
                     && this.authLock == false
                     && this.button1.Text == "Stop"
                     && !browserUrlTxtbox.Text.Contains(@"landing")
-                    && !browserUrlTxtbox.Text.Contains(@"dashboard")
+                    && !browserUrlTxtbox.Text.Contains(@"/rewards/dashboard")
                     )
                 {   
                     //individual time
