@@ -512,7 +512,7 @@ namespace BingRewardsBot
         {
             if (this.WindowState == FormWindowState.Maximized)
             {
-                MessageBox.Show("2: Max!");
+                //MessageBox.Show("2: Max!");
             }
             base.OnSizeChanged(e);
         }
@@ -2570,7 +2570,8 @@ namespace BingRewardsBot
                         && a >= 0
                         )
                     {
-                        this.subgetip();
+                        this.subgetip();                       
+                                               
                         this.accountNum = v[this.randomNumber(0, a)];
 
                         if (a >= 0)
