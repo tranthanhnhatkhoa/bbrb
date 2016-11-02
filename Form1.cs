@@ -289,6 +289,8 @@ namespace BingRewardsBot
             double z = (double)100 / FREEX * (this.trialCountDownReg - (this.trialCountUp * DIVIDE));
             this.Text = TITLE + Math.Round(z) + "% Shareware";
 
+            //this.Text = TITLE;
+
             //RegKey
             if (Application.UserAppDataRegistry.GetValue("RegKey") != null)
             {
@@ -484,10 +486,10 @@ namespace BingRewardsBot
         private FormWindowState _CurrentWindowState;
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
-            if (this.WindowState == FormWindowState.Maximized && _CurrentWindowState != FormWindowState.Maximized)
-            {
-                FireFormMaximized();
-            }
+            //if (this.WindowState == FormWindowState.Maximized && _CurrentWindowState != FormWindowState.Maximized)
+            //{
+            //    FireFormMaximized();
+            //}
             _CurrentWindowState = this.WindowState;
         }
 
@@ -510,10 +512,10 @@ namespace BingRewardsBot
         // http://stackoverflow.com/questions/10441604/event-called-after-windows-maximized
         protected override void OnSizeChanged(EventArgs e)
         {
-            if (this.WindowState == FormWindowState.Maximized)
-            {
+            //if (this.WindowState == FormWindowState.Maximized)
+            //{
                 //MessageBox.Show("2: Max!");
-            }
+            //}
             base.OnSizeChanged(e);
         }
 
@@ -1659,7 +1661,8 @@ namespace BingRewardsBot
 
                 // autorotate
             }
-            else if ((this.counterDx <= 1 && this.counterMx <= 1 && autorotate == true && this.trialstopped == false)
+            else 
+            if ((this.counterDx <= 1 && this.counterMx <= 1 && autorotate == true && this.trialstopped == false)
                 || (this.counterDx <= 1 && mobile == false && autorotate == true && this.trialstopped == false)
                 || (this.counterMx <= 1 && desktop == false && autorotate == true && this.trialstopped == false)
                 && (this.pts >= MSPOINTS || this.dxloops == MAXLOOPS-1)
@@ -4489,6 +4492,7 @@ namespace BingRewardsBot
 
         private int randomNumber(int min, int max)
         {
+            ++max;
             if (min>max)
             {
                 int bak = max;
