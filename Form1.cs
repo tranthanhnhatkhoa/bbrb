@@ -1623,7 +1623,7 @@ namespace BingRewardsBot
             htmlDoc.all.item("idSIButton9").click();
 
 
-            await Task.Delay(5000);
+            await Task.Delay(8000);
 
             htmlDoc.all.item("idSIButton9").click();
 
