@@ -1622,6 +1622,12 @@ namespace BingRewardsBot
 
             htmlDoc.all.item("idSIButton9").click();
 
+
+            await Task.Delay(5000);
+
+            htmlDoc.all.item("idSIButton9").click();
+
+
             //this.browser.Document.GetElementById("i0116").SetAttribute("value", this.username);
             //this.browser.Document.GetElementById("i0118").SetAttribute("value", this.password);
             //this.browser.Document.GetElementById("idSIButton9").InvokeMember("click");
