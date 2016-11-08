@@ -126,7 +126,7 @@ namespace BingRewardsBot
         private bool trialstopped = false;
         private bool checkaccount = false;
         private string trialRegKey;
-        private const int FREEX = 25500000;
+        private const int FREEX = 2550000;
         private const int FREEA = 5;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
@@ -145,10 +145,11 @@ namespace BingRewardsBot
         private int accountNum = 0;
         private string accountsFile;
         private string wordsFile;
+        private const bool SUPPORTER = false;
         private List<string> accounts = new List<string>();
         private List<string> words = new List<string>();
         Thread doublePost;
-        Thread mainThread;
+        Thread mainThread;        
 
         //http://stackoverflow.com/questions/10280000/how-to-create-lparam-of-sendmessage-wm-keydown
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -279,15 +280,23 @@ namespace BingRewardsBot
                 this.trialCountDownReg = Convert.ToInt32(Application.UserAppDataRegistry.GetValue("ConnXY"));
             }
 
-            if (this.trialCountDownReg > (FREEX * DIVIDE))
+           
+            if (this.trialCountDownReg > (FREEX * DIVIDE) && SUPPORTER == false)
             {
                 this.trialstopped = true;
                 MessageBox.Show(TRIALOVER);
                 Application.Exit();
             }
 
-            double z = (double)100 / FREEX * (this.trialCountDownReg - (this.trialCountUp * DIVIDE));
-            this.Text = TITLE + Math.Round(z) + "% Shareware";
+            if (SUPPORTER == true )
+            {
+                this.Text = TITLE;
+
+            } else
+            {
+                double z = (double)100 / FREEX * (this.trialCountDownReg - (this.trialCountUp * DIVIDE));
+                this.Text = TITLE + Math.Round(z) + "% Shareware";
+            }
 
             //this.Text = TITLE;
 
@@ -1660,7 +1669,7 @@ namespace BingRewardsBot
             bool desktop = BingRewardsBot.Properties.Settings.Default.set_desktop;
 
             // trial version
-            if ((this.trialCountDownReg - (this.trialCountUp * DIVIDE)) < 0 && this.trialstopped == false)
+            if ((this.trialCountDownReg - (this.trialCountUp * DIVIDE)) < 0 && this.trialstopped == false && SUPPORTER == false)
             {
                 this.trialstopped = true;
                 MessageBox.Show(TRIALOVER);
@@ -1837,9 +1846,17 @@ namespace BingRewardsBot
 
                 // searches loop
                 ++this.trialCountUp;
-                double x = (double)100 / FREEX;
-                double z = x * (this.trialCountDownReg - (this.trialCountUp * DIVIDE));
-                this.Text = TITLE + Math.Round(z) + "% Shareware";
+
+                if (SUPPORTER == true)
+                {
+                    this.Text = TITLE;
+                } else
+                {
+                    double x = (double)100 / FREEX;
+                    double z = x * (this.trialCountDownReg - (this.trialCountUp * DIVIDE));
+                    this.Text = TITLE + Math.Round(z) + "% Shareware";
+                }
+                
 
                 if (statusTxtBox.Text == "Mobilesearches")
                 {
