@@ -35,7 +35,6 @@
             this.browser = new System.Windows.Forms.WebBrowser();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.btn_ip = new System.Windows.Forms.TabPage();
-            this.button4 = new System.Windows.Forms.Button();
             this.btn_cache = new System.Windows.Forms.Button();
             this.pts_txtbox = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
@@ -84,6 +83,8 @@
             this.txtbox_waitauth = new System.Windows.Forms.TextBox();
             this.txtbox_counter = new System.Windows.Forms.TextBox();
             this.txtbox_waitsearches = new System.Windows.Forms.TextBox();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.log = new System.Windows.Forms.ListView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.button2 = new System.Windows.Forms.Button();
@@ -96,6 +97,7 @@
             this.btn_ip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -116,10 +118,10 @@
             this.browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.browser.Location = new System.Drawing.Point(0, 174);
+            this.browser.Location = new System.Drawing.Point(0, 58);
             this.browser.MinimumSize = new System.Drawing.Size(20, 20);
             this.browser.Name = "browser";
-            this.browser.Size = new System.Drawing.Size(726, 284);
+            this.browser.Size = new System.Drawing.Size(726, 400);
             this.browser.TabIndex = 1;
             // 
             // tabControl1
@@ -129,6 +131,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.btn_ip);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControl1.Location = new System.Drawing.Point(-2, -1);
@@ -139,8 +142,7 @@
             // 
             // btn_ip
             // 
-            this.btn_ip.BackColor = System.Drawing.Color.White;
-            this.btn_ip.Controls.Add(this.button4);
+            this.btn_ip.BackColor = System.Drawing.Color.Transparent;
             this.btn_ip.Controls.Add(this.btn_cache);
             this.btn_ip.Controls.Add(this.pts_txtbox);
             this.btn_ip.Controls.Add(this.button3);
@@ -164,17 +166,6 @@
             this.btn_ip.Size = new System.Drawing.Size(728, 486);
             this.btn_ip.TabIndex = 0;
             this.btn_ip.Text = "Search";
-            // 
-            // button4
-            // 
-            this.button4.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(450, 2);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(36, 21);
-            this.button4.TabIndex = 18;
-            this.button4.Text = "IP";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // btn_cache
             // 
@@ -345,7 +336,7 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage2.BackColor = System.Drawing.Color.Transparent;
             this.tabPage2.Controls.Add(this.label21);
             this.tabPage2.Controls.Add(this.listBox1);
             this.tabPage2.Controls.Add(this.txtbox_torsettings);
@@ -693,9 +684,30 @@
             this.txtbox_waitsearches.TabIndex = 4;
             this.txtbox_waitsearches.Text = "4-10";
             // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.log);
+            this.tabPage1.Location = new System.Drawing.Point(4, 23);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(728, 486);
+            this.tabPage1.TabIndex = 2;
+            this.tabPage1.Text = "Log";
+            // 
+            // log
+            // 
+            this.log.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.log.Location = new System.Drawing.Point(10, 6);
+            this.log.Name = "log";
+            this.log.Size = new System.Drawing.Size(709, 472);
+            this.log.TabIndex = 0;
+            this.log.UseCompatibleStateImageBehavior = false;
+            // 
             // tabPage3
             // 
-            this.tabPage3.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage3.BackColor = System.Drawing.Color.Transparent;
             this.tabPage3.Controls.Add(this.richTextBox1);
             this.tabPage3.Controls.Add(this.button2);
             this.tabPage3.Controls.Add(this.label8);
@@ -706,7 +718,7 @@
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage3.Size = new System.Drawing.Size(728, 486);
-            this.tabPage3.TabIndex = 2;
+            this.tabPage3.TabIndex = 3;
             this.tabPage3.Text = "Register";
             // 
             // richTextBox1
@@ -789,6 +801,7 @@
             this.statusStrip1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
@@ -848,7 +861,6 @@
         private System.Windows.Forms.CheckBox chkbox_tor;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Button btn_cache;
-        private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TextBox txtbox_proxy;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label17;
@@ -861,6 +873,8 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.ListView log;
     }
 }
 

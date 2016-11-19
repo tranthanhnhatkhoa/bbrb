@@ -230,6 +230,16 @@ namespace BingRewardsBot
         {
             InitializeComponent();
 
+            log.Columns.Add("Log", 640);
+            log.View = View.Details;
+            log.GridLines = true;
+            log.FullRowSelect = true;
+
+            this.ResizeColumnHeaders();
+
+            //http://stackoverflow.com/questions/2921483/windows-forms-event-on-select-tab
+            tabControl1.SelectedIndexChanged += new EventHandler(this.log_Enter);
+            
             // http://stackoverflow.com/questions/10441604/event-called-after-windows-maximized
             this.SizeChanged += new EventHandler(Form1_SizeChanged);
             FormMaximized += new EventHandler(Form1_FormMaximized);
@@ -446,7 +456,7 @@ namespace BingRewardsBot
 
                     this.checkaccount = false;
                     
-                    int x = randomNumber(Convert.ToInt32(check[0]), Convert.ToInt32(check[1]));
+                    int x = randNumTimer(Convert.ToInt32(check[0]), Convert.ToInt32(check[1]));
                     counterTxtBox.Text = x.ToString() + " min.";
 
                     this.authLock = false;
@@ -535,6 +545,8 @@ namespace BingRewardsBot
                 doublePost.Abort();
                 mainThread.Abort();
             }
+
+            this.ResizeColumnHeaders();
         }
 
         //https://msdn.microsoft.com/en-us/library/System.Timers.Timer.form.closing(v=vs.110).aspx
@@ -672,7 +684,7 @@ namespace BingRewardsBot
 
                         string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
 
-                        int z = randomNumber(Convert.ToInt32(auth[0]),
+                        int z = randNumTimer(Convert.ToInt32(auth[0]),
                             Convert.ToInt32(auth[1]));
 
                         this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
@@ -790,7 +802,7 @@ namespace BingRewardsBot
                         }
 
                         string[] wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
-                        this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]),
+                        this.timer_searches.Interval = randNumTimer(Convert.ToInt32(wait[0]),
                             Convert.ToInt32(wait[1])) * 1000;
 
                         this.timer_searches.Enabled = true;
@@ -982,9 +994,9 @@ namespace BingRewardsBot
 
                             // search parameter
                             string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
-                            this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                            this.counterDx = this.countDownDesktop = randNumTimer(Convert.ToInt32(wait[0]),
                                 Convert.ToInt32(wait[1]));
-                            this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                            this.counterMx = this.countDownMobile = randNumTimer(Convert.ToInt32(wait[0]),
                                 Convert.ToInt32(wait[1]));
 
                             Thread.Sleep(SLEEPPTS);
@@ -1095,7 +1107,7 @@ namespace BingRewardsBot
                         }
 
                         string[] wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
-                        this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]),
+                        this.timer_searches.Interval = randNumTimer(Convert.ToInt32(wait[0]),
                             Convert.ToInt32(wait[1])) * 1000;
 
                         this.Csearch = false;
@@ -1457,7 +1469,7 @@ namespace BingRewardsBot
 
                             string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
 
-                            int z = randomNumber(Convert.ToInt32(auth[0]),
+                            int z = randNumTimer(Convert.ToInt32(auth[0]),
                                 Convert.ToInt32(auth[1]));
 
                             this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
@@ -1709,7 +1721,7 @@ namespace BingRewardsBot
                 if (v >= 0)
                 {
                     string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
-                    int z = randomNumber(Convert.ToInt32(auth[0]),
+                    int z = randNumTimer(Convert.ToInt32(auth[0]),
                         Convert.ToInt32(auth[1]));
 
                     this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
@@ -1832,7 +1844,7 @@ namespace BingRewardsBot
                 {
                     this.dxloops++;
                     string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
-                    this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                    this.counterDx = this.countDownDesktop = randNumTimer(Convert.ToInt32(wait[0]),
                         Convert.ToInt32(wait[1]));
                 }
 
@@ -1840,7 +1852,7 @@ namespace BingRewardsBot
                 {
                     this.mxloops++;
                     string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
-                    this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                    this.counterMx = this.countDownMobile = randNumTimer(Convert.ToInt32(wait[0]),
                         Convert.ToInt32(wait[1]));
                 }
 
@@ -2669,9 +2681,9 @@ namespace BingRewardsBot
                             this.iniSearch = false;
 
                             string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
-                            this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                            this.counterDx = this.countDownDesktop = randNumTimer(Convert.ToInt32(wait[0]),
                                 Convert.ToInt32(wait[1]));
-                            this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                            this.counterMx = this.countDownMobile = randNumTimer(Convert.ToInt32(wait[0]),
                                 Convert.ToInt32(wait[1]));
 
                             this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
@@ -2743,7 +2755,7 @@ namespace BingRewardsBot
 
                             statusTxtBox.Text = "Authenticate";
                             string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
-                            int z = randomNumber(Convert.ToInt32(auth[0]),
+                            int z = randNumTimer(Convert.ToInt32(auth[0]),
                                 Convert.ToInt32(auth[1]));
 
                             this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
@@ -2761,7 +2773,7 @@ namespace BingRewardsBot
                         statusTxtBox.Text = "Authenticate";
 
                         string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
-                        int z = randomNumber(Convert.ToInt32(auth[0]),
+                        int z = randNumTimer(Convert.ToInt32(auth[0]),
                             Convert.ToInt32(auth[1]));
 
                         this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
@@ -2819,9 +2831,9 @@ namespace BingRewardsBot
                     else if (this.checkaccount == true)
                     {
                         string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
-                        this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                        this.counterDx = this.countDownDesktop = randNumTimer(Convert.ToInt32(wait[0]),
                             Convert.ToInt32(wait[1]));
-                        this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                        this.counterMx = this.countDownMobile = randNumTimer(Convert.ToInt32(wait[0]),
                             Convert.ToInt32(wait[1]));
 
                         authstr = this.accounts[this.accountNum].Split('/');
@@ -2863,7 +2875,10 @@ namespace BingRewardsBot
                             )
                             {
                                 string text = ele.GetAttribute("href");
-                                browser.Navigate(new Uri(text));
+                                //browser.Navigate(new Uri(text));
+                                browser.Invoke(new Action(() => {
+                                    browser.Navigate(new Uri(text));
+                                }));
                                 a = true;
                             }
                         }
@@ -2983,7 +2998,7 @@ namespace BingRewardsBot
                         }
 
                         string[] wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
-                        this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]),
+                        this.timer_searches.Interval = randNumTimer(Convert.ToInt32(wait[0]),
                         Convert.ToInt32(wait[1])) * 1000;
 
                         this.Csearch = true;
@@ -2999,11 +3014,19 @@ namespace BingRewardsBot
                           && !this.browserUrlTxtbox.Text.Contains(@"landing")
                         )
                         {
-                            browser.Navigate(new Uri("http://www.google.com"));
+                            //http://stackoverflow.com/questions/12386071/threading-and-webbrowser-control
+                            //browser.Navigate(new Uri("http://www.google.com"));
+                            browser.Invoke(new Action(() => {
+                                browser.Navigate(new Uri("http://www.google.com"));
+                            }));
                         }
                         else
                         {
-                            browser.Navigate(new Uri(browserUrlTxtbox.Text));
+
+                            //browser.Navigate(new Uri(browserUrlTxtbox.Text));
+                            browser.Invoke(new Action(() => {
+                                browser.Navigate(new Uri(browserUrlTxtbox.Text));
+                            }));
                         }
                     }
                     else if (browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/?lang=en-US&refd=account.live.com&refp=landing")
@@ -3068,7 +3091,11 @@ namespace BingRewardsBot
                             this.initUserSQL();
 
                             // first step after user auth (very important) navigate bing.com or bing.com/rewards
-                            browser.Navigate(new Uri("https://www.bing.com/rewards"));
+                            //browser.Navigate(new Uri("https://www.bing.com/rewards"));
+                            browser.Invoke(new Action(() => {
+                                browser.Navigate(new Uri("https://www.bing.com/rewards"));
+                            }));
+
                         }
                     }
                     else if (browserUrlTxtbox.Text.Contains(@"https://www.bing.com")
@@ -3103,7 +3130,10 @@ namespace BingRewardsBot
                         this.toolStripStatusLabel1.Text = "Initial dashboard tasks!";
                         this.dashboardta = true;
 
-                        browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                        //browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                        browser.Invoke(new Action(() => {
+                            browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                        }));
                     }
                     else if ((browserUrlTxtbox.Text.Contains(@"https://account.live.com/identity/confirm")
                       || browserUrlTxtbox.Text.Contains(@"https://account.live.com/recover")
@@ -3238,7 +3268,11 @@ namespace BingRewardsBot
                         this.toolStripStatusLabel1.Text = "Initial dashboard tasks!";
                         this.dashboardta = true;
 
-                        browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                        //browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                        browser.Invoke(new Action(() => {
+                            browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                        }));
+
                     }
                     else if (this.button1.Text == "Stop"
                         && this.statusTxtBox.Text == "Dashboard"
@@ -3265,7 +3299,10 @@ namespace BingRewardsBot
                         && this.iniSearch == true
                     )
                     {
-                        browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                        //browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                        browser.Invoke(new Action(() => {
+                            browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
+                        }));
                     }
                 } else
                 {
@@ -3359,16 +3396,16 @@ namespace BingRewardsBot
                 ++this.accountVisitedX;
                 
                 string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
-                int z = randomNumber(Convert.ToInt32(auth[0]),
+                int z = randNumTimer(Convert.ToInt32(auth[0]),
                     Convert.ToInt32(auth[1]));
 
                 this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
                 counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "some sec.";
                 
                 string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
-                this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                this.counterDx = this.countDownDesktop = randNumTimer(Convert.ToInt32(wait[0]),
                     Convert.ToInt32(wait[1]));
-                this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                this.counterMx = this.countDownMobile = randNumTimer(Convert.ToInt32(wait[0]),
                     Convert.ToInt32(wait[1]));
 
                 this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
@@ -3469,7 +3506,122 @@ namespace BingRewardsBot
                 }
             }
         }
-        
+
+        private void log_Enter(object sender, EventArgs e)
+        {
+            switch ((sender as TabControl).SelectedIndex)
+            {
+                case 2:
+
+                    log.Items.Clear();
+
+                    SQLiteConnection conn = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                    conn.Open();
+
+                    string sql = "select * from searches where ip='" + this.ip + "' group by account,ip";
+                    SQLiteCommand command = new SQLiteCommand(sql, conn);
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    string[] aarr = new string[5];
+                    ListViewItem itm;
+
+                    int i = 0;
+                    while (reader.Read() && i < 5)
+                    {
+                        aarr[i] = Convert.ToString(reader["account"]);
+
+                        itm = new ListViewItem(aarr[i++]);
+                        log.Items.Add(itm);
+                    }
+
+                    string[] iparr = new string[10];
+                    sql = "select * from searches where account='" +
+                        this.username + "' group by account,ip";
+                    command = new SQLiteCommand(sql, conn);
+                    reader = command.ExecuteReader();
+
+                    i = 0;
+                    while (reader.Read() && i < 10)
+                    {
+                        iparr[i] = Convert.ToString(reader["ip"]);
+
+                        itm = new ListViewItem(iparr[i++]);
+                        log.Items.Add(itm);
+
+                    }
+                    conn.Close();
+
+              
+                    conn = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                    conn.Open();
+                    DateTime dateTime = DateTime.UtcNow.Date;
+                    sql = "select * from searches where date='" +
+                    dateTime.ToString("yyyyMMdd") + "' group by account";
+                    command = new SQLiteCommand(sql, conn);
+                    reader = command.ExecuteReader();
+                    string[] uarr = new string[50];
+
+                    i = 0;
+                    while (reader.Read() && i < 50)
+                    {
+                        uarr[i++] = Convert.ToString(reader["account"]);
+                    }
+
+                    i = 0;
+                    int[] parr = new int[50];
+
+                    foreach (string ele in uarr)
+                    {
+                        if (ele != null)
+                        {
+                            sql = "select * from searches where date='" +
+                                dateTime.ToString("yyyyMMdd") +
+                                "' and account='"
+                                + ele +
+                                "' and points<>4242";
+                            command = new SQLiteCommand(sql, conn);
+                            reader = command.ExecuteReader();
+
+                            while (reader.Read())
+                            {
+                                parr[i] += Convert.ToInt32(reader["points"]);
+                            }
+                            i++;
+                        }
+                    }
+
+                    i = 0;
+                    string score = "";
+                    foreach (string ele in uarr)
+                    {
+                        if (ele != null)
+                        {
+                            //score += Convert.ToString(uarr[i]) + " " + Convert.ToString(parr[i]) + "\r\n";
+                            itm = new ListViewItem(uarr[i]);
+                            log.Items.Add(itm);
+                            ++i;
+                        }
+                    }
+
+                    
+
+                    //MessageBox.Show("Accounts:" + string.Join("\r\n", aarr) +
+                    //    "\r\nIPs:" + string.Join("\r\n", iparr) +
+                    //    string.Join("\r\n", score));
+
+
+
+                    break;
+            }
+
+            this.ResizeColumnHeaders();
+        }
+
+        private void ResizeColumnHeaders()
+        {
+            for (int i = 0; i < this.log.Columns.Count - 1; i++) this.log.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.ColumnContent);
+            this.log.Columns[this.log.Columns.Count - 1].Width = -2;
+        }
+
         //****************************************************
         // start button
         //****************************************************
@@ -3526,9 +3678,9 @@ namespace BingRewardsBot
                     this.ldashboardta = false;
 
                     string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
-                    this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                    this.counterDx = this.countDownDesktop = randNumTimer(Convert.ToInt32(wait[0]),
                         Convert.ToInt32(wait[1]));
-                    this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                    this.counterMx = this.countDownMobile = randNumTimer(Convert.ToInt32(wait[0]),
                         Convert.ToInt32(wait[1]));
 
                     if (this.timer_searches == null)
@@ -3539,12 +3691,11 @@ namespace BingRewardsBot
                     }
 
                     wait = Properties.Settings.Default.set_waitsearches.ToString().Split('-');
-                    this.timer_searches.Interval = randomNumber(Convert.ToInt32(wait[0]),
+                    this.timer_searches.Interval = randNumTimer(Convert.ToInt32(wait[0]),
                         Convert.ToInt32(wait[1])) * 1000;
 
                     this.Csearch = false;
                     this.authLock = true;
-
                     this.timer_searches.Enabled = true;
 
                     try
@@ -4335,7 +4486,11 @@ namespace BingRewardsBot
                         uint message = 0xf5;
                         SendMessage(hwnd, message, IntPtr.Zero, IntPtr.Zero);
 
-                        browser.Navigate(new Uri(BRSOUT));
+                        //http://stackoverflow.com/questions/12386071/threading-and-webbrowser-control
+                        //browser.Navigate(new Uri(BRSOUT));
+                        browser.Invoke(new Action(() => {
+                            browser.Navigate(new Uri(BRSOUT)); 
+                        }));
 
                     } else
                     {
@@ -4511,6 +4666,34 @@ namespace BingRewardsBot
             }
             // Return the hexadecimal string.
             return sBuilder.ToString();
+        }
+
+        private int randNumTimer(int min, int max)
+        {
+            ++max;
+            if (min == 0) min++;
+            if (max == 0) max=10;
+
+            if (min > max)
+            {
+                int bak = max;
+                max = min;
+                min = bak;
+            }
+
+            DateTime dateTime = DateTime.UtcNow.Date;
+            Random random = new Random(dateTime.Millisecond + Guid.NewGuid().GetHashCode());
+
+            int rand = 0;
+            try
+            {
+                rand = random.Next(min, max);
+            }
+            catch
+            {
+            }
+
+            return rand;
         }
 
         private int randomNumber(int min, int max)
