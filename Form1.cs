@@ -450,14 +450,18 @@ namespace BingRewardsBot
             {
                 if (Convert.ToInt32(check[1]) > 0 && Convert.ToInt32(check[1]) > Convert.ToInt32(check[0]))
                 {
+
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.vrndnum = 0;
 
                     this.checkaccount = false;
                     
-                    int x = randNumTimer(Convert.ToInt32(check[0]), Convert.ToInt32(check[1]));
-                    counterTxtBox.Text = x.ToString() + " min.";
+                    int z = randNumTimer(Convert.ToInt32(check[0]), Convert.ToInt32(check[1]));
+                    counterTxtBox.Text = z.ToString() + " min.";
+
+                    this.timer_auth = z > 1 ? z * 60 * 1000 : AUTHSHORT;
+                    counterTxtBox.Text = z > 1 ? z.ToString() + " min." : "some sec.";
 
                     this.authLock = false;
                     
@@ -3514,7 +3518,46 @@ namespace BingRewardsBot
                 case 2:
 
                     log.Items.Clear();
+                    ListViewItem itm;
 
+                    itm = new ListViewItem("Settings:");
+                    log.Items.Add(itm);
+
+                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_tor == true ? "Tor:true" : "Tor:false");
+                    log.Items.Add(itm);
+                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_mobile == true ? "Mobile S:true" : "Mobile S:false");
+                    log.Items.Add(itm);
+                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_desktop == true ? "Desktop S:true" : "Desktop S:false");
+                    log.Items.Add(itm);
+                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_autorotate == true ? "Auto rotate:true" : "Arotate:false");
+                    log.Items.Add(itm);
+                    itm = new ListViewItem("Autostart:" + BingRewardsBot.Properties.Settings.Default.set_autostart);
+                    log.Items.Add(itm);
+                    itm = new ListViewItem("S. counter:" + BingRewardsBot.Properties.Settings.Default.set_counter);
+                    log.Items.Add(itm);
+                    itm = new ListViewItem("Wait time s.:" + BingRewardsBot.Properties.Settings.Default.set_waitsearches);
+                    log.Items.Add(itm);
+                    itm = new ListViewItem("Wait time a.:" + BingRewardsBot.Properties.Settings.Default.set_waitauth);
+                    log.Items.Add(itm);
+                    itm = new ListViewItem("Desktop browser agent:" + BingRewardsBot.Properties.Settings.Default.set_uadesktop);
+                    log.Items.Add(itm);
+                    itm = new ListViewItem("Desktop mobile agent:" + BingRewardsBot.Properties.Settings.Default.set_uamobile);
+                    log.Items.Add(itm);
+                    itm = new ListViewItem("Account filename:" + BingRewardsBot.Properties.Settings.Default.set_accounts);
+                    log.Items.Add(itm);
+                    itm = new ListViewItem("Proxy settings:" + BingRewardsBot.Properties.Settings.Default.set_proxy);
+                    log.Items.Add(itm);
+                    itm = new ListViewItem("Tor settings:" + BingRewardsBot.Properties.Settings.Default.set_torsettings);
+                    log.Items.Add(itm);
+                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_lang == 0 ? "Lang: US" : "Lang: IN");
+                    log.Items.Add(itm);
+
+                    itm = new ListViewItem(" ");
+                    log.Items.Add(itm);
+
+                    itm = new ListViewItem("Accounts:");
+                    log.Items.Add(itm);
+                    
                     SQLiteConnection conn = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                     conn.Open();
 
@@ -3522,16 +3565,20 @@ namespace BingRewardsBot
                     SQLiteCommand command = new SQLiteCommand(sql, conn);
                     SQLiteDataReader reader = command.ExecuteReader();
                     string[] aarr = new string[5];
-                    ListViewItem itm;
-
+                   
                     int i = 0;
                     while (reader.Read() && i < 5)
                     {
                         aarr[i] = Convert.ToString(reader["account"]);
-
                         itm = new ListViewItem(aarr[i++]);
                         log.Items.Add(itm);
                     }
+
+                    itm = new ListViewItem(" ");
+                    log.Items.Add(itm);
+
+                    itm = new ListViewItem("IP addresses:");
+                    log.Items.Add(itm);
 
                     string[] iparr = new string[10];
                     sql = "select * from searches where account='" +
@@ -3549,7 +3596,6 @@ namespace BingRewardsBot
 
                     }
                     conn.Close();
-
               
                     conn = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                     conn.Open();
@@ -3589,6 +3635,12 @@ namespace BingRewardsBot
                         }
                     }
 
+                    itm = new ListViewItem(" ");
+                    log.Items.Add(itm);
+
+                    itm = new ListViewItem("Score:");
+                    log.Items.Add(itm);
+                    
                     i = 0;
                     string score = "";
                     foreach (string ele in uarr)
@@ -3601,14 +3653,11 @@ namespace BingRewardsBot
                             ++i;
                         }
                     }
-
-                    
+                                       
 
                     //MessageBox.Show("Accounts:" + string.Join("\r\n", aarr) +
                     //    "\r\nIPs:" + string.Join("\r\n", iparr) +
                     //    string.Join("\r\n", score));
-
-
 
                     break;
             }
