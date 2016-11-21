@@ -126,7 +126,7 @@ namespace BingRewardsBot
         private bool trialstopped = false;
         private bool checkaccount = false;
         private string trialRegKey;
-        private const int FREEX = 2550000;
+        private const int FREEX = 1550000;
         private const int FREEA = 5;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
@@ -3648,7 +3648,7 @@ namespace BingRewardsBot
                         if (ele != null)
                         {
                             //score += Convert.ToString(uarr[i]) + " " + Convert.ToString(parr[i]) + "\r\n";
-                            itm = new ListViewItem(uarr[i]);
+                            itm = new ListViewItem(uarr[i] + " " + Convert.ToString(parr[i]));
                             log.Items.Add(itm);
                             ++i;
                         }
@@ -4537,9 +4537,15 @@ namespace BingRewardsBot
 
                         //http://stackoverflow.com/questions/12386071/threading-and-webbrowser-control
                         //browser.Navigate(new Uri(BRSOUT));
-                        browser.Invoke(new Action(() => {
-                            browser.Navigate(new Uri(BRSOUT)); 
-                        }));
+
+                        //browser.Invoke(new Action(() => {
+                        //    browser.Navigate(new Uri(BRSOUT)); 
+                        //}));
+
+                        //http://stackoverflow.com/questions/9048922/c-sharp-invalidcastexception-when-trying-to-access-webbrowser-control-from-tim
+                        this.Invoke(new Action(() => {
+                            browser.Navigate(new Uri(BRSOUT));
+                            }));
 
                     } else
                     {
@@ -4547,6 +4553,7 @@ namespace BingRewardsBot
                         try
                         {
                              pts = Convert.ToInt32(pts_txtbox.Text);
+
                         } catch { }
 
                         if ( pts >= MSPOINTS
@@ -4554,19 +4561,22 @@ namespace BingRewardsBot
                             || pts_txtbox.Text == "0"
                             || pts_txtbox.Text == "-")
                             {
-                                SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                                dbcon.Open();
-                                DateTime dateTime = DateTime.UtcNow.Date;
-                                SQLiteCommand command = new SQLiteCommand("update searches set points='4242' WHERE ip='" +
-                                    this.ip +
-                                    "' and date='" +
-                                    dateTime.ToString("yyyyMMdd") +
-                                    "' and account='" +
-                                    this.username +
-                                    "'",
-                                    dbcon);
-                                command.ExecuteNonQuery();
-                                dbcon.Close();
+                                try
+                                {
+                                    SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                                    dbcon.Open();
+                                    DateTime dateTime = DateTime.UtcNow.Date;
+                                    SQLiteCommand command = new SQLiteCommand("update searches set points='4242' WHERE ip='" +
+                                        this.ip +
+                                        "' and date='" +
+                                        dateTime.ToString("yyyyMMdd") +
+                                        "' and account='" +
+                                        this.username +
+                                        "'",
+                                        dbcon);
+                                    command.ExecuteNonQuery();
+                                    dbcon.Close();
+                                } catch { }                                
                             }
 
                             this.button1.Text = "Start";
