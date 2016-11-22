@@ -4543,9 +4543,19 @@ namespace BingRewardsBot
                         //}));
 
                         //http://stackoverflow.com/questions/9048922/c-sharp-invalidcastexception-when-trying-to-access-webbrowser-control-from-tim
-                        this.Invoke(new Action(() => {
-                            browser.Navigate(new Uri(BRSOUT));
-                            }));
+                        //this.Invoke(new Action(() => {
+                        //    browser.Navigate(new Uri(BRSOUT));
+                        //    }));
+
+                        try
+                        {
+                            //browser.Navigate(new Uri(BRSOUT));
+                            this.Invoke(new Action(() => {
+                                    browser.Navigate(new Uri(BRSOUT));
+                                   }));
+                            }
+
+                        catch { }
 
                     } else
                     {
