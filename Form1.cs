@@ -126,8 +126,8 @@ namespace BingRewardsBot
         private bool trialstopped = false;
         private bool checkaccount = false;
         private string trialRegKey;
-        private const int FREEX = 1550000;
-        private const int FREEA = 5;
+        private const int FREEX = 15500000;  //25500000
+        private const int FREEA = 6;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
@@ -392,54 +392,86 @@ namespace BingRewardsBot
             } else {
 
                 // clean database
-                SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                dbcon.Open();
-                DateTime dateTime = DateTime.UtcNow.Date;
-                SQLiteCommand command = new SQLiteCommand("select * from searches group by account, ip order by ip,date desc",
-                    dbcon);
-                SQLiteDataReader reader = command.ExecuteReader();
-
-                int c = 0;
-                string curr = "";
-                int[] arr = new int [40];
-
-                while (reader.Read())
+                try
                 {
-                    if (curr == Convert.ToString(reader["ip"]) && c<5 )
-                    {
-                        arr[c++] = Convert.ToInt32(reader["uid"]);
-                    }
-                    else if (curr == Convert.ToString(reader["ip"]) && c>4)
-                    {
-                        arr[c++] = Convert.ToInt32(reader["uid"]);
+                    SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                    dbcon.Open();
+                    DateTime dateTime = DateTime.UtcNow.Date;
+                    SQLiteCommand command = new SQLiteCommand("select * from searches group by account, ip order by ip,date desc",
+                        dbcon);
+                    SQLiteDataReader reader = command.ExecuteReader();
 
-                    } else if (c>4)
+                    int c = 0;
+                    string curr = "";
+                    int[] arr = new int[40];
+
+                    while (reader.Read())
                     {
-                        for (int i = 0, e = (c - 5); i < e;i++)
-                        { 
-                            command = new SQLiteCommand("delete from searches where uid=" + arr[i], dbcon);
-                            command.ExecuteNonQuery();
+                        if (curr == Convert.ToString(reader["ip"]) && c < FREEA)
+                        {
+                            arr[c++] = Convert.ToInt32(reader["uid"]);
                         }
-                        curr = Convert.ToString(reader["ip"]);
-                        c = 0;
-                    } else
-                    {
-                        curr = Convert.ToString(reader["ip"]);
-                        c = 0;
+                        else if (curr == Convert.ToString(reader["ip"]) && c > (FREEA-1))
+                        {
+                            arr[c++] = Convert.ToInt32(reader["uid"]);
+
+                        }
+                        else if (c > (FREEA-1))
+                        {
+                            for (int i = 0, e = (c - FREEA); i < e; i++)
+                            {
+                                command = new SQLiteCommand("delete from searches where uid=" + arr[i], dbcon);
+                                command.ExecuteNonQuery();
+                            }
+                            curr = Convert.ToString(reader["ip"]);
+                            c = 0;
+                        }
+                        else
+                        {
+                            curr = Convert.ToString(reader["ip"]);
+                            c = 0;
+                        }
                     }
-                }
-                dbcon.Close();
+                    dbcon.Close();
 
-                // delete 
-                dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                dbcon.Open();
-                command = new SQLiteCommand("delete from searches where account <> '' and (points=0 or points>28) and points<>4242;", 
-                    dbcon);
-                command.ExecuteNonQuery();
-                dbcon.Close();
+                    // delete 
+                    dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                    dbcon.Open();
+                    command = new SQLiteCommand("delete from searches where account <> '' and (points=0 or points>28) and points<>4242;",
+                        dbcon);
+                    command.ExecuteNonQuery();
+                    dbcon.Close();
 
-                // new us ip?
-                this.newUsIp();
+                    // new us ip?
+                    this.newUsIp();
+
+                } catch
+                {
+                    try
+                    {
+                        System.IO.File.Delete(Application.StartupPath + Path.DirectorySeparatorChar + "points.sqlite");
+
+                    } catch
+                    {
+
+                    }
+
+
+                    try
+                    {
+                        SQLiteConnection.CreateFile("points.sqlite");
+                        SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
+                        dbcon.Open();
+                        SQLiteCommand command = new SQLiteCommand("CREATE TABLE searches (uid INTEGER PRIMARY KEY, date VARCHAR(20), ip VARCHAR(20),account VARCHAR(20),points INT)",
+                            dbcon);
+                        command.ExecuteNonQuery();
+                        dbcon.Close();
+                    } catch
+                    {
+
+                    }
+
+                } 
             }
 
             // Autostart
@@ -3564,10 +3596,10 @@ namespace BingRewardsBot
                     string sql = "select * from searches where ip='" + this.ip + "' group by account,ip";
                     SQLiteCommand command = new SQLiteCommand(sql, conn);
                     SQLiteDataReader reader = command.ExecuteReader();
-                    string[] aarr = new string[5];
+                    string[] aarr = new string[FREEA];
                    
                     int i = 0;
-                    while (reader.Read() && i < 5)
+                    while (reader.Read() && i < FREEA)
                     {
                         aarr[i] = Convert.ToString(reader["account"]);
                         itm = new ListViewItem(aarr[i++]);
@@ -3604,16 +3636,16 @@ namespace BingRewardsBot
                     dateTime.ToString("yyyyMMdd") + "' group by account";
                     command = new SQLiteCommand(sql, conn);
                     reader = command.ExecuteReader();
-                    string[] uarr = new string[50];
+                    string[] uarr = new string[60];
 
                     i = 0;
-                    while (reader.Read() && i < 50)
+                    while (reader.Read() && i < 60)
                     {
                         uarr[i++] = Convert.ToString(reader["account"]);
                     }
 
                     i = 0;
-                    int[] parr = new int[50];
+                    int[] parr = new int[60];
 
                     foreach (string ele in uarr)
                     {
