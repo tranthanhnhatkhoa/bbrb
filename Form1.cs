@@ -95,7 +95,6 @@ namespace BingRewardsBot
         private const string MAXACCOUNTSPERIPLIMIT = "Not a valid IP. Maximum number of accounts per IP limit reached!";
 
         private int startbtn = 0;
-        private const int MAXACCOUNTPERIP = 5;
         private const int MSPOINTS = 250;
         private string country = "";
         private string ip = "";
@@ -127,7 +126,7 @@ namespace BingRewardsBot
         private bool checkaccount = false;
         private string trialRegKey;
         private const int FREEX = 15500000;  //25500000
-        private const int FREEA = 6;
+        private const int FREEA = 5;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
@@ -230,7 +229,7 @@ namespace BingRewardsBot
         {
             InitializeComponent();
 
-            log.Columns.Add("Log", 640);
+            log.Columns.Add("Logview", 640);
             log.View = View.Details;
             log.GridLines = true;
             log.FullRowSelect = true;
@@ -403,7 +402,7 @@ namespace BingRewardsBot
 
                     int c = 0;
                     string curr = "";
-                    int[] arr = new int[40];
+                    int[] arr = new int[40*FREEA];
 
                     while (reader.Read())
                     {
@@ -437,7 +436,7 @@ namespace BingRewardsBot
                     // delete 
                     dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                     dbcon.Open();
-                    command = new SQLiteCommand("delete from searches where account <> '' and (points=0 or points>28) and points<>4242;",
+                    command = new SQLiteCommand("delete from searches where account <> '' and (points=0 or points>350) and points<>4242;",
                         dbcon);
                     command.ExecuteNonQuery();
                     dbcon.Close();
@@ -3556,38 +3555,57 @@ namespace BingRewardsBot
                     log.Items.Add(itm);
 
                     itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_tor == true ? "Tor:true" : "Tor:false");
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
                     itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_mobile == true ? "Mobile S:true" : "Mobile S:false");
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
                     itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_desktop == true ? "Desktop S:true" : "Desktop S:false");
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
-                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_autorotate == true ? "Auto rotate:true" : "Arotate:false");
+                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_autorotate == true ? "Auto rotate:true" : "Auto rotate:false");
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
                     itm = new ListViewItem("Autostart:" + BingRewardsBot.Properties.Settings.Default.set_autostart);
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
                     itm = new ListViewItem("S. counter:" + BingRewardsBot.Properties.Settings.Default.set_counter);
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
                     itm = new ListViewItem("Wait time s.:" + BingRewardsBot.Properties.Settings.Default.set_waitsearches);
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
                     itm = new ListViewItem("Wait time a.:" + BingRewardsBot.Properties.Settings.Default.set_waitauth);
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
                     itm = new ListViewItem("Desktop browser agent:" + BingRewardsBot.Properties.Settings.Default.set_uadesktop);
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
-                    itm = new ListViewItem("Desktop mobile agent:" + BingRewardsBot.Properties.Settings.Default.set_uamobile);
+                    itm = new ListViewItem("Mobile browser agent:" + BingRewardsBot.Properties.Settings.Default.set_uamobile);
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
                     itm = new ListViewItem("Account filename:" + BingRewardsBot.Properties.Settings.Default.set_accounts);
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
+                    log.Items.Add(itm);
+                    itm = new ListViewItem("Number of accounts:" + this.accounts.Count);
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
                     itm = new ListViewItem("Proxy settings:" + BingRewardsBot.Properties.Settings.Default.set_proxy);
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
                     itm = new ListViewItem("Tor settings:" + BingRewardsBot.Properties.Settings.Default.set_torsettings);
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
                     itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_lang == 0 ? "Lang: US" : "Lang: IN");
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
 
                     itm = new ListViewItem(" ");
                     log.Items.Add(itm);
 
-                    itm = new ListViewItem("Accounts:");
+                    // Accounts with current ip:
+
+                    itm = new ListViewItem("Accounts with current IP:");
                     log.Items.Add(itm);
                     
                     SQLiteConnection conn = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
@@ -3596,7 +3614,7 @@ namespace BingRewardsBot
                     string sql = "select * from searches where ip='" + this.ip + "' group by account,ip";
                     SQLiteCommand command = new SQLiteCommand(sql, conn);
                     SQLiteDataReader reader = command.ExecuteReader();
-                    string[] aarr = new string[FREEA];
+                    string[] aarr = new string[FREEA-1];
                    
                     int i = 0;
                     while (reader.Read() && i < FREEA)
@@ -3606,10 +3624,18 @@ namespace BingRewardsBot
                         log.Items.Add(itm);
                     }
 
+                    if (i==0){
+                        itm = new ListViewItem("-");
+                        itm.Font = new Font(log.Font, FontStyle.Regular);
+                        log.Items.Add(itm);
+                    }
+
+                    // IP addresses (from last user)
+
                     itm = new ListViewItem(" ");
                     log.Items.Add(itm);
 
-                    itm = new ListViewItem("IP addresses:");
+                    itm = new ListViewItem("IP addresses used by current account:");
                     log.Items.Add(itm);
 
                     string[] iparr = new string[10];
@@ -3624,32 +3650,40 @@ namespace BingRewardsBot
                         iparr[i] = Convert.ToString(reader["ip"]);
 
                         itm = new ListViewItem(iparr[i++]);
+                        itm.Font = new Font(log.Font, FontStyle.Regular);
                         log.Items.Add(itm);
 
                     }
-                    conn.Close();
-              
-                    conn = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
-                    conn.Open();
+                    if (i == 0)
+                    {
+                        itm = new ListViewItem("-");
+                        itm.Font = new Font(log.Font, FontStyle.Regular);
+                        log.Items.Add(itm);
+                    }
+  
+
+                    // Last searches: Score today
+
                     DateTime dateTime = DateTime.UtcNow.Date;
                     sql = "select * from searches where date='" +
                     dateTime.ToString("yyyyMMdd") + "' group by account";
                     command = new SQLiteCommand(sql, conn);
                     reader = command.ExecuteReader();
-                    string[] uarr = new string[60];
 
+                    string[] uarr = new string[60];
                     i = 0;
+
                     while (reader.Read() && i < 60)
                     {
                         uarr[i++] = Convert.ToString(reader["account"]);
-                    }
+                    }                  
 
                     i = 0;
                     int[] parr = new int[60];
 
                     foreach (string ele in uarr)
                     {
-                        if (ele != null)
+                        if (ele != null && ele != "")
                         {
                             sql = "select * from searches where date='" +
                                 dateTime.ToString("yyyyMMdd") +
@@ -3670,26 +3704,96 @@ namespace BingRewardsBot
                     itm = new ListViewItem(" ");
                     log.Items.Add(itm);
 
-                    itm = new ListViewItem("Score:");
+                    itm = new ListViewItem("Score today:");
                     log.Items.Add(itm);
                     
                     i = 0;
                     string score = "";
                     foreach (string ele in uarr)
                     {
-                        if (ele != null)
+                        if (ele != null && ele != "")
                         {
-                            //score += Convert.ToString(uarr[i]) + " " + Convert.ToString(parr[i]) + "\r\n";
                             itm = new ListViewItem(uarr[i] + " " + Convert.ToString(parr[i]));
+                            itm.Font = new Font(log.Font, FontStyle.Regular);
                             log.Items.Add(itm);
                             ++i;
                         }
                     }
-                                       
 
-                    //MessageBox.Show("Accounts:" + string.Join("\r\n", aarr) +
-                    //    "\r\nIPs:" + string.Join("\r\n", iparr) +
-                    //    string.Join("\r\n", score));
+
+                    // Last searches: Score yesterday
+                    //http://stackoverflow.com/questions/8203900/how-get-yesterday-and-tomorrow-datetime-in-c-sharp
+
+                    i = 0;
+                    foreach (string ele in uarr)
+                    {
+                        uarr[i++] = "";
+                    }
+
+                    dateTime = DateTime.UtcNow.Date.AddDays(-1);
+                    sql = "select * from searches where date='" +
+                    dateTime.ToString("yyyyMMdd") + "' group by account";
+                    command = new SQLiteCommand(sql, conn);
+                    reader = command.ExecuteReader();
+                    
+                    i = 0;
+                    while (reader.Read() && i < 60)
+                    {
+                        uarr[i++] = Convert.ToString(reader["account"]);
+                    }
+                    
+
+                    i = 0;
+                    foreach (int ele in parr)
+                    {
+                        parr[i++] = 0;
+                    }
+                    i = 0;
+
+                    foreach (string ele in uarr)
+                    {
+                        if (ele != null && ele != "")
+                        {
+                            sql = "select * from searches where date='" +
+                                dateTime.ToString("yyyyMMdd") +
+                                "' and account='"
+                                + ele +
+                                "' and points<>4242";
+                            command = new SQLiteCommand(sql, conn);
+                            reader = command.ExecuteReader();
+
+                            while (reader.Read())
+                            {
+                                parr[i] += Convert.ToInt32(reader["points"]);
+                            }
+                            i++;
+                        }
+                    }
+
+
+                    itm = new ListViewItem(" ");
+                    log.Items.Add(itm);
+
+                    itm = new ListViewItem("Score yesterday:");
+                    log.Items.Add(itm);
+
+                    i = 0;
+                    score = "";
+                    foreach (string ele in uarr)
+                    {
+                        if (ele != null && ele != "")
+                        {
+                            itm = new ListViewItem(uarr[i] + " " + Convert.ToString(parr[i]));
+                            itm.Font = new Font(log.Font, FontStyle.Regular);
+                            log.Items.Add(itm);
+                            ++i;
+                        }
+                    }
+
+                    conn.Close();
+
+
+
 
                     break;
             }
