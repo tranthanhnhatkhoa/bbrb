@@ -33,7 +33,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.browserUrlTxtbox = new System.Windows.Forms.TextBox();
             this.browser = new System.Windows.Forms.WebBrowser();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.updatetab = new System.Windows.Forms.TabControl();
             this.btn_ip = new System.Windows.Forms.TabPage();
             this.btn_cache = new System.Windows.Forms.Button();
             this.pts_txtbox = new System.Windows.Forms.TextBox();
@@ -52,6 +52,8 @@
             this.accountNameTxtBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.randomo = new System.Windows.Forms.CheckBox();
+            this.label22 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.txtbox_torsettings = new System.Windows.Forms.TextBox();
@@ -85,19 +87,22 @@
             this.txtbox_waitsearches = new System.Windows.Forms.TextBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.log = new System.Windows.Forms.ListView();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.button4 = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.button2 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.passwd_txtbox = new System.Windows.Forms.TextBox();
             this.regcode_txtbox = new System.Windows.Forms.TextBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.tabControl1.SuspendLayout();
+            this.updatetab.SuspendLayout();
             this.btn_ip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -124,21 +129,22 @@
             this.browser.Size = new System.Drawing.Size(726, 400);
             this.browser.TabIndex = 1;
             // 
-            // tabControl1
+            // updatetab
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.updatetab.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.btn_ip);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tabControl1.Location = new System.Drawing.Point(-2, -1);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(736, 513);
-            this.tabControl1.TabIndex = 2;
+            this.updatetab.Controls.Add(this.btn_ip);
+            this.updatetab.Controls.Add(this.tabPage2);
+            this.updatetab.Controls.Add(this.tabPage1);
+            this.updatetab.Controls.Add(this.tabPage4);
+            this.updatetab.Controls.Add(this.tabPage3);
+            this.updatetab.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.updatetab.Location = new System.Drawing.Point(-2, -1);
+            this.updatetab.Name = "updatetab";
+            this.updatetab.SelectedIndex = 0;
+            this.updatetab.Size = new System.Drawing.Size(736, 513);
+            this.updatetab.TabIndex = 2;
             // 
             // btn_ip
             // 
@@ -337,6 +343,8 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage2.Controls.Add(this.randomo);
+            this.tabPage2.Controls.Add(this.label22);
             this.tabPage2.Controls.Add(this.label21);
             this.tabPage2.Controls.Add(this.listBox1);
             this.tabPage2.Controls.Add(this.txtbox_torsettings);
@@ -375,6 +383,29 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Settings";
             // 
+            // randomo
+            // 
+            this.randomo.AutoSize = true;
+            this.randomo.Checked = true;
+            this.randomo.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.randomo.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.randomo.Location = new System.Drawing.Point(355, 255);
+            this.randomo.Name = "randomo";
+            this.randomo.Size = new System.Drawing.Size(46, 18);
+            this.randomo.TabIndex = 44;
+            this.randomo.Text = "Yes";
+            this.randomo.UseVisualStyleBackColor = true;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.label22.Location = new System.Drawing.Point(6, 253);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(150, 14);
+            this.label22.TabIndex = 43;
+            this.label22.Text = "Autorotate random order:";
+            // 
             // label21
             // 
             this.label21.AutoSize = true;
@@ -411,7 +442,7 @@
             // 
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label20.Location = new System.Drawing.Point(6, 326);
+            this.label20.Location = new System.Drawing.Point(4, 326);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(189, 14);
             this.label20.TabIndex = 37;
@@ -506,7 +537,7 @@
             // 
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label16.Location = new System.Drawing.Point(6, 300);
+            this.label16.Location = new System.Drawing.Point(4, 300);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(110, 14);
             this.label16.TabIndex = 26;
@@ -516,11 +547,11 @@
             // 
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label14.Location = new System.Drawing.Point(424, 283);
+            this.label14.Location = new System.Drawing.Point(420, 280);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(50, 14);
+            this.label14.Size = new System.Drawing.Size(272, 14);
             this.label14.TabIndex = 23;
-            this.label14.Text = "minutes";
+            this.label14.Text = "min. (O=disable autostart, 1-2 enable autostart)";
             // 
             // label3
             // 
@@ -543,7 +574,7 @@
             // 
             // settingsSaveBtn
             // 
-            this.settingsSaveBtn.Location = new System.Drawing.Point(500, 435);
+            this.settingsSaveBtn.Location = new System.Drawing.Point(501, 427);
             this.settingsSaveBtn.Name = "settingsSaveBtn";
             this.settingsSaveBtn.Size = new System.Drawing.Size(75, 26);
             this.settingsSaveBtn.TabIndex = 7;
@@ -555,7 +586,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label11.Location = new System.Drawing.Point(423, 256);
+            this.label11.Location = new System.Drawing.Point(420, 234);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(50, 14);
             this.label11.TabIndex = 18;
@@ -565,7 +596,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label10.Location = new System.Drawing.Point(423, 204);
+            this.label10.Location = new System.Drawing.Point(420, 182);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(54, 14);
             this.label10.TabIndex = 17;
@@ -575,7 +606,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label9.Location = new System.Drawing.Point(423, 229);
+            this.label9.Location = new System.Drawing.Point(420, 207);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(51, 14);
             this.label9.TabIndex = 16;
@@ -585,7 +616,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label6.Location = new System.Drawing.Point(6, 249);
+            this.label6.Location = new System.Drawing.Point(6, 229);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(319, 14);
             this.label6.TabIndex = 15;
@@ -595,7 +626,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label5.Location = new System.Drawing.Point(6, 223);
+            this.label5.Location = new System.Drawing.Point(6, 203);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(307, 14);
             this.label5.TabIndex = 14;
@@ -605,7 +636,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label4.Location = new System.Drawing.Point(6, 197);
+            this.label4.Location = new System.Drawing.Point(6, 177);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(334, 14);
             this.label4.TabIndex = 13;
@@ -660,7 +691,7 @@
             // txtbox_waitauth
             // 
             this.txtbox_waitauth.Font = new System.Drawing.Font("Tahoma", 8F);
-            this.txtbox_waitauth.Location = new System.Drawing.Point(355, 249);
+            this.txtbox_waitauth.Location = new System.Drawing.Point(355, 229);
             this.txtbox_waitauth.Name = "txtbox_waitauth";
             this.txtbox_waitauth.Size = new System.Drawing.Size(61, 20);
             this.txtbox_waitauth.TabIndex = 5;
@@ -669,7 +700,7 @@
             // txtbox_counter
             // 
             this.txtbox_counter.Font = new System.Drawing.Font("Tahoma", 8F);
-            this.txtbox_counter.Location = new System.Drawing.Point(355, 197);
+            this.txtbox_counter.Location = new System.Drawing.Point(355, 178);
             this.txtbox_counter.Name = "txtbox_counter";
             this.txtbox_counter.Size = new System.Drawing.Size(61, 20);
             this.txtbox_counter.TabIndex = 40;
@@ -678,7 +709,7 @@
             // txtbox_waitsearches
             // 
             this.txtbox_waitsearches.Font = new System.Drawing.Font("Tahoma", 8F);
-            this.txtbox_waitsearches.Location = new System.Drawing.Point(355, 223);
+            this.txtbox_waitsearches.Location = new System.Drawing.Point(355, 203);
             this.txtbox_waitsearches.Name = "txtbox_waitsearches";
             this.txtbox_waitsearches.Size = new System.Drawing.Size(61, 20);
             this.txtbox_waitsearches.TabIndex = 4;
@@ -706,10 +737,44 @@
             this.log.TabIndex = 0;
             this.log.UseCompatibleStateImageBehavior = false;
             // 
+            // tabPage4
+            // 
+            this.tabPage4.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage4.Controls.Add(this.button4);
+            this.tabPage4.Controls.Add(this.richTextBox1);
+            this.tabPage4.Location = new System.Drawing.Point(4, 23);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(728, 486);
+            this.tabPage4.TabIndex = 4;
+            this.tabPage4.Text = "Update";
+            // 
+            // button4
+            // 
+            this.button4.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.button4.Location = new System.Drawing.Point(3, 460);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(722, 23);
+            this.button4.TabIndex = 25;
+            this.button4.Text = "-=:|:- Check update! -:|:=-";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click_1);
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox1.Location = new System.Drawing.Point(10, 10);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(710, 442);
+            this.richTextBox1.TabIndex = 24;
+            this.richTextBox1.Text = resources.GetString("richTextBox1.Text");
+            // 
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage3.Controls.Add(this.richTextBox1);
             this.tabPage3.Controls.Add(this.button2);
             this.tabPage3.Controls.Add(this.label8);
             this.tabPage3.Controls.Add(this.label7);
@@ -722,21 +787,9 @@
             this.tabPage3.TabIndex = 3;
             this.tabPage3.Text = "Register";
             // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox1.Location = new System.Drawing.Point(15, 250);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(632, 228);
-            this.richTextBox1.TabIndex = 23;
-            this.richTextBox1.Text = resources.GetString("richTextBox1.Text");
-            // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(272, 203);
+            this.button2.Location = new System.Drawing.Point(272, 72);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 22;
@@ -747,7 +800,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.label8.Location = new System.Drawing.Point(12, 176);
+            this.label8.Location = new System.Drawing.Point(12, 45);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(62, 14);
             this.label8.TabIndex = 3;
@@ -766,7 +819,7 @@
             // passwd_txtbox
             // 
             this.passwd_txtbox.Font = new System.Drawing.Font("Tahoma", 8F);
-            this.passwd_txtbox.Location = new System.Drawing.Point(272, 176);
+            this.passwd_txtbox.Location = new System.Drawing.Point(272, 45);
             this.passwd_txtbox.Name = "passwd_txtbox";
             this.passwd_txtbox.Size = new System.Drawing.Size(212, 20);
             this.passwd_txtbox.TabIndex = 1;
@@ -790,12 +843,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(733, 512);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.updatetab);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
-            this.tabControl1.ResumeLayout(false);
+            this.updatetab.ResumeLayout(false);
             this.btn_ip.ResumeLayout(false);
             this.btn_ip.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -803,6 +855,7 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.tabPage1.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
@@ -813,7 +866,7 @@
 
         private System.Windows.Forms.TextBox browserUrlTxtbox;
         private System.Windows.Forms.WebBrowser browser;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl updatetab;
         private System.Windows.Forms.TabPage btn_ip;
         private System.Windows.Forms.TabPage tabPage2;
         //private System.Windows.Forms.WebBrowser cash1;
@@ -846,7 +899,6 @@
         //private System.Windows.Forms.WebBrowser cash2;
         //private System.Windows.Forms.WebBrowser cash3;
         private System.Windows.Forms.Button settingsSaveBtn;
-        private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button check_button;
         private System.Windows.Forms.CheckBox chkbox_autorotate;
@@ -876,6 +928,11 @@
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.ListView log;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.CheckBox randomo;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Button button4;
     }
 }
 
