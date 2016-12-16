@@ -119,7 +119,7 @@ namespace BingRewardsBot
         private const int SLEEPTOR = 8 * 1000;
         private const int SLEEPPTS = 5 * 1000;
         private const int SLEEPDP = 12 * 1000;
-        private const int SLEEPDASHBOARD = 22 * 1000;
+        private const int SLEEPDASHBOARD = 18 * 1000;
         private const int SLEEPMAIN = 5 * 1000;
         private const int WATCHDOG = 15;
         private const int AUTHSHORT = 24 * 1000;
@@ -132,7 +132,7 @@ namespace BingRewardsBot
         private bool trialstopped = false;
         private bool checkaccount = false;
         private string trialRegKey;
-        private const int FREEX = 15500000;  //25500000
+        private const int FREEX = 7000000; //15500000;  //25500000
         private const int FREEA = 5;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
@@ -154,7 +154,7 @@ namespace BingRewardsBot
         private const bool SUPPORTER = false;
         private List<string> accounts = new List<string>();
         private List<string> words = new List<string>();
-        Thread doublePost;
+        //Thread doublePost;
         Thread mainThread;
         const UInt32 WM_KEYDOWN = 0x0100;
         const int WM_CHAR = 0x0102;
@@ -680,7 +680,7 @@ namespace BingRewardsBot
         {
             if (WindowState == FormWindowState.Minimized)
             {
-                doublePost.Abort();
+                //doublePost.Abort();
                 mainThread.Abort();
             }
 
@@ -1120,6 +1120,14 @@ namespace BingRewardsBot
                               TaskScheduler.FromCurrentSynchronizationContext());
                 }
             }
+
+            url = this.browser.Document.Url.ToString();
+            
+            if (url.Contains(@"https://www.bing.com/rewards/unsupportedmarket"))
+            {
+                await DoUnsupportedMarket();
+            }
+
         }
 
         //**********************
@@ -2270,6 +2278,8 @@ namespace BingRewardsBot
                 var html = documentElement.OuterHtml;
                 while (true)
                 {
+                    //https://msdn.microsoft.com/en-us/library/hh194873(v=vs.110).aspx
+
                     // wait asynchronously, this will throw if cancellation requested
                     var delay = Task.Run(async () => {
                         await Task.Delay(POLL_DELAY);
@@ -3826,7 +3836,7 @@ namespace BingRewardsBot
                       || browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/rewards/error")
                       || browserUrlTxtbox.Text.Contains(@"https://login.live.com/ppsecure/post.srf")
                       || browserUrlTxtbox.Text.Contains(@"https://account.live.com/tou/accrue?ru=https://login.live.com/login.srf")
-                      || (browserUrlTxtbox.Text.Contains(@"https://www.bing.com")                      
+                      || (browserUrlTxtbox.Text.Contains(@"https://www.bing.com")
                       && this.statusTxtBox.Text != "Connected"
                       && this.statusTxtBox.Text != "Working"
                       && this.statusTxtBox.Text != "Dashboard"
@@ -3841,6 +3851,15 @@ namespace BingRewardsBot
                         this.accountVisited[this.accountNum] = true;
                         ++this.accountVisitedX;
                         this.restartAuth();
+                    }
+                    else if (
+                        this.button1.Text == "Stop"
+                        && this.chkbox_autorotate.Checked == true
+                        && this.authLock == true
+                        && this.browserUrlTxtbox.Text.Contains(@"https://www.bing.com/rewards/unsupportedmarket")
+                    )
+                    {
+                        DoUnsupportedMarket();
                     }
                     //else if (this.button1.Text == "Stop"
                     //         && this.chkbox_autorotate.Checked == true
@@ -3907,7 +3926,7 @@ namespace BingRewardsBot
                         || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/about")
                         || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/rewards/welcome")
                         )
-                        && this.statusTxtBox.Text == "Authenticate" 
+                        && this.statusTxtBox.Text == "Authenticate"
                         )
                     {
                         if (this.country == "US" || this.country == "IN" || chkbox_tor.Checked == false)
@@ -6025,9 +6044,38 @@ namespace BingRewardsBot
                 {
                     Application.DoEvents();
                 };
-                
-            } catch {
-                checkupdate();
+
+                Invoke((MethodInvoker)(() =>
+                {
+                    if (browser.Document.GetElementById("ReleaseDateLiteral").GetAttribute("title") != null)
+                    {
+                        string[] release = browser.Document.GetElementById("ReleaseDateLiteral").GetAttribute("title").Split(' ');
+                        string[] convert1 = release[0].Split('.');
+
+                        // http://stackoverflow.com/questions/919244/converting-a-string-to-datetime
+                        DateTime timer = new DateTime(Convert.ToInt32(convert1[2]), Convert.ToInt32(convert1[1]), Convert.ToInt32(convert1[0]));
+                        //Console.WriteLine(timer.ToString());
+
+                        string[] convert2 = VERSION.Split('.');
+                        DateTime thisversion = new DateTime(Convert.ToInt32(convert2[2]), Convert.ToInt32(convert2[1]), Convert.ToInt32(convert2[0]));
+
+                        // http://stackoverflow.com/questions/22564846/c-sharp-compare-two-datetimes
+                        TimeSpan difference = timer - thisversion;
+                        if (difference.TotalDays >= 6)
+                        {
+                            // Bingo!
+                            MessageBox.Show("Congrats, a new update is available! Please go to https://bbrb.codeplex.com/ for downloads! If you are a supporter you can ask the support!");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Sorry, no updates! You can come back later! If you are a supporter you can ask the support! Thanks!");
+                        }
+                    }
+
+                }));
+
+                } catch {
+                //checkupdate();
             }          
         }
   
