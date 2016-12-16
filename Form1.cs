@@ -87,6 +87,7 @@ namespace BingRewardsBot
         //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&sig=27BCFAE69AA86D76381CF26E9B2F6CB6&return_url=https%3a%2f%2fwww.bing.com%3a443%2frewards%2fsignin%3fFORM%3dMI0GMI%26PUBL%3dMUIDTrial%26CREA%3dMI0GMI&Token=1
         //private const string BRSIGNIN = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&return_url=https://www.bing.com&Token=1&sig=";
         //https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&sig=217B4DD1E3E46AEB169A4558E2086B86&return_url=https%3a%2f%2fwww.bing.com%3a443%2frewards%2fdashboard&Token=1
+        //1A3B48739046-4833-982A-65FAE59682B8,'ClientId': '1A3B4873-9046-4833-982A-65FAE59682B8',
         private const string BRSIGNIN = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&return_url=https://www.bing.com/rewards/dashboard&Token=1&sig=";
         //private const string BRS2 = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https://www.bing.com/rewards/signin?FORM=MI0GMI&PUBL=MUIDTrial&CREA=MI0GMI&wlsso=1&wlexpsignin=1&src=EXPLICIT&sig=";
         //private const string BRS2 = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&return_url=https://www.bing.com&Token=1&sig=";
@@ -874,35 +875,18 @@ namespace BingRewardsBot
                 || url == "https://account.microsoft.com/"
                 )
             {
-                this.authLock = true;
-                bool a = false;
-
-                try
+                if (browser.Document.GetElementById("site - layout - config") != null)
                 {
-                    // extract url       
-                    HtmlElementCollection links = browser.Document.Links;
-                    foreach (HtmlElement ele in links)
-                    {
-                        if ((ele.GetAttribute("href") != null)
-                        && ele.GetAttribute("href").Contains(@"id=")
-                        && ele.GetAttribute("href").Contains(@"login.live.com")
-                        && !ele.GetAttribute("href").Contains(@"signup.live.com")
-                        && !ele.GetAttribute("href").Contains(@"logout")
-                        )
-                        {
-                            string text = ele.GetAttribute("href");
-                            browser.Navigate(new Uri(text));
-                            a = true;
-                        }
-                    }
-                }
-                catch { }
+                    HtmlElement sig = browser.Document.GetElementById("site - layout - config");
+                    MessageBox.Show(sig.InnerText);
+                }    
 
+                this.authLock = true;
+              
                 //prepare extraction & connection
                 if (this.accountVisited[this.accountNum] == false
                     && chkbox_autorotate.Checked == true
                     && this.checkaccount == false
-                    && a == false
                 )
                 {
                     this.accountVisited[this.accountNum] = true;
@@ -934,12 +918,13 @@ namespace BingRewardsBot
                     this.initUserSQL();
 
                     // first step after user auth (very important) navigate bing.com or bing.com/rewards
-                    await DownloadAsync("https://www.bing.com/rewards").ContinueWith(
+                    await DownloadAsync("https://www.bing.com/rewards/dashboard").ContinueWith(
                         (task) => this.statusDebug("S4:"),
                            TaskScheduler.FromCurrentSynchronizationContext());
+
+                    MessageBox.Show(this.browser.Document.Url.ToString());
                 }
                 else if ((chkbox_autorotate.Checked == false || this.checkaccount == true)
-                     && a == false
                     )
                 {
                     this.prevpts = 0;
@@ -970,14 +955,14 @@ namespace BingRewardsBot
                     this.initUserSQL();
 
                     // first step after sign in (very important) navigate bing.com or bing.com/rewards
-                    await DownloadAsync("https://www.bing.com/rewards").ContinueWith(
+                    await DownloadAsync("https://www.bing.com/rewards/dashboard").ContinueWith(
                         (task) => this.statusDebug("S3:"),
-                           TaskScheduler.FromCurrentSynchronizationContext());
+                           TaskScheduler.FromCurrentSynchronizationContext());                    
                 }
                 else
                 {
                     // very important
-                    await DownloadAsync("https://www.bing.com/rewards").ContinueWith(
+                    await DownloadAsync("https://www.bing.com/rewards/dashboard").ContinueWith(
                        (task) => this.statusDebug("S3:"),
                           TaskScheduler.FromCurrentSynchronizationContext());
                 }
@@ -995,6 +980,12 @@ namespace BingRewardsBot
                 && statusTxtBox.Text != "Dashboard"
             )
             {
+                if (browser.Document.GetElementById("site - layout - config") != null)
+                {
+                    HtmlElement sig = browser.Document.GetElementById("site - layout - config");
+                    MessageBox.Show(sig.InnerText);
+                }
+
                 try
                 {
                     HtmlElementCollection links = browser.Document.Links;
@@ -1011,6 +1002,7 @@ namespace BingRewardsBot
                                 if (sig.Contains(@"sig="))
                                 {
                                     this.siguid = sig.Replace("sig=", "");
+                                    MessageBox.Show(this.siguid);
                                     break;
                                 }
                             }
@@ -1127,7 +1119,6 @@ namespace BingRewardsBot
             {
                 await DoUnsupportedMarket();
             }
-
         }
 
         //**********************
@@ -1691,7 +1682,7 @@ namespace BingRewardsBot
                     //**************************
                     //&& !String.IsNullOrEmpty(this.siguid) && !String.IsNullOrWhiteSpace(this.siguid)
                 }
-                /*                
+                      
                 else if ((url.Contains(@"https://account.microsoft.com/rewards/dashboard")
                         || browserUrlTxtbox.Text == "https://account.microsoft.com/rewards/dashboard")
                         && !url.Contains(@"login.live.com")
@@ -1842,34 +1833,11 @@ namespace BingRewardsBot
                     )
                 {
                     this.authLock = true;
-                    bool a = false;
-
-                    try
-                    {
-                        // extract url       
-                        HtmlElementCollection links = wb.Document.Links;
-                        foreach (HtmlElement ele in links)
-                        {
-                            if ((ele.GetAttribute("href") != null)
-                            && ele.GetAttribute("href").Contains(@"id=")
-                            && ele.GetAttribute("href").Contains(@"login.live.com")
-                            && !ele.GetAttribute("href").Contains(@"signup.live.com")
-                            && !ele.GetAttribute("href").Contains(@"logout")
-                            )
-                            {
-                                string text = ele.GetAttribute("href");
-                                browser.Navigate(new Uri(text));
-                                a = true;
-                            }
-                        }
-                    }
-                    catch { }
-
+                 
                     //prepare extraction & connection
                     if (this.accountVisited[this.accountNum] == false
                         && chkbox_autorotate.Checked == true
                         && this.checkaccount == false
-                        && a == false
                     )
                     {
                         this.accountVisited[this.accountNum] = true;
@@ -1906,7 +1874,6 @@ namespace BingRewardsBot
                                TaskScheduler.FromCurrentSynchronizationContext());
                     }
                     else if ((chkbox_autorotate.Checked == false || this.checkaccount == true)
-                         && a == false
                         )
                     {
                         this.prevpts = 0;
@@ -1998,8 +1965,7 @@ namespace BingRewardsBot
 
                         this.statusDebug("Auth2:");
                     }                    
-                }
-                */
+                }              
 
                 ++this.pccounter;
                 this.toolStripStatusLabel1.Text += "#";
@@ -2569,7 +2535,7 @@ namespace BingRewardsBot
                 }
 
                 // max out
-                if (this.counterDx <= 2 && this.dxloops < MAXLOOPS)
+                if (this.counterDx <= 1 && this.dxloops < MAXLOOPS)
                 {
                     this.dxloops++;
                     string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
@@ -2595,7 +2561,7 @@ namespace BingRewardsBot
                 {
                     double x = (double)100 / FREEX;
                     double z = x * (this.trialCountDownReg - (this.trialCountUp * DIVIDE));
-                    this.Text = TITLE + Math.Round(z) + "% Shareware";
+                    this.Text = TITLE + " : " + Math.Round(z) + "% Shareware";
                 }
                 
                 if (statusTxtBox.Text == "Mobilesearches")
@@ -2708,7 +2674,7 @@ namespace BingRewardsBot
 
                         // desktop searches
                     }
-                    else if (this.counterDx >= 2 && desktop == true)
+                    else if (this.counterDx >= 1 && desktop == true)
                     {
                         statusTxtBox.Text = "Desktopsearches";
                         --this.counterDx;
@@ -3182,7 +3148,7 @@ namespace BingRewardsBot
                 
                 // poll the current HTML for changes asynchronosly
                 var html = documentElement.OuterHtml;
-                while (true)
+                while (this.browser.IsBusy)
                 {
                     // wait asynchronously, this will throw if cancellation requested
                     var delay = Task.Run(async () => {
@@ -3191,7 +3157,7 @@ namespace BingRewardsBot
 
                     // continue polling if the WebBrowser is still busy
                     //if (this.browser.IsBusy)
-                    //    continue;
+                    //      continue;
 
                     var htmlNow = documentElement.OuterHtml;
                     if (html == htmlNow)
@@ -3487,11 +3453,11 @@ namespace BingRewardsBot
 
                             this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
 
-                            //DownloadAsync(BRSOUT).ContinueWith(
-                            //    (task) => this.statusDebug("PC1:"),
-                            //        TaskScheduler.FromCurrentSynchronizationContext());
+                            DownloadAsync(BRSOUT).ContinueWith(
+                                (task) => this.statusDebug("PC1:"),
+                                    TaskScheduler.FromCurrentSynchronizationContext());
 
-                            DoLogin();
+                            //DoLogin();
 
                         }
                         else if (a >= 0 && this.accountNum < this.accounts.Count())
@@ -3650,11 +3616,11 @@ namespace BingRewardsBot
 
                         this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
                        
-                        //DownloadAsync(BRSOUT).ContinueWith(
-                        //      (task) => this.statusDebug("PC1:"),
-                        //      TaskScheduler.FromCurrentSynchronizationContext());
+                        DownloadAsync(BRSOUT).ContinueWith(
+                              (task) => this.statusDebug("PC1:"),
+                              TaskScheduler.FromCurrentSynchronizationContext());
                         
-                        DoLogin();
+                        //DoLogin();
                     }
                 }
 
@@ -3742,11 +3708,7 @@ namespace BingRewardsBot
                             || browserUrlTxtbox.Text == "https://account.microsoft.com/"
                         )
                     {
-                        bool a = false;
-
-                        //prepare connection
-                        if (chkbox_autorotate.Checked == true
-                            && a == false
+                         if (chkbox_autorotate.Checked == true
                             )
                         {
                             this.accountVisited[this.accountNum] = true;
@@ -4030,7 +3992,6 @@ namespace BingRewardsBot
                 //https://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k(EHInvalidOperation.WinForms.IllegalCrossThreadCall);k(TargetFrameworkMoniker-.NETFramework,Version%3Dv4.5.2);k(DevLang-csharp)&rd=true
                 if (this.toolStripStatusLabel1.Text.Length < 70)
                 {
-
                     if (IsHandleCreated)
                     {
                         try
@@ -4061,8 +4022,7 @@ namespace BingRewardsBot
                         {
                             Invoke(new SetToolStripDelegate(SetToolStrip), "." + Convert.ToString(this.WDCounter));
                         }
-                        catch {  }
-
+                        catch { }
                     }
                 }
                 else
