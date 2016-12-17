@@ -134,7 +134,7 @@ namespace BingRewardsBot
         private bool checkaccount = false;
         private string trialRegKey;
         private const int FREEX = 7000000; //15500000;  //25500000
-        private const int FREEA = 5;
+        private const int FREEA = 50;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
@@ -152,7 +152,7 @@ namespace BingRewardsBot
         private int accountNum = -1;
         private string accountsFile;
         private string wordsFile;
-        private const bool SUPPORTER = false;
+        private const bool SUPPORTER = true;
         private List<string> accounts = new List<string>();
         private List<string> words = new List<string>();
         //Thread doublePost;
@@ -4328,7 +4328,7 @@ namespace BingRewardsBot
                     string sql = "select * from searches where ip='" + this.ip + "' group by account,ip";
                     SQLiteCommand command = new SQLiteCommand(sql, conn);
                     SQLiteDataReader reader = command.ExecuteReader();
-                    string[] aarr = new string[FREEA - 1];
+                    string[] aarr = new string[FREEA];
 
                     int i = 0;
                     while (reader.Read() && i < FREEA)
@@ -4352,13 +4352,13 @@ namespace BingRewardsBot
 
                     itm = new ListViewItem("IP addresses used by current account:");
                     log.Items.Add(itm);
-
-                    string[] iparr = new string[10];
+                                        
                     sql = "select * from searches where account='" +
                         this.username + "' group by account,ip";
                     command = new SQLiteCommand(sql, conn);
                     reader = command.ExecuteReader();
 
+                    string[] iparr = new string[10];
                     i = 0;
                     while (reader.Read() && i < 10)
                     {
@@ -4485,7 +4485,6 @@ namespace BingRewardsBot
                         }
                     }
 
-
                     itm = new ListViewItem(" ");
                     log.Items.Add(itm);
 
@@ -4505,9 +4504,6 @@ namespace BingRewardsBot
                     }
 
                     conn.Close();
-
-
-
 
                     break;
             }
