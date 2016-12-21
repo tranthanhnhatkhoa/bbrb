@@ -134,7 +134,7 @@ namespace BingRewardsBot
         private bool checkaccount = false;
         private string trialRegKey;
         private const int FREEX = 10000000; //15500000;  //25500000
-        private const int FREEA = 4;
+        private const int FREEA = 50;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
