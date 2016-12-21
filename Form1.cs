@@ -41,7 +41,7 @@ namespace BingRewardsBot
         //IntPtr pControl2;
         mshtml.IHTMLDocument2 htmlDoc;
         HtmlElement documentElement;
-        const string VERSION = "14.12.2016";
+        const string VERSION = "21.12.2016";
         const int POLL_DELAY = 300;
         private static bool toriddone = false;
         private const string TORSOCKSPORT = "8118";
@@ -133,8 +133,8 @@ namespace BingRewardsBot
         private bool trialstopped = false;
         private bool checkaccount = false;
         private string trialRegKey;
-        private const int FREEX = 7000000; //15500000;  //25500000
-        private const int FREEA = 50;
+        private const int FREEX = 10000000; //15500000;  //25500000
+        private const int FREEA = 4;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
@@ -1935,6 +1935,7 @@ namespace BingRewardsBot
                     || url.Contains(@"https://login.live.com/logout.srf")
                     || url.Contains(@"https://account.microsoft.com/about")
                     || url.Contains(@"https://account.microsoft.com/rewards/welcome")
+                    || url.Contains(@"https://account.microsoft.com/account")
                     ))
                 {
                     if (this.country == "US" || this.country == "IN" || chkbox_tor.Checked == false)
@@ -2357,7 +2358,7 @@ namespace BingRewardsBot
             if ((this.counterDx <= 1 && this.counterMx <= 1 && autorotate == true && this.trialstopped == false)
                 || (this.counterDx <= 1 && mobile == false && autorotate == true && this.trialstopped == false)
                 || (this.counterMx <= 1 && desktop == false && autorotate == true && this.trialstopped == false)
-                && (this.pts >= MSPOINTS || this.dxloops == MAXLOOPS - 1)
+                && (this.pts >= MSPOINTS || (this.dxloops == MAXLOOPS - 1) && (this.mxloops == MAXLOOPS - 1))
                 )
             {
                 this.Csearch = false;
@@ -2479,7 +2480,7 @@ namespace BingRewardsBot
             else if (this.counterDx <= 1 && this.counterMx <= 1 && autorotate == false && this.trialstopped == false
                 || (this.counterDx <= 1 && mobile == false && autorotate == false && this.trialstopped == false)
                 || (this.counterMx <= 1 && desktop == false && autorotate == false && this.trialstopped == false)
-                && (this.pts >= MSPOINTS || this.mxloops == MAXLOOPS - 1)
+                && (this.pts >= MSPOINTS || (this.dxloops == MAXLOOPS - 1) && (this.mxloops == MAXLOOPS - 1))
                 )
             {
                 this.qpage = 0;
@@ -3823,15 +3824,23 @@ namespace BingRewardsBot
                     {
                         DoUnsupportedMarket();
                     }
-                    //else if (this.button1.Text == "Stop"
-                    //         && this.chkbox_autorotate.Checked == true
-                    //        && this.authLock == true
-                    //        && this.statusTxtBox.Text == "Authenticate"
-                    //  )
-                    //{
-                    //    ++this.accountVisitedX;
-                    //    this.restartAuth();
-                    //}
+                    // else if (this.checkaccount == false
+                    // && (this.Csearch == true || this.clicklist == true)
+                    // && this.authLock == true
+                    // && (url.Contains(@"search?q=")
+                    //    || wb.Document.GetElementById("sb_form_q") != null)
+                    //&& this.statusTxtBox.Text != "Dashboard"
+
+                    else if (this.button1.Text == "Stop"
+                             && this.chkbox_autorotate.Checked == true
+                             && this.authLock == false
+                             && this.statusTxtBox.Text == "Authenticate"
+                             && this.browserUrlTxtbox.Text.Contains(@"https://www.bing.com/rewards/dashboard")
+                      )
+                    {
+                        ++this.accountVisitedX;
+                        this.restartAuth();
+                    }
                     else if (this.button1.Text == "Stop"
                         && this.chkbox_autorotate.Checked == true
                         && this.authLock == true
