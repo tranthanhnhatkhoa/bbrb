@@ -37,11 +37,15 @@ namespace BingRewardsBot
 {
     public partial class Form1 : Form
     {
+        private BetterControl.RangeSlider rs1;
+        private BetterControl.RangeSlider rs2;
+        private BetterControl.RangeSlider rs3;
+        private BetterControl.RangeSlider rs4;
         IntPtr pControl;
         //IntPtr pControl2;
         mshtml.IHTMLDocument2 htmlDoc;
         HtmlElement documentElement;
-        const string VERSION = "21.12.2016";
+        const string VERSION = "27.12.2016";
         const int POLL_DELAY = 300;
         private static bool toriddone = false;
         private const string TORSOCKSPORT = "8118";
@@ -92,10 +96,11 @@ namespace BingRewardsBot
         //private const string BRS2 = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https://www.bing.com/rewards/signin?FORM=MI0GMI&PUBL=MUIDTrial&CREA=MI0GMI&wlsso=1&wlexpsignin=1&src=EXPLICIT&sig=";
         //private const string BRS2 = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&src=rewardssi&perms=&return_url=https://www.bing.com&Token=1&sig=";
         private const string BRS2 = "https://www.bing.com/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https://www.bing.com/?wlsso=1%26wlexpsignin=1%26src=EXPLICIT&sig=";
-        private const string BRI18NUS = "https://www.bing.com/account/action?scope=web&setmkt=en-US&setplang=en-us&setlang=en-us&FORM=W5WA&uid=FC9008F2&sid=";
+        private const string BRI18NUS = "http://www.bing.com/account/action?scope=web&setmkt=en-US&setplang=en-us&setlang=en-us&FORM=W5WA&uid=FC9008F2&sid=";
         private const string BRI18NIN = "http://bing.com/account/action?scope=web&setmkt=en-IN&setplang=en-in&setlang=en-in&FORM=W5WA&uid=8AF0AD82&sid=";
         private const string BRSOUT = "https://login.live.com/logout.srf?ct=1476458234&rver=6.7.6636.0&lc=1033&id=292666&ru=https:%2F%2Faccount.microsoft.com%2Fauth%2Fcomplete-signout%3Fru%3Dhttps%253a%252f%252faccount.microsoft.com%252frewards%252fdashboard&uictx=me&flowtoken=";
         private const string BRSIN2 = "https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1476457420&rver=6.7.6636.0&wp=MBI_SSL&wreply=https:%2f%2faccount.microsoft.com%2fauth%2fcomplete-signin%3fru%3dhttps%253a%252f%252faccount.microsoft.com%252frewards%252fdashboard%253frefd%253dwww.bing.com&id=292666&lw=1&fl=easi2&pcexp=true&lc=1033";
+        //http://bing.com/account/action?scope=web&setmkt=en-US&setplang=en-us&setlang=en-us&FORM=W5WA&uid=62F05741&sid=1AFD3E6DD50B61FA0F973796D4CB60B8
 
         private long pccounter = 0;
         private int WDCounter = 0;
@@ -118,7 +123,7 @@ namespace BingRewardsBot
         private bool Csearch = false;
         private int qpage = 0;
         private const int SLEEPTOR = 8 * 1000;
-        private const int SLEEPPTS = 5 * 1000;
+        private const int SLEEPPTS = 4 * 1000;
         private const int SLEEPDP = 12 * 1000;
         private const int SLEEPDASHBOARD = 18 * 1000;
         private const int SLEEPMAIN = 5 * 1000;
@@ -128,13 +133,13 @@ namespace BingRewardsBot
         private int accountVisitedX = 0;
         private List<bool> accountVisited;
         private const string TRIALOVER = "Too bad the trial period is over. If my program is helpful please consider to donate!";
-        private const string TITLE = "Better Bing Rewards Bot by Elephant7";
+        private const string TITLE = "Better Bing Rewards Bot";
         private const string MYIP = "My IP address: ";
         private bool trialstopped = false;
         private bool checkaccount = false;
         private string trialRegKey;
-        private const int FREEX = 10000000; //15500000;  //25500000
-        private const int FREEA = 50;
+        private const int FREEX = 8000000; //15500000;  //25500000
+        private const int FREEA = 3;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
@@ -152,10 +157,9 @@ namespace BingRewardsBot
         private int accountNum = -1;
         private string accountsFile;
         private string wordsFile;
-        private const bool SUPPORTER = true;
+        private const bool SUPPORTER = false;
         private List<string> accounts = new List<string>();
         private List<string> words = new List<string>();
-        //Thread doublePost;
         Thread mainThread;
         const UInt32 WM_KEYDOWN = 0x0100;
         const int WM_CHAR = 0x0102;
@@ -269,10 +273,6 @@ namespace BingRewardsBot
                 FireFormMaximized();
             }
 
-            //doublePost = new Thread(new ThreadStart(ClickOKButton));
-            //doublePost.IsBackground = true;
-            //doublePost.Start();
-
             mainThread = new Thread(new ThreadStart(mainT));
             mainThread.IsBackground = true;
             mainThread.Start();
@@ -376,14 +376,62 @@ namespace BingRewardsBot
             string[] authstr = this.accounts[0].Split('/');
             this.accountNameTxtBox.Text = authstr[0];
 
+            //http://stackoverflow.com/questions/5053501/put-wpf-control-into-a-windows-forms-form
+            //http://stackoverflow.com/questions/14170165/how-can-i-add-this-wpf-control-into-my-winform
+
+            rs1 = new BetterControl.RangeSlider();
+            //rs1.LowerValue = 30;
+            //rs1.UpperValue = 90;
+            rs1.InitializeComponent();
+            rs1.Minimum = 0;
+            rs1.Maximum = 100;            
+            this.elementHost1.Child = rs1;
+
+            rs2 = new BetterControl.RangeSlider();
+            rs2.InitializeComponent();
+            rs2.Minimum = 1;
+            rs2.Maximum = 100;            
+            this.elementHost2.Child = rs2;           
+
+            rs3 = new BetterControl.RangeSlider();
+            rs3.InitializeComponent();
+            rs3.Minimum = 1;
+            rs3.Maximum = 100;            
+            this.elementHost3.Child = rs3;
+
+            rs4 = new BetterControl.RangeSlider();
+            rs4.InitializeComponent();
+            rs4.Minimum = 1;
+            rs4.Maximum = 100;            
+            this.elementHost4.Child = rs4;
+
+            this.chkbox_as.Checked = BingRewardsBot.Properties.Settings.Default.set_chkbox_as == true ? true : false;
             this.chkbox_tor.Checked = BingRewardsBot.Properties.Settings.Default.set_tor == true ? true : false;
             this.chkbox_mobile.Checked = BingRewardsBot.Properties.Settings.Default.set_mobile == true ? true : false;
             this.chkbox_desktop.Checked = BingRewardsBot.Properties.Settings.Default.set_desktop == true ? true : false;
             this.chkbox_autorotate.Checked = BingRewardsBot.Properties.Settings.Default.set_autorotate == true ? true : false;
-            this.txtbox_autostart.Text = BingRewardsBot.Properties.Settings.Default.set_autostart;
-            this.txtbox_counter.Text = BingRewardsBot.Properties.Settings.Default.set_counter;
-            this.txtbox_waitsearches.Text = BingRewardsBot.Properties.Settings.Default.set_waitsearches;
-            this.txtbox_waitauth.Text = BingRewardsBot.Properties.Settings.Default.set_waitauth;
+
+            string value = this.txtbox_counter.Text = BingRewardsBot.Properties.Settings.Default.set_counter;
+            string[] arr = value.Split('-');
+            rs1.LowerValue = Convert.ToDouble(arr[0]);
+            rs1.UpperValue = Convert.ToDouble(arr[1]);
+
+            value = this.txtbox_waitsearches.Text = BingRewardsBot.Properties.Settings.Default.set_waitsearches;
+            arr = value.Split('-');
+            rs2.LowerValue = Convert.ToDouble(arr[0]);
+            rs2.UpperValue = Convert.ToDouble(arr[1]);
+            
+            value = this.txtbox_waitauth.Text = BingRewardsBot.Properties.Settings.Default.set_waitauth;
+            arr = value.Split('-');
+            rs3.LowerValue = Convert.ToDouble(arr[0]);
+            rs3.UpperValue = Convert.ToDouble(arr[1]);
+
+            //this.txtbox_autostart.Text = BingRewardsBot.Properties.Settings.Default.set_autostart;
+            value = this.txtbox_autostart.Text = BingRewardsBot.Properties.Settings.Default.set_autostart.ToString();
+            arr = value.Split('-');
+            rs4.LowerValue = Convert.ToDouble(arr[0]);
+            rs4.UpperValue = Convert.ToDouble(arr[1]);
+
             this.txtboxcustomdesktop.Text = BingRewardsBot.Properties.Settings.Default.set_uadesktop;
             this.txtboxcustommobile.Text = BingRewardsBot.Properties.Settings.Default.set_uamobile;
             this.txtbox_customaccounts.Text = BingRewardsBot.Properties.Settings.Default.set_accounts;
@@ -391,7 +439,20 @@ namespace BingRewardsBot
             this.txtbox_torsettings.Text = BingRewardsBot.Properties.Settings.Default.set_torsettings;
             this.listBox1.SelectedIndex = BingRewardsBot.Properties.Settings.Default.set_lang;
             this.randomo.Checked = BingRewardsBot.Properties.Settings.Default.set_randomo == true ? true : false;
+            this.chkbox_ns.Checked = BingRewardsBot.Properties.Settings.Default.set_ns == true ? true : false;
 
+            rs1.OnLowerSlider_ValueChanged += new BetterControl.RangeSlider.MyControlEventHandler(rs1_OnLowerSlider_ValueChanged);
+            rs1.OnUpperSlider_ValueChanged += new BetterControl.RangeSlider.MyControlEventHandler(rs1_OnUpperSlider_ValueChanged);
+
+            rs2.OnLowerSlider_ValueChanged += new BetterControl.RangeSlider.MyControlEventHandler(rs2_OnLowerSlider_ValueChanged);
+            rs2.OnUpperSlider_ValueChanged += new BetterControl.RangeSlider.MyControlEventHandler(rs2_OnUpperSlider_ValueChanged);
+
+            rs3.OnLowerSlider_ValueChanged += new BetterControl.RangeSlider.MyControlEventHandler(rs3_OnLowerSlider_ValueChanged);
+            rs3.OnUpperSlider_ValueChanged += new BetterControl.RangeSlider.MyControlEventHandler(rs3_OnUpperSlider_ValueChanged);
+
+            rs4.OnLowerSlider_ValueChanged += new BetterControl.RangeSlider.MyControlEventHandler(rs4_OnLowerSlider_ValueChanged);
+            rs4.OnUpperSlider_ValueChanged += new BetterControl.RangeSlider.MyControlEventHandler(rs4_OnUpperSlider_ValueChanged);
+            
             // Get IP
             this.subgetip();
 
@@ -421,24 +482,23 @@ namespace BingRewardsBot
 
                     int c = 0;
                     string curr = "";
-                    int[] arr = new int[40 * FREEA];
+                    int[] free = new int[40 * FREEA];
 
                     while (reader.Read())
                     {
                         if (curr == Convert.ToString(reader["ip"]) && c < FREEA)
                         {
-                            arr[c++] = Convert.ToInt32(reader["uid"]);
+                            free[c++] = Convert.ToInt32(reader["uid"]);
                         }
                         else if (curr == Convert.ToString(reader["ip"]) && c > (FREEA - 1))
                         {
-                            arr[c++] = Convert.ToInt32(reader["uid"]);
-
+                            free[c++] = Convert.ToInt32(reader["uid"]);
                         }
                         else if (c > (FREEA - 1))
                         {
                             for (int i = 0, e = (c - FREEA); i < e; i++)
                             {
-                                command = new SQLiteCommand("delete from searches where uid=" + arr[i], dbcon);
+                                command = new SQLiteCommand("delete from searches where uid=" + free[i], dbcon);
                                 command.ExecuteNonQuery();
                             }
                             curr = Convert.ToString(reader["ip"]);
@@ -487,18 +547,17 @@ namespace BingRewardsBot
             }
 
             // Autostart
-            string autostart = this.txtbox_autostart.Text = BingRewardsBot.Properties.Settings.Default.set_autostart.ToString();
-            string[] check = autostart.Split('-');
-
-            try
+         
+            if (chkbox_as.Checked == true)
             {
-                if (Convert.ToInt32(check[1]) > 0 && Convert.ToInt32(check[1]) > Convert.ToInt32(check[0]))
+                try
                 {
+                    string autostart = this.txtbox_autostart.Text = BingRewardsBot.Properties.Settings.Default.set_autostart.ToString();
+                    string[] check = autostart.Split('-');
 
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.vrndnum = 0;
-
                     this.checkaccount = false;
 
                     int z = randAuthTimer(Convert.ToInt32(check[0]), Convert.ToInt32(check[1]));
@@ -506,15 +565,13 @@ namespace BingRewardsBot
                     counterTxtBox.Text = z > 1 ? decimal.Round(z / 60).ToString() + " min." : "a few sec.";
 
                     this.authLock = false;
-
                     statusTxtBox.Text = "Autostart";
                     this.button1.Text = "Auto";
                     this.prevpts = 0;
                     this.pts = 0;
                     this.pts_txtbox.Text = "0";
-
                 }
-                else
+                catch
                 {
                     statusTxtBox.Text = "Stop";
                     counterTxtBox.Text = "0/0";
@@ -524,7 +581,7 @@ namespace BingRewardsBot
                     this.authLock = false;
                 }
             }
-            catch
+            else
             {
                 statusTxtBox.Text = "Stop";
                 counterTxtBox.Text = "0/0";
@@ -535,6 +592,47 @@ namespace BingRewardsBot
             }
         }
 
+        void rs1_OnLowerSlider_ValueChanged(object sender, double result)
+        {
+            txtbox_counter.Text = Convert.ToString(Math.Round(result)+"-" + Math.Round(this.rs1.UpperValue));
+            //MessageBox.Show("L"+result.ToString());
+        }
+
+        void rs1_OnUpperSlider_ValueChanged(object sender, double result)
+        {
+            txtbox_counter.Text = Convert.ToString(Math.Round(this.rs1.LowerValue) + "-" + Math.Round(result));
+            //MessageBox.Show("U" + result.ToString());
+        }
+
+        void rs2_OnLowerSlider_ValueChanged(object sender, double result)
+        {
+            txtbox_waitsearches.Text = Convert.ToString(Math.Round(result) + "-" + Math.Round(this.rs2.UpperValue));
+        }
+
+        void rs2_OnUpperSlider_ValueChanged(object sender, double result)
+        {
+            txtbox_waitsearches.Text = Convert.ToString(Math.Round(this.rs2.LowerValue) + "-" + Math.Round(result));
+        }
+        void rs3_OnLowerSlider_ValueChanged(object sender, double result)
+        {
+            this.txtbox_waitauth.Text = Convert.ToString(Math.Round(result) + "-" + Math.Round(this.rs3.UpperValue));
+        }
+
+        void rs3_OnUpperSlider_ValueChanged(object sender, double result)
+        {
+            this.txtbox_waitauth.Text = Convert.ToString(Math.Round(this.rs3.LowerValue) + "-" + Math.Round(result));
+        }
+
+        void rs4_OnLowerSlider_ValueChanged(object sender, double result)
+        {
+            txtbox_autostart.Text = Convert.ToString(Math.Round(result) + "-" + Math.Round(this.rs4.UpperValue));
+        }
+
+        void rs4_OnUpperSlider_ValueChanged(object sender, double result)
+        {
+            txtbox_autostart.Text = Convert.ToString(Math.Round(this.rs4.LowerValue) + "-" + Math.Round(result));
+        }
+        
         // http://stackoverflow.com/questions/18333459/c-sharp-webbrowser-ajax-call
         // set WebBrowser features, more info: http://stackoverflow.com/a/18333982/1768303
         static void SetWebBrowserFeatures()
@@ -691,7 +789,6 @@ namespace BingRewardsBot
         //https://msdn.microsoft.com/en-us/library/System.Timers.Timer.form.closing(v=vs.110).aspx
         private void Form1_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
             //http://stackoverflow.com/questions/204804/disable-image-loading-from-webbrowser-control-before-the-documentcompleted-event
             //RegistryKey RegKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\Main", true);
             //RegKey.SetValue("Display Inline Images", "yes");
@@ -708,13 +805,14 @@ namespace BingRewardsBot
             BingRewardsBot.Properties.Settings.Default.set_waitauth = txtbox_waitauth.Text;
             BingRewardsBot.Properties.Settings.Default.set_autostart = txtbox_autostart.Text;
             BingRewardsBot.Properties.Settings.Default.set_proxy = txtbox_proxy.Text;
-            BingRewardsBot.Properties.Settings.Default.set_uadesktop = txtboxcustomdesktop.Text;
-            BingRewardsBot.Properties.Settings.Default.set_uamobile = txtboxcustommobile.Text;
-            BingRewardsBot.Properties.Settings.Default.set_accounts = txtbox_customaccounts.Text;
-            BingRewardsBot.Properties.Settings.Default.set_proxy = this.txtbox_proxy.Text;
             BingRewardsBot.Properties.Settings.Default.set_torsettings = this.txtbox_torsettings.Text;
+            BingRewardsBot.Properties.Settings.Default.set_uadesktop = this.txtboxcustomdesktop.Text;
+            BingRewardsBot.Properties.Settings.Default.set_uamobile = this.txtboxcustommobile.Text;
+            BingRewardsBot.Properties.Settings.Default.set_accounts = this.txtbox_customaccounts.Text;
             BingRewardsBot.Properties.Settings.Default.set_lang = this.listBox1.SelectedIndex;
             BingRewardsBot.Properties.Settings.Default.set_randomo = randomo.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_ns = this.chkbox_ns.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_chkbox_as = this.chkbox_as.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.Save();
         }
 
@@ -796,36 +894,58 @@ namespace BingRewardsBot
         */
 
         async Task DoUnsupportedMarket()
-        {           
-            await DownloadAsync("https://www.bing.com/account/general").ContinueWith(
-               (task) => this.statusDebug("UM:"),
-                   TaskScheduler.FromCurrentSynchronizationContext());
+        {
+            //await DownloadAsync("https://www.bing.com/account/general").ContinueWith(
+            //   (task) => this.statusDebug("UM:"),
+            //       TaskScheduler.FromCurrentSynchronizationContext());
+
+            this.WDCounter = 0;
+
+            var htmlNow = await DownloadAsync("https://www.bing.com/account/general");
+            this.statusDebug("UM:");
+            htmlNow = documentElement.OuterHtml;
+
             // do whatever you want with this instance of WB.Document
             //MessageBox.Show(this.browser.Document.Url.ToString());
 
             if (listBox1.SelectedIndex == 0)
             {
-                await DownloadAsync(BRI18NUS + this.siguid).ContinueWith(
-                    (task) => this.statusDebug("UM:"),
-                    TaskScheduler.FromCurrentSynchronizationContext());
+                //await DownloadAsync(BRI18NUS + this.siguid).ContinueWith(
+                //    (task) => this.statusDebug("UM1:"),
+                //    TaskScheduler.FromCurrentSynchronizationContext());
+
+                this.WDCounter = 0;
+                htmlNow = await DownloadAsync(BRI18NUS + this.siguid);
+                this.statusDebug("UM1:");
+                htmlNow = documentElement.OuterHtml;
 
                 // do whatever you want with this instance of WB.Document
                 //MessageBox.Show(this.browser.Document.Url.ToString());
             }
             else
             {
-                await DownloadAsync(BRI18NIN + this.siguid).ContinueWith(
-                    (task) => this.statusDebug("UM:"),
-                        TaskScheduler.FromCurrentSynchronizationContext());
+                //await DownloadAsync(BRI18NIN + this.siguid).ContinueWith(
+                //    (task) => this.statusDebug("UM2:"),
+                //        TaskScheduler.FromCurrentSynchronizationContext());
+
+                this.WDCounter = 0;
+                htmlNow = await DownloadAsync(BRI18NIN + this.siguid);
+                this.statusDebug("UM2:");
+                htmlNow = documentElement.OuterHtml;
 
                 // do whatever you want with this instance of WB.Document
                 //MessageBox.Show(this.browser.Document.Url.ToString());
             }
 
             // navigate to www.bing.com
-            await DownloadAsync("https://www.bing.com/").ContinueWith(
-               (task) => this.statusDebug("UM:"),
-                   TaskScheduler.FromCurrentSynchronizationContext());
+            //await DownloadAsync("https://www.bing.com/").ContinueWith(
+            //   (task) => this.statusDebug("UM3:"),
+            //       TaskScheduler.FromCurrentSynchronizationContext());
+
+            this.WDCounter = 0;
+            htmlNow = await DownloadAsync("https://www.bing.com/rewards/dashboard");
+            this.statusDebug("UM2:");
+            htmlNow = documentElement.OuterHtml;
 
             // do whatever you want with this instance of WB.Document
             //MessageBox.Show(this.browser.Document.Url.ToString());
@@ -1507,7 +1627,7 @@ namespace BingRewardsBot
                         if (url.Contains(@"dashboard"))
                         {
                             statusTxtBox.Text = "Dashboard";
-                            this.toolStripStatusLabel1.Text = "Scrap dashboard tasks:";
+                            this.toolStripStatusLabel1.Text = "Scrap tasks:";
 
                             if (timer_searches != null)
                             {
@@ -1663,7 +1783,7 @@ namespace BingRewardsBot
 
                         this.statusDebug("Initial searches:");
                     }
-                    else
+                    else if (!url.Contains(@"https://account.microsoft.com/account/general"))
                     {
                         statusTxtBox.Text = "Connected";
 
@@ -2339,6 +2459,22 @@ namespace BingRewardsBot
             return ((dynamic)this.browser.Document);
         }
 
+        void natural_search()
+        {
+            this.query = this.words[randomNumber(0, this.words.Count)];
+            if (this.chkbox_ns.Checked == true)
+            {
+                if (randomNumber(0, 12) > (randomNumber(0, 6)))
+                {
+                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                }
+                if (randomNumber(0, 12) > (randomNumber(0, 3)))
+                {
+                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
+                }
+            }
+        }
+
         //http://stackoverflow.com/questions/18303758/can-i-wait-for-a-webbrowser-to-finish-navigating-using-a-for-loop
         private void DoSearch(object sender, EventArgs e)
         {
@@ -2581,15 +2717,7 @@ namespace BingRewardsBot
                 {
                     this.qpage = 0;
 
-                    this.query = this.words[randomNumber(0, this.words.Count)];
-                    if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                    {
-                        this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                    }
-                    if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                    {
-                        this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                    }
+                    natural_search();
 
                     // mobile searches
                     if ((randomNumber(0, 9) > (randomNumber(3, 7)) && this.counterMx >= 1 && mobile == true) ||
@@ -2759,7 +2887,7 @@ namespace BingRewardsBot
                 {
 
                     //**************************
-                    // human search (click)
+                    // natural search (click)
                     //**************************
                     this.Csearch = true;
 
@@ -2813,16 +2941,7 @@ namespace BingRewardsBot
                                 this.Csearch = true;
                                 this.clicklist = false;
 
-                                this.query = this.words[randomNumber(0, this.words.Count)];
-                                if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                                {
-                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                }
-                                if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                                {
-                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                }
-
+                                natural_search();
                                 this.SubmitSearch();
                             }
                             else
@@ -2834,16 +2953,7 @@ namespace BingRewardsBot
                                 this.Csearch = true;
                                 this.clicklist = false;
 
-                                this.query = this.words[randomNumber(0, this.words.Count)];
-                                if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                                {
-                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                }
-                                if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                                {
-                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                }
-
+                                natural_search();
                                 this.SubmitSearch();
                             }
                         }
@@ -2939,16 +3049,7 @@ namespace BingRewardsBot
                                 this.Csearch = true;
                                 this.clicklist = false;
 
-                                this.query = this.words[randomNumber(0, this.words.Count)];
-                                if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                                {
-                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                }
-                                if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                                {
-                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                }
-
+                                natural_search();
                                 this.SubmitSearch();
                             }
                             else
@@ -2960,15 +3061,7 @@ namespace BingRewardsBot
                                 this.Csearch = true;
                                 this.clicklist = false;
 
-                                this.query = this.words[randomNumber(0, this.words.Count)];
-                                if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                                {
-                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                }
-                                if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                                {
-                                    this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                }
+                                natural_search();
                                 this.SubmitSearch();
                             }
                         }
@@ -3009,15 +3102,7 @@ namespace BingRewardsBot
                                 {
                                     this.qpage = 0;
 
-                                    this.query = this.words[randomNumber(0, this.words.Count)];
-                                    if (randomNumber(0, 12) > (randomNumber(0, 6)))
-                                    {
-                                        this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                    }
-                                    if (randomNumber(0, 12) > (randomNumber(0, 3)))
-                                    {
-                                        this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                                    }
+                                    natural_search();
 
                                     if (statusTxtBox.Text == "Mobilesearches")
                                     {
@@ -3430,14 +3515,6 @@ namespace BingRewardsBot
                             (this.country == "US" || this.country == "IN" || chkbox_tor.Checked == false))
                         {
                             //http://stackoverflow.com/questions/904478/how-to-fix-the-memory-leak-in-ie-webbrowser-control
-                            /*
-                            IntPtr pHandle = GetCurrentProcess();
-                            SetProcessWorkingSetSize(pHandle, -1, -1);
-
-                            GC.Collect();
-                            GC.WaitForPendingFinalizers();
-                            GC.Collect();
-                            */
                             GC.Collect();
 
                             this.authLock = true;
@@ -3647,6 +3724,7 @@ namespace BingRewardsBot
                         && this.authLock == true
                         && this.Csearch == true
                         && !this.browserUrlTxtbox.Text.Contains(@"landing")
+                        && !this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/account/general")
                         )
                     {
                         this.statusDebug("Refresh:");
@@ -3821,7 +3899,7 @@ namespace BingRewardsBot
                         && this.authLock == true
                         && this.browserUrlTxtbox.Text.Contains(@"https://www.bing.com/rewards/unsupportedmarket")
                     )
-                    {
+                    {                        
                         DoUnsupportedMarket();
                     }
                     // else if (this.checkaccount == false
@@ -3864,7 +3942,6 @@ namespace BingRewardsBot
                         this.accountVisited[this.accountNum] = true;
                         ++this.accountVisitedX;
                         this.restartAuth();
-
                     }
                     else if (this.button1.Text == "Stop"
                         && (this.statusTxtBox.Text == "Working" ||
@@ -4618,11 +4695,7 @@ namespace BingRewardsBot
                             bool mobile = BingRewardsBot.Properties.Settings.Default.set_mobile;
                             bool desktop = BingRewardsBot.Properties.Settings.Default.set_desktop;
 
-                            this.query = this.words[randomNumber(0, this.words.Count)];
-                            if (randomNumber(0, 9) > (randomNumber(3, 7)))
-                            {
-                                this.query += " " + this.words[randomNumber(0, this.words.Count)];
-                            }
+                            natural_search();
 
                             statusTxtBox.Text = desktop == true ? "Desktopsearches" : "Mobilesearches";
 
@@ -4734,7 +4807,8 @@ namespace BingRewardsBot
             BingRewardsBot.Properties.Settings.Default.set_accounts = this.txtbox_customaccounts.Text;
             BingRewardsBot.Properties.Settings.Default.set_lang = this.listBox1.SelectedIndex;
             BingRewardsBot.Properties.Settings.Default.set_randomo = randomo.Checked == true ? true : false;
-
+            BingRewardsBot.Properties.Settings.Default.set_ns = this.chkbox_ns.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_chkbox_as = this.chkbox_as.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.Save();
 
             if (BingRewardsBot.Properties.Settings.Default.set_tor == true)
@@ -4742,7 +4816,6 @@ namespace BingRewardsBot
                 if (BingRewardsBot.Properties.Settings.Default.set_proxy != "")
                 {
                     WinInetInterop.SetConnectionProxy(Properties.Settings.Default.set_proxy.ToString());
-
                 }
                 else
                 {
@@ -4755,6 +4828,9 @@ namespace BingRewardsBot
             {
                 WinInetInterop.SetConnectionProxy(Properties.Settings.Default.set_proxy.ToString());
             }
+
+            updatetab.SelectedTab = btn_ip;
+
         }
 
         private void prev_button_Click(object sender, EventArgs e)
@@ -4800,19 +4876,23 @@ namespace BingRewardsBot
             //var myForm = new Form2();
             //myForm.Show();
 
-            BingRewardsBot.Properties.Settings.Default.set_tor = chkbox_tor.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.set_autorotate = chkbox_autorotate.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_tor = chkbox_tor.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.set_mobile = chkbox_mobile.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.set_desktop = chkbox_desktop.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.set_counter = txtbox_counter.Text;
             BingRewardsBot.Properties.Settings.Default.set_waitsearches = txtbox_waitsearches.Text;
             BingRewardsBot.Properties.Settings.Default.set_waitauth = txtbox_waitauth.Text;
             BingRewardsBot.Properties.Settings.Default.set_autostart = txtbox_autostart.Text;
-            BingRewardsBot.Properties.Settings.Default.set_uadesktop = txtboxcustomdesktop.Text;
-            BingRewardsBot.Properties.Settings.Default.set_uamobile = txtboxcustommobile.Text;
-            BingRewardsBot.Properties.Settings.Default.set_accounts = txtbox_customaccounts.Text;
+            BingRewardsBot.Properties.Settings.Default.set_proxy = txtbox_proxy.Text;
             BingRewardsBot.Properties.Settings.Default.set_torsettings = this.txtbox_torsettings.Text;
+            BingRewardsBot.Properties.Settings.Default.set_uadesktop = this.txtboxcustomdesktop.Text;
+            BingRewardsBot.Properties.Settings.Default.set_uamobile = this.txtboxcustommobile.Text;
+            BingRewardsBot.Properties.Settings.Default.set_accounts = this.txtbox_customaccounts.Text;
             BingRewardsBot.Properties.Settings.Default.set_lang = this.listBox1.SelectedIndex;
+            BingRewardsBot.Properties.Settings.Default.set_randomo = randomo.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_ns = this.chkbox_ns.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_chkbox_as = this.chkbox_as.Checked == true ? true : false;
             BingRewardsBot.Properties.Settings.Default.Save();
 
             if (this.trialCountDownReg > 0 && this.trialCountUp > 0)
@@ -6003,7 +6083,7 @@ namespace BingRewardsBot
         {
             try
             {
-                await DownloadAsync("https://bbrb.codeplex.com/releases/view/629875");
+                await DownloadAsync("https://bbrb.codeplex.com/releases/");
 
                 while (browser.ReadyState != WebBrowserReadyState.Complete)
                 {
