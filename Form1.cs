@@ -1949,7 +1949,7 @@ namespace BingRewardsBot
                 else if (url == "https://account.microsoft.com/?lang=en-US&refd=account.live.com&refp=landing"
                     || url == "https://account.microsoft.com/rewards/dashboard?refd=www.bing.com"
                     || url == "https://account.microsoft.com/rewards/welcome?refd=www.bing.com"
-                    || url == "https://account.microsoft.com/"
+
                     )
                 {
                     this.authLock = true;
