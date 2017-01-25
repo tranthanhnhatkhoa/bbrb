@@ -45,7 +45,7 @@ namespace BingRewardsBot
         //IntPtr pControl2;
         mshtml.IHTMLDocument2 htmlDoc;
         HtmlElement documentElement;
-        const string VERSION = "27.12.2016";
+        const string VERSION = "25.01.2017";
         const int POLL_DELAY = 300;
         private static bool toriddone = false;
         private const string TORSOCKSPORT = "8118";
@@ -127,7 +127,7 @@ namespace BingRewardsBot
         private const int SLEEPDP = 12 * 1000;
         private const int SLEEPDASHBOARD = 18 * 1000;
         private const int SLEEPMAIN = 5 * 1000;
-        private const int WATCHDOG = 15;
+        private const int WATCHDOG = 20;
         private const int AUTHSHORT = 24 * 1000;
         private int vrndnum = 0;
         private int accountVisitedX = 0;
@@ -1949,7 +1949,7 @@ namespace BingRewardsBot
                 else if (url == "https://account.microsoft.com/?lang=en-US&refd=account.live.com&refp=landing"
                     || url == "https://account.microsoft.com/rewards/dashboard?refd=www.bing.com"
                     || url == "https://account.microsoft.com/rewards/welcome?refd=www.bing.com"
-
+                    || url == "https://account.microsoft.com/"
                     )
                 {
                     this.authLock = true;
@@ -2056,6 +2056,7 @@ namespace BingRewardsBot
                     || url.Contains(@"https://account.microsoft.com/about")
                     || url.Contains(@"https://account.microsoft.com/rewards/welcome")
                     || url.Contains(@"https://account.microsoft.com/account")
+                    || url.Contains(@"https://account.microsoft.com/account/ManageMyAccount")
                     ))
                 {
                     if (this.country == "US" || this.country == "IN" || chkbox_tor.Checked == false)
@@ -3973,6 +3974,7 @@ namespace BingRewardsBot
                         || this.browserUrlTxtbox.Text.Contains(@"https://login.live.com/logout.srf")
                         || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/about")
                         || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/rewards/welcome")
+                        || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/account/ManageMyAccount")
                         )
                         && this.statusTxtBox.Text == "Authenticate"
                         )
