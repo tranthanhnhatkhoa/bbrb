@@ -138,7 +138,7 @@ namespace BingRewardsBot
         private bool trialstopped = false;
         private bool checkaccount = false;
         private string trialRegKey;
-        private const int FREEX = 8000000; //15500000;  //25500000
+        private const int FREEX = 13000000; //15500000;  //25500000
         private const int FREEA = 3;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
@@ -3924,6 +3924,8 @@ namespace BingRewardsBot
                         && this.chkbox_autorotate.Checked == true
                         && this.authLock == true
                         && !this.browserUrlTxtbox.Text.Contains("@https://login.live.com/ppsecure/post.srf?wa=wsignin")
+                        && !this.browserUrlTxtbox.Text.Contains("@https://login.live.com/login.srf?wa=wsignin")
+                        && !this.browserUrlTxtbox.Text.Contains("@https://login.live.com/logout.srf")
                         && this.statusTxtBox.Text == "Authenticate"
                    )
                     {
@@ -3975,6 +3977,7 @@ namespace BingRewardsBot
                         || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/about")
                         || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/rewards/welcome")
                         || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/account/ManageMyAccount")
+                        || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/account/")
                         )
                         && this.statusTxtBox.Text == "Authenticate"
                         )
