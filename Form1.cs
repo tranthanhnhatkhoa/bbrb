@@ -45,7 +45,7 @@ namespace BingRewardsBot
         //IntPtr pControl2;
         mshtml.IHTMLDocument2 htmlDoc;
         HtmlElement documentElement;
-        const string VERSION = "25.01.2017";
+        const string VERSION = "23.03.2017";
         const int POLL_DELAY = 300;
         private static bool toriddone = false;
         private const string TORSOCKSPORT = "8118";
@@ -127,7 +127,7 @@ namespace BingRewardsBot
         private const int SLEEPDP = 12 * 1000;
         private const int SLEEPDASHBOARD = 18 * 1000;
         private const int SLEEPMAIN = 5 * 1000;
-        private const int WATCHDOG = 20;
+        private const int WATCHDOG = 15;
         private const int AUTHSHORT = 24 * 1000;
         private int vrndnum = 0;
         private int accountVisitedX = 0;
@@ -138,7 +138,7 @@ namespace BingRewardsBot
         private bool trialstopped = false;
         private bool checkaccount = false;
         private string trialRegKey;
-        private const int FREEX = 13000000; //15500000;  //25500000
+        private const int FREEX = 16000000; //15500000;  //25500000
         private const int FREEA = 3;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
@@ -157,7 +157,7 @@ namespace BingRewardsBot
         private int accountNum = -1;
         private string accountsFile;
         private string wordsFile;
-        private const bool SUPPORTER = false;
+        private const bool SUPPORTER = true;
         private List<string> accounts = new List<string>();
         private List<string> words = new List<string>();
         Thread mainThread;
@@ -1576,8 +1576,9 @@ namespace BingRewardsBot
                     // Initial dashboard & searches
                     //********************************
                 }
-                else if ((!url.Contains(@"https://account.microsoft.com/rewards") ||
-                    !url.Contains(@"https://bing.com/rewards") || this.dashboardta == true)
+                else if ( (url != "https://account.microsoft.com/rewards"
+                        || browserUrlTxtbox.Text != "https://account.microsoft.com/rewards" 
+                        || !url.Contains(@"https://bing.com/rewards") || this.dashboardta == true)
                     && (url.Contains(@"https://account.microsoft.com") || url.Contains(@"https://bing.com"))
                     && !url.Contains(@"search?q=")
                     && this.checkaccount == false
@@ -2043,13 +2044,13 @@ namespace BingRewardsBot
                 else if (url == "https://login.live.com/")
                 {
                     this.toolStripStatusLabel1.Text = statusTxtBox.Text = "Working";
-                    
+
                     //*******************************
                     // Sign-in 6/1 clear cache
                     //*******************************
+                    //https://account.microsoft.com/account/Account?destrt=home-index&refd=login.live.com
                 }
-                else if (!url.Contains(@"&")
-                    && (url.Contains(@"http://login.live.com/logout.srf")
+                else if (url.Contains(@"http://login.live.com/logout.srf")
                     || url.Contains(@"http://www.msn.com")
                     || url.Contains(@"https://www.msn.com")
                     || url.Contains(@"https://login.live.com/logout.srf")
@@ -2057,7 +2058,7 @@ namespace BingRewardsBot
                     || url.Contains(@"https://account.microsoft.com/rewards/welcome")
                     || url.Contains(@"https://account.microsoft.com/account")
                     || url.Contains(@"https://account.microsoft.com/account/ManageMyAccount")
-                    ))
+                    )
                 {
                     if (this.country == "US" || this.country == "IN" || chkbox_tor.Checked == false)
                     {
@@ -3969,8 +3970,7 @@ namespace BingRewardsBot
                             (task) => this.statusDebug("S2:"),
                                 TaskScheduler.FromCurrentSynchronizationContext());
                     }
-                    else if (!this.browserUrlTxtbox.Text.Contains(@"&")
-                        && (this.browserUrlTxtbox.Text.Contains(@"http://login.live.com/logout.srf")
+                    else if (this.browserUrlTxtbox.Text.Contains(@"http://login.live.com/logout.srf")
                         || this.browserUrlTxtbox.Text.Contains(@"http://www.msn.com")
                         || this.browserUrlTxtbox.Text.Contains(@"https://www.msn.com")
                         || this.browserUrlTxtbox.Text.Contains(@"https://login.live.com/logout.srf")
@@ -3978,7 +3978,6 @@ namespace BingRewardsBot
                         || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/rewards/welcome")
                         || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/account/ManageMyAccount")
                         || this.browserUrlTxtbox.Text.Contains(@"https://account.microsoft.com/account/")
-                        )
                         && this.statusTxtBox.Text == "Authenticate"
                         )
                     {
