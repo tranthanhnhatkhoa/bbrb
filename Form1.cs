@@ -119,7 +119,9 @@ namespace BingRewardsBot
         private const string CHROMEDESKTOPUA = "Mozilla / 5.0(Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.93 Safari/537.36";
         private const string IEDESKTOPUA = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.2; Win64; x64; Trident/8.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729; GWX:QUALIFIED)";
         private const string IE11UA = "Mozilla/5.0 (Windows NT 6.4; WOW64; Trident/7.0; .NET4.0E; .NET4.0C; rv:11.0) like Gecko";
-        private const string EDGEUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/0000.0.2311.135 Safari/537.36 Edge/12.10240";
+        //private const string EDGEUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/0000.0.2311.135 Safari/537.36 Edge/12.10240";
+        //Browser Agent to "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136"
+        private const string EDGEUA = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136";
         private bool Csearch = false;
         private int qpage = 0;
         private const int SLEEPTOR = 8 * 1000;
@@ -127,7 +129,7 @@ namespace BingRewardsBot
         private const int SLEEPDP = 12 * 1000;
         private const int SLEEPDASHBOARD = 18 * 1000;
         private const int SLEEPMAIN = 5 * 1000;
-        private const int WATCHDOG = 15;
+        private const int WATCHDOG = 12;
         private const int AUTHSHORT = 24 * 1000;
         private int vrndnum = 0;
         private int accountVisitedX = 0;
@@ -157,7 +159,7 @@ namespace BingRewardsBot
         private int accountNum = -1;
         private string accountsFile;
         private string wordsFile;
-        private const bool SUPPORTER = true;
+        private const bool SUPPORTER = false;
         private List<string> accounts = new List<string>();
         private List<string> words = new List<string>();
         Thread mainThread;
@@ -547,7 +549,6 @@ namespace BingRewardsBot
             }
 
             // Autostart
-         
             if (chkbox_as.Checked == true)
             {
                 try
@@ -1012,9 +1013,13 @@ namespace BingRewardsBot
                     this.accountVisited[this.accountNum] = true;
                     ++this.accountVisitedX;
 
-                    string[] str = this.accounts[this.accountNum].Split('/');
-                    this.username = str[0];
-                    this.password = str[1];
+                    string[] authstr = this.accounts[this.accountNum].Split('/');
+                    //this.username = authstr[0];
+                    //this.password = authstr[1];
+                    this.username = authstr[0];
+                    string[] convert = authstr[1].Split(' ');
+                    this.password = convert[0];
+                    string proxy = convert[1];
 
                     accountNameTxtBox.Text = this.username;
                     accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1051,9 +1056,13 @@ namespace BingRewardsBot
                     this.pts = 0;
                     this.pts_txtbox.Text = Convert.ToString(this.pts);
 
-                    string[] str = this.accounts[this.accountNum].Split('/');
-                    this.username = str[0];
-                    this.password = str[1];
+                    string[] authstr = this.accounts[this.accountNum].Split('/');
+                    //this.username = authstr[0];
+                    //this.password = authstr[1];
+                    this.username = authstr[0];
+                    string[] convert = authstr[1].Split(' ');
+                    this.password = convert[0];
+                    string proxy = convert[1];
 
                     accountNameTxtBox.Text = this.username;
                     accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1146,9 +1155,13 @@ namespace BingRewardsBot
                     this.timer_searches.Enabled = false;
                 }
 
-                string[] str = this.accounts[this.accountNum].Split('/');
-                this.username = str[0];
-                this.password = str[1];
+                string[] authstr = this.accounts[this.accountNum].Split('/');
+                //this.username = authstr[0];
+                //this.password = authstr[1];
+                this.username = authstr[0];
+                string[] convert = authstr[1].Split(' ');
+                this.password = convert[0];
+                string proxy = convert[1];
 
                 accountNameTxtBox.Text = this.username;
                 accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1196,9 +1209,13 @@ namespace BingRewardsBot
                 && statusTxtBox.Text != "Dashboard"
             )
             {
-                string[] str = this.accounts[this.accountNum].Split('/');
-                this.username = str[0];
-                this.password = str[1];
+                string[] authstr = this.accounts[this.accountNum].Split('/');
+                //this.username = authstr[0];
+                //this.password = authstr[1];
+                this.username = authstr[0];
+                string[] convert = authstr[1].Split(' ');
+                this.password = convert[0];
+                string proxy = convert[1];
 
                 accountNameTxtBox.Text = this.username;
                 accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1610,8 +1627,12 @@ namespace BingRewardsBot
                         }
 
                         string[] authstr = this.accounts[this.accountNum].Split('/');
+                        //this.username = authstr[0];
+                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        this.password = authstr[1];
+                        string[] convert = authstr[1].Split(' ');
+                        this.password = convert[0];
+                        string proxy = convert[1];
 
                         accountNameTxtBox.Text = this.username;
                         accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1758,8 +1779,12 @@ namespace BingRewardsBot
 
                         // update account
                         string[] authstr = this.accounts[this.accountNum].Split('/');
+                        //this.username = authstr[0];
+                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        this.password = authstr[1];
+                        string[] convert = authstr[1].Split(' ');
+                        this.password = convert[0];
+                        string proxy = convert[1];
 
                         accountNameTxtBox.Text = this.username;
                         accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1813,9 +1838,13 @@ namespace BingRewardsBot
                         && statusTxtBox.Text != "Dashboard"
                     )
                 {
-                    string[] str = this.accounts[this.accountNum].Split('/');
-                    this.username = str[0];
-                    this.password = str[1];
+                    string[] authstr = this.accounts[this.accountNum].Split('/');
+                    //this.username = authstr[0];
+                    //this.password = authstr[1];
+                    this.username = authstr[0];
+                    string[] convert = authstr[1].Split(' ');
+                    this.password = convert[0];
+                    string proxy = convert[1];
 
                     accountNameTxtBox.Text = this.username;
                     accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1903,9 +1932,13 @@ namespace BingRewardsBot
                         this.timer_searches.Enabled = false;
                     }
 
-                    string[] str = this.accounts[this.accountNum].Split('/');
-                    this.username = str[0];
-                    this.password = str[1];
+                    string[] authstr = this.accounts[this.accountNum].Split('/');
+                    //this.username = authstr[0];
+                    //this.password = authstr[1];
+                    this.username = authstr[0];
+                    string[] convert = authstr[1].Split(' ');
+                    this.password = convert[0];
+                    string proxy = convert[1];
 
                     accountNameTxtBox.Text = this.username;
                     accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1964,9 +1997,13 @@ namespace BingRewardsBot
                         this.accountVisited[this.accountNum] = true;
                         ++this.accountVisitedX;
 
-                        string[] str = this.accounts[this.accountNum].Split('/');
-                        this.username = str[0];
-                        this.password = str[1];
+                        string[] authstr = this.accounts[this.accountNum].Split('/');
+                        //this.username = authstr[0];
+                        //this.password = authstr[1];
+                        this.username = authstr[0];
+                        string[] convert = authstr[1].Split(' ');
+                        this.password = convert[0];
+                        string proxy = convert[1];
 
                         accountNameTxtBox.Text = this.username;
                         accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -2001,9 +2038,13 @@ namespace BingRewardsBot
                         this.pts = 0;
                         this.pts_txtbox.Text = Convert.ToString(this.pts);
 
-                        string[] str = this.accounts[this.accountNum].Split('/');
-                        this.username = str[0];
-                        this.password = str[1];
+                        string[] authstr = this.accounts[this.accountNum].Split('/');
+                        //this.username = authstr[0];
+                        //this.password = authstr[1];
+                        this.username = authstr[0];
+                        string[] convert = authstr[1].Split(' ');
+                        this.password = convert[0];
+                        string proxy = convert[1];
 
                         accountNameTxtBox.Text = this.username;
                         accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -3404,7 +3445,7 @@ namespace BingRewardsBot
 
                 if (this.iniSearch == false
                     && this.authLock == false
-                    && this.button1.Text == "Stop"
+                    &&  (this.button1.Text == "Stop" || this.button1.Text == "Auto")
                     && !browserUrlTxtbox.Text.Contains(@"landing")
                     && !browserUrlTxtbox.Text.Contains(@"/rewards/dashboard")
                     )
@@ -3445,7 +3486,7 @@ namespace BingRewardsBot
                     // random visited
                     //********************
 
-                    if (this.vrndnum < accounts.Count()
+                    if (this.vrndnum <= accounts.Count()
                         && this.checkaccount == false
                         && (this.authLock == false)
                         && a >= 0
@@ -3465,8 +3506,15 @@ namespace BingRewardsBot
                         {
                             Array.Clear(authstr, 0, authstr.Length);
                             authstr = this.accounts[this.accountNum].Split('/');
+                            this.username = authstr[0];
+                            string[] convert = authstr[1].Split(' ');
+                            this.password = convert[0];
+                            string proxy = convert[1];
 
-                            this.username = authstr[0]; this.password = authstr[1];
+                            if (proxy != "")
+                            {
+                                RefreshIESettings(proxy);
+                            }
 
                             SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                             dbcon.Open();
@@ -3585,13 +3633,13 @@ namespace BingRewardsBot
                                 this.toridswitcher();
                             }
 
-                            statusTxtBox.Text = "Authenticate";
+                            statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Authenticate");
                             string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
                             int z = randAuthTimer(Convert.ToInt32(auth[0]),
                                 Convert.ToInt32(auth[1]));
 
                             this.timer_auth = z > 1 ? z * 1000 : AUTHSHORT;
-                            counterTxtBox.Text = z > 1 ? decimal.Round(z / 60).ToString() + " min." : "a few sec.";
+                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = z > 1 ? decimal.Round(z / 60).ToString() + " min." : "a few sec.");
                             
                             this.authLock = false;
                             this.statusDebug("PC3:");
@@ -3602,14 +3650,14 @@ namespace BingRewardsBot
                         ++this.accountVisitedX;
                         this.accountVisited[this.accountNum] = true;
 
-                        statusTxtBox.Text = "Authenticate";
+                        statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Authenticate");
 
                         string[] auth = Properties.Settings.Default.set_waitauth.ToString().Split('-');
                         int z = randAuthTimer(Convert.ToInt32(auth[0]),
                             Convert.ToInt32(auth[1]));
 
                         this.timer_auth = z > 1 ? z * 1000 : AUTHSHORT;
-                        counterTxtBox.Text = z > 1 ? decimal.Round(z / 60).ToString() + " min." : "a few sec.";
+                        counterTxtBox.SafeInvoke(() =>  counterTxtBox.Text = z > 1 ? decimal.Round(z / 60).ToString() + " min." : "a few sec."); 
 
                         this.authLock = false;
                         this.iniSearch = false;
@@ -3647,9 +3695,10 @@ namespace BingRewardsBot
                             dbcon.Close();
                         }
 
-                        this.button1.Text = "Start";
-                        statusTxtBox.Text = "Stop";
-                        counterTxtBox.Text = "0/0";
+                        button1.SafeInvoke(() => this.button1.Text = "Start");
+                        statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Stop");
+                        counterTxtBox.SafeInvoke(() => counterTxtBox.Text = "0/0");
+
                         this.dxloops = 0;
                         this.mxloops = 0;
                         this.vrndnum = 0;
@@ -3684,8 +3733,17 @@ namespace BingRewardsBot
                             Convert.ToInt32(wait[1]));
 
                         authstr = this.accounts[this.accountNum].Split('/');
+                        //this.username = authstr[0];
+                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        this.password = authstr[1];
+                        string[] convert = authstr[1].Split(' ');
+                        this.password = convert[0];
+                        string proxy = convert[1];
+
+                        if (proxy != "")
+                        {
+                            RefreshIESettings(proxy);
+                        }
 
                         this.dxloops = 0;
                         this.mxloops = 0;
@@ -3720,7 +3778,7 @@ namespace BingRewardsBot
                            TaskScheduler.FromCurrentSynchronizationContext());
                     }
 
-                    if (this.button1.Text == "Stop"
+                    if ((this.button1.Text == "Stop" || this.button1.Text == "Auto")
                         && this.statusTxtBox.Text != "Authenticate"
                         && this.statusTxtBox.Text != "Stop"
                         && this.authLock == true
@@ -3796,18 +3854,22 @@ namespace BingRewardsBot
                             ++this.accountVisitedX;
 
                             string[] authstr = this.accounts[this.accountNum].Split('/');
+                            //this.username = authstr[0];
+                            //this.password = authstr[1];
                             this.username = authstr[0];
-                            this.password = authstr[1];
+                            string[] convert = authstr[1].Split(' ');
+                            this.password = convert[0];
+                            string proxy = convert[1];
 
-                            accountNameTxtBox.Text = this.username;
-                            accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
+                            accountNameTxtBox.SafeInvoke(() => accountNameTxtBox.Text = this.username);
+                            accountNrTxtBox.SafeInvoke(() => accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count);
 
                             this.prevpts = 0;
                             this.pts = 0;
-                            this.pts_txtbox.Text = "0";
+                            pts_txtbox.SafeInvoke(() => this.pts_txtbox.Text = "0");
 
-                            statusTxtBox.Text = "Connected";
-                            counterTxtBox.Text = "0/0";
+                            statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Connected");
+                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = "0/0");
 
                             this.dxloops = 0;
                             this.mxloops = 0;
@@ -3835,13 +3897,13 @@ namespace BingRewardsBot
                     else if (browserUrlTxtbox.Text.Contains(@"https://www.bing.com")
                       && this.statusTxtBox.Text == "Connected"
                       && chkbox_autorotate.Checked == true
-                      && this.button1.Text == "Stop"
+                      && (this.button1.Text == "Stop" || this.button1.Text == "Auto")
                       && this.iniSearch == false
                       && this.dashboardta == false
                       && this.ldashboardta == false
                       )
                     {
-                        statusTxtBox.Text = "Dashboard";
+                        statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Dashboard");
 
                         if (timer_searches != null)
                         {
@@ -3855,13 +3917,18 @@ namespace BingRewardsBot
                         }
 
                         string[] authstr = this.accounts[this.accountNum].Split('/');
+                        //this.username = authstr[0];
+                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        this.password = authstr[1];
+                        string[] convert = authstr[1].Split(' ');
+                        this.password = convert[0];
+                        string proxy = convert[1];
 
-                        accountNameTxtBox.Text = this.username;
-                        accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
+                        accountNameTxtBox.SafeInvoke(() => accountNameTxtBox.Text = this.username);
+                        accountNrTxtBox.SafeInvoke(() => accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count);
 
-                        this.toolStripStatusLabel1.Text = "Initial dashboard tasks!";
+                        //this.toolStripStatusLabel1.Text = "Initial dashboard tasks!";
+                        Invoke(new SetToolStripDelegate(SetToolStrip2), "Initial dashboard tasks!");
                         this.dashboardta = true;
 
                         try
@@ -3888,7 +3955,7 @@ namespace BingRewardsBot
                       && !this.toolStripStatusLabel1.Text.Contains(@"Connected")
                       )
                       && chkbox_autorotate.Checked == true
-                      && this.button1.Text == "Stop"
+                      && (this.button1.Text == "Stop" || this.button1.Text == "Auto")
                       )
                     {
                         this.accountVisited[this.accountNum] = true;
@@ -3896,7 +3963,7 @@ namespace BingRewardsBot
                         this.restartAuth();
                     }
                     else if (
-                        this.button1.Text == "Stop"
+                        (this.button1.Text == "Stop" || this.button1.Text == "Auto")
                         && this.chkbox_autorotate.Checked == true
                         && this.authLock == true
                         && this.browserUrlTxtbox.Text.Contains(@"https://www.bing.com/rewards/unsupportedmarket")
@@ -3911,7 +3978,7 @@ namespace BingRewardsBot
                     //    || wb.Document.GetElementById("sb_form_q") != null)
                     //&& this.statusTxtBox.Text != "Dashboard"
 
-                    else if (this.button1.Text == "Stop"
+                    else if ((this.button1.Text == "Stop" || this.button1.Text == "Auto")
                              && this.chkbox_autorotate.Checked == true
                              && this.authLock == false
                              && this.statusTxtBox.Text == "Authenticate"
@@ -3921,7 +3988,7 @@ namespace BingRewardsBot
                         ++this.accountVisitedX;
                         this.restartAuth();
                     }
-                    else if (this.button1.Text == "Stop"
+                    else if ((this.button1.Text == "Stop" || this.button1.Text == "Auto")
                         && this.chkbox_autorotate.Checked == true
                         && this.authLock == true
                         && !this.browserUrlTxtbox.Text.Contains("@https://login.live.com/ppsecure/post.srf?wa=wsignin")
@@ -3933,7 +4000,7 @@ namespace BingRewardsBot
                         ++this.accountVisitedX;
                         this.restartAuth();
                     }
-                    else if (this.button1.Text == "Stop"
+                    else if ((this.button1.Text == "Stop" || this.button1.Text == "Auto")
                        && this.statusTxtBox.Text == "Authenticate"
                        && this.toolStripStatusLabel1.Text.Contains(@"PC")
                        && !this.toolStripStatusLabel1.Text.Contains(@"Init")
@@ -3947,7 +4014,7 @@ namespace BingRewardsBot
                         ++this.accountVisitedX;
                         this.restartAuth();
                     }
-                    else if (this.button1.Text == "Stop"
+                    else if ((this.button1.Text == "Stop" || this.button1.Text == "Auto")
                         && (this.statusTxtBox.Text == "Working" ||
                         (this.toolStripStatusLabel1.Text.Contains(@"Working##") && this.statusTxtBox.Text != "Connected"))
                         && this.chkbox_autorotate.Checked == true
@@ -3959,7 +4026,7 @@ namespace BingRewardsBot
                         ++this.accountVisitedX;
                         this.restartAuth();
                     }
-                    else if (this.button1.Text == "Stop"
+                    else if ((this.button1.Text == "Stop" || this.button1.Text == "Auto")
                             && this.chkbox_autorotate.Checked == true
                             && browserUrlTxtbox.Text.Contains(@"https://www.google")
                             && this.statusTxtBox.Text == "Authenticate"
@@ -3994,7 +4061,7 @@ namespace BingRewardsBot
                                  TaskScheduler.FromCurrentSynchronizationContext());
                         }
                     }
-                    else if (this.button1.Text == "Stop"
+                    else if ((this.button1.Text == "Stop" || this.button1.Text == "Auto")
                           && this.authLock == true
                           && this.chkbox_autorotate.Checked == true
                           && (this.statusTxtBox.Text == "Dashboard"
@@ -4002,7 +4069,7 @@ namespace BingRewardsBot
                           && !this.toolStripStatusLabel1.Text.Contains(@"Searching")
                       )
                     {
-                        statusTxtBox.Text = "Dashboard";
+                        statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Dashboard");
 
                         if (timer_searches != null)
                         {
@@ -4016,13 +4083,19 @@ namespace BingRewardsBot
                         }
 
                         string[] authstr = this.accounts[this.accountNum].Split('/');
+                        //this.username = authstr[0];
+                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        this.password = authstr[1];
+                        string[] convert = authstr[1].Split(' ');
+                        this.password = convert[0];
+                        string proxy = convert[1];
 
-                        accountNameTxtBox.Text = this.username;
-                        accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
+                        accountNameTxtBox.SafeInvoke(() => accountNameTxtBox.Text = this.username);
+                        accountNrTxtBox.SafeInvoke(() => accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count);
 
-                        this.toolStripStatusLabel1.Text = "Initial dashboard tasks!";
+                        //this.toolStripStatusLabel1.Text = "Initial dashboard tasks!";
+                        Invoke(new SetToolStripDelegate(SetToolStrip2), "Initial dashboard tasks!");
+
                         this.dashboardta = true;
 
                         //browser.Navigate(new Uri("https://www.bing.com/rewards/dashboard"));
@@ -4036,7 +4109,7 @@ namespace BingRewardsBot
                         catch { }
 
                     }
-                    else if (this.button1.Text == "Stop"
+                    else if ((this.button1.Text == "Stop" || this.button1.Text == "Auto")
                         && this.statusTxtBox.Text == "Dashboard"
                         && this.chkbox_autorotate.Checked == true
                         && this.numdashboardta < -1
@@ -4054,7 +4127,7 @@ namespace BingRewardsBot
                         this.timer_dashboardta.Enabled = true;
                         this.statusDebug("Restart DBT:");
                     }
-                    else if (this.button1.Text == "Stop"
+                    else if ((this.button1.Text == "Stop" || this.button1.Text == "Auto")
                         && this.statusTxtBox.Text == "Connected"
                         && this.chkbox_autorotate.Checked == true
                         && this.numdashboardta < -1
@@ -4093,7 +4166,7 @@ namespace BingRewardsBot
                 }
                 else if (this.authLock == true
                         && this.checkaccount == false
-                        && this.button1.Text == "Stop")
+                        && (this.button1.Text == "Stop" || this.button1.Text == "Auto"))
                 {
                     //this.authLock = false;
                     //this.dxloops = 0;
@@ -4136,6 +4209,11 @@ namespace BingRewardsBot
         private void SetToolStrip(string text)
         {
             this.toolStripStatusLabel1.Text += text;
+        }
+
+        private void SetToolStrip2(string text)
+        {
+            this.toolStripStatusLabel1.Text = text;
         }
 
         private void restartAuth()
@@ -4842,9 +4920,13 @@ namespace BingRewardsBot
             if (this.accountNum > 0)
             {
                 --this.accountNum;
-                string[] auth = this.accounts[this.accountNum].Split('/');
-                this.username = auth[0];
-                this.password = auth[1];
+                string[] authstr = this.accounts[this.accountNum].Split('/');
+                //this.username = authstr[0];
+                //this.password = authstr[1];
+                this.username = authstr[0];
+                string[] convert = authstr[1].Split(' ');
+                this.password = convert[0];
+                string proxy = convert[1];
 
                 accountNameTxtBox.Text = this.username;
                 accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -4856,9 +4938,13 @@ namespace BingRewardsBot
             if (this.accountNum < (this.accounts.Count - 1))
             {
                 ++this.accountNum;
-                string[] auth = this.accounts[this.accountNum].Split('/');
-                this.username = auth[0];
-                this.password = auth[1];
+                string[] authstr = this.accounts[this.accountNum].Split('/');
+                //this.username = authstr[0];
+                //this.password = authstr[1];
+                this.username = authstr[0];
+                string[] convert = authstr[1].Split(' ');
+                this.password = convert[0];
+                string proxy = convert[1];
 
                 accountNameTxtBox.Text = this.username;
                 accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -5508,8 +5594,12 @@ namespace BingRewardsBot
 
                     // update account
                     string[] authstr = this.accounts[this.accountNum].Split('/');
+                    //this.username = authstr[0];
+                    //this.password = authstr[1];
                     this.username = authstr[0];
-                    this.password = authstr[1];
+                    string[] convert = authstr[1].Split(' ');
+                    this.password = convert[0];
+                    string proxy = convert[1];
 
                     accountNameTxtBox.Text = this.username;
                     accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -5674,8 +5764,12 @@ namespace BingRewardsBot
 
                         // update account
                         string[] authstr = this.accounts[this.accountNum].Split('/');
+                        //this.username = authstr[0];
+                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        this.password = authstr[1];
+                        string[] convert = authstr[1].Split(' ');
+                        this.password = convert[0];
+                        string proxy = convert[1];
 
                         accountNameTxtBox.Text = this.username;
                         accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -6009,19 +6103,43 @@ namespace BingRewardsBot
         //http://matijabozicevic.com/blog/wpf-winforms-development/csharp-get-computer-ip-address-lan-and-internet
         private string GetIP()
         {
-            // check IP using DynDNS's service
-            WebRequest request = WebRequest.Create("http://checkip.dyndns.org");
-            WebResponse response = request.GetResponse();
-            StreamReader stream = new StreamReader(response.GetResponseStream());
+            if (BingRewardsBot.Properties.Settings.Default.set_tor == true)
+            {
+                // check IP using DynDNS's service
+                WebRequest request = WebRequest.Create("http://checkip.dyndns.org");
+                WebResponse response = request.GetResponse();
+                StreamReader stream = new StreamReader(response.GetResponseStream());
 
-            // IMPORTANT: set Proxy to null, to drastically INCREASE the speed of request
-            //request.Proxy = null;
+                // IMPORTANT: set Proxy to null, to drastically INCREASE the speed of request
+                request.Proxy = null;
 
-            // read complete response
-            string ipAddress = stream.ReadToEnd();
+                //http://stackoverflow.com/questions/1938990/c-sharp-connecting-through-proxy
+                // if (request.Proxy != null)
+                //     request.Proxy.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
 
-            // replace everything and keep only IP
-            return ipAddress.Replace("<html><head><title>Current IP Check</title></head><body>Current IP Address: ", string.Empty).Replace("</body></html>", string.Empty);
+                //string proxy = Properties.Settings.Default.set_proxy.ToString();
+                //string[] convert = proxy.Split(':');
+
+                //WebProxy myproxy = new WebProxy(new Uri(proxy));
+                //myproxy.BypassProxyOnLocal = false;
+                //request.Proxy = myproxy;
+
+                //request.Method = "GET";
+                //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                // read complete response
+                string ipAddress = stream.ReadToEnd();
+
+                // replace everything and keep only IP
+                return ipAddress.Replace("<html><head><title>Current IP Check</title></head><body>Current IP Address: ", string.Empty).Replace("</body></html>", string.Empty);
+
+            } else
+            {
+                string proxy = Properties.Settings.Default.set_proxy.ToString();
+                string[] convert = proxy.Split(':');
+                return convert[0];
+
+            }            
         }
 
         //http://www.csharphelp.com/2007/08/redirect-web-visitors-by-country-using-net-framework-in-c/

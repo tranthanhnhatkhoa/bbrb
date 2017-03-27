@@ -43,6 +43,19 @@ namespace BingRewardsBot
         }
         */
 
+        //http://stackoverflow.com/questions/571706/shortest-way-to-write-a-thread-safe-access-method-to-a-windows-forms-control
+        public static void SafeInvoke(this Control control, Action handler)
+        {
+            if (control.InvokeRequired)
+            {
+                control.Invoke(handler);
+            }
+            else
+            {
+                handler();
+            }
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
