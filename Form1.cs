@@ -45,7 +45,7 @@ namespace BingRewardsBot
         //IntPtr pControl2;
         mshtml.IHTMLDocument2 htmlDoc;
         HtmlElement documentElement;
-        const string VERSION = "23.03.2017";
+        const string VERSION = "29.03.2017";
         const int POLL_DELAY = 300;
         private static bool toriddone = false;
         private const string TORSOCKSPORT = "8118";
@@ -140,7 +140,7 @@ namespace BingRewardsBot
         private bool trialstopped = false;
         private bool checkaccount = false;
         private string trialRegKey;
-        private const int FREEX = 16000000; //15500000;  //25500000
+        private const int FREEX = 19999999; //15500000;  //25500000
         private const int FREEA = 3;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
@@ -1356,10 +1356,12 @@ namespace BingRewardsBot
                         || url.Contains(@"https://account.live.com/Abuse")
                         || url.Contains(@"https://account.microsoft.com/rewards/error")
                         || url.Contains(@"https://login.live.com/logout.srf?lc=1033&flowtoken")
+                        || url.Contains(@"https://account.live.com/proofs/Verify")
                         || browserUrlTxtbox.Text.Contains(@"https://account.live.com/identity/confirm")
                         || browserUrlTxtbox.Text.Contains(@"https://account.live.com/recover")
                         || browserUrlTxtbox.Text.Contains(@"https://account.live.com/Abuse")
                         || browserUrlTxtbox.Text.Contains(@"https://login.live.com/logout.srf?lc=1033&flowtoken")
+                        || browserUrlTxtbox.Text.Contains(@"https://account.live.com/proofs/Verify")
                         )
                         && chkbox_autorotate.Checked == true
                         )
@@ -2269,7 +2271,7 @@ namespace BingRewardsBot
             //IntPtr hWnd = (IntPtr)FindWindow("WindowsForms10.Window.8.app.0.bf7d44_r9_ad1", null);
             //SetForegroundWindow(hWnd.ToInt32());
 
-            this.toolStripStatusLabel1.Text += this.username + "/" + this.password;
+            //this.toolStripStatusLabel1.Text += this.username + "/" + this.password;
             Invoke((MethodInvoker)(() =>
             {
                 htmlDoc = ((dynamic)this.browser.Document.DomDocument) as mshtml.IHTMLDocument2;
@@ -4405,10 +4407,13 @@ namespace BingRewardsBot
                     itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_desktop == true ? "Desktop S:true" : "Desktop S:false");
                     itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
-                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_autorotate == true ? "Auto rotate:true" : "Auto rotate:false");
+                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_autorotate == true ? "Autorotate:true" : "Autorotate:false");
                     itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
-                    itm = new ListViewItem("Autostart:" + BingRewardsBot.Properties.Settings.Default.set_autostart);
+                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_chkbox_as == true ? "Autostart:true" : "Autostart:false");
+                    itm.Font = new Font(log.Font, FontStyle.Regular);
+                    log.Items.Add(itm);
+                    itm = new ListViewItem("Autostart delay time:" + BingRewardsBot.Properties.Settings.Default.set_autostart);
                     itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
                     itm = new ListViewItem("S. counter:" + BingRewardsBot.Properties.Settings.Default.set_counter);
@@ -4420,7 +4425,7 @@ namespace BingRewardsBot
                     itm = new ListViewItem("Wait time a.:" + BingRewardsBot.Properties.Settings.Default.set_waitauth);
                     itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
-                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_randomo == true ? "A. random order:true" : "A. random order:false");
+                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_randomo == true ? "AR. random order:true" : "AR. random order:false");
                     itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
                     itm = new ListViewItem("Desktop browser agent:" + BingRewardsBot.Properties.Settings.Default.set_uadesktop);
