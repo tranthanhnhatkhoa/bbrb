@@ -32,6 +32,8 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.Timers;
 //using System.Net.Mail;
+using System.Configuration;
+using ConfigurationSettings = System.Configuration.ConfigurationManager;
 
 namespace BingRewardsBot
 {
@@ -45,7 +47,7 @@ namespace BingRewardsBot
         //IntPtr pControl2;
         mshtml.IHTMLDocument2 htmlDoc;
         HtmlElement documentElement;
-        const string VERSION = "29.03.2017";
+        const string VERSION = "02.04.2017";
         const int POLL_DELAY = 300;
         private static bool toriddone = false;
         private const string TORSOCKSPORT = "8118";
@@ -241,7 +243,57 @@ namespace BingRewardsBot
         //http://stackoverflow.com/questions/3047375/simulating-key-press-c-sharp
         [DllImport("user32.dll")]
         static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
-        
+
+
+        // http://stackoverflow.com/questions/14844392/how-do-you-upgrade-all-settings-in-user-config-when-the-version-number-changes
+        private static void copyLastUserConfig(Version currentVersion)
+        {
+            try
+            {
+                string userConfigFileName = "user.config";
+
+                // Expected location of the current user config
+                DirectoryInfo currentVersionConfigFileDir = new FileInfo(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath).Directory;
+                if (currentVersionConfigFileDir == null)
+                {
+                    return;
+                }
+
+                // Location of the previous user config
+
+                // grab the most recent folder from the list of user's settings folders, prior to the current version
+                var previousSettingsDir = (from dir in currentVersionConfigFileDir.Parent.GetDirectories()
+                                           let dirVer = new { Dir = dir, Ver = new Version(dir.Name) }
+                                           where dirVer.Ver < currentVersion
+                                           orderby dirVer.Ver descending
+                                           select dir).FirstOrDefault();
+
+                if (previousSettingsDir == null)
+                {
+                    // none found, nothing to do - first time app has run, let it build a new one
+                    return;
+                }
+
+                string previousVersionConfigFile = string.Concat(previousSettingsDir.FullName, @"\", userConfigFileName);
+                Console.WriteLine(previousVersionConfigFile);
+
+                string currentVersionConfigFile = string.Concat(currentVersionConfigFileDir.FullName, @"\", userConfigFileName);
+                Console.WriteLine(currentVersionConfigFile);
+
+                if (!currentVersionConfigFileDir.Exists)
+                {
+                    Directory.CreateDirectory(currentVersionConfigFileDir.FullName);
+                }
+
+                File.Copy(previousVersionConfigFile, currentVersionConfigFile, true);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while trying to upgrade your user specific settings for the new version. The program will continue to run, however user preferences such as screen sizes, locations etc will need to be reset.", ex);
+            }
+        }
+
         // static constructor, runs first
         static Form1()
         {
@@ -275,10 +327,6 @@ namespace BingRewardsBot
                 FireFormMaximized();
             }
 
-            mainThread = new Thread(new ThreadStart(mainT));
-            mainThread.IsBackground = true;
-            mainThread.Start();
-
             //http://stackoverflow.com/questions/204804/disable-image-loading-from-webbrowser-control-before-the-documentcompleted-event
             //RegistryKey RegKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\Main", true);
             //RegKey.SetValue("Display Inline Images", "no");
@@ -290,6 +338,46 @@ namespace BingRewardsBot
             browser.ProgressChanged += new WebBrowserProgressChangedEventHandler(browser_ProgressChanged);
 
             browser.ScriptErrorsSuppressed = true;
+
+            // stackoverflow.com/questions/14844392/how-do-you-upgrade-all-settings-in-user-config-when-the-version-number-changes
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            Version currentVersion = assembly.GetName().Version;
+            Console.WriteLine(currentVersion.ToString());
+
+            //if (Properties.Settings.Default.ApplicationVersion != null && version.ToString() != Properties.Settings.Default.ApplicationVersion)
+            //{
+            //    copyLastUserConfig(version);
+            //}
+
+            try
+            {
+                string userConfigFileName = "user.config";
+
+                // Expected location of the current user config
+                DirectoryInfo currentVersionConfigFileDir = new FileInfo(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath).Directory;
+                if (currentVersionConfigFileDir != null)
+                {
+                    // Location of the previous user config
+                    // grab the most recent folder from the list of user's settings folders, prior to the current version
+                    var previousSettingsDir = (from dir in currentVersionConfigFileDir.Parent.GetDirectories()
+                                               let dirVer = new { Dir = dir, Ver = new Version(dir.Name) }
+                                               where dirVer.Ver < currentVersion
+                                               orderby dirVer.Ver descending
+                                               select dir).FirstOrDefault();
+
+                    string previousVersion = previousSettingsDir.ToString();
+
+                    if (previousVersion != currentVersion.ToString())
+                    {
+                        Properties.Settings.Default.Upgrade();
+                        Properties.Settings.Default.Save();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while trying to upgrade your user specific settings for the new version. The program will continue to run, however user preferences such as screen sizes, locations etc will need to be reset.", ex);
+            }
 
             //Trial
             if (Application.UserAppDataRegistry.GetValue("ConnXY") == null)
@@ -309,6 +397,11 @@ namespace BingRewardsBot
             else
             {
                 this.trialCountDownReg = Convert.ToInt32(Application.UserAppDataRegistry.GetValue("ConnXY"));
+                //copyLastUserConfig(version);
+
+                // http://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net?noredirect=1&lq=1
+                //Properties.Settings.Default.Upgrade();
+                //Properties.Settings.Default.Save();
             }
             
             if (this.trialCountDownReg > (FREEX * DIVIDE) && SUPPORTER == false)
@@ -547,6 +640,11 @@ namespace BingRewardsBot
                     catch { }
                 }
             }
+
+            // Init main thread
+            mainThread = new Thread(new ThreadStart(mainT));
+            mainThread.IsBackground = true;
+            mainThread.Start();
 
             // Autostart
             if (chkbox_as.Checked == true)
@@ -1014,12 +1112,15 @@ namespace BingRewardsBot
                     ++this.accountVisitedX;
 
                     string[] authstr = this.accounts[this.accountNum].Split('/');
-                    //this.username = authstr[0];
-                    //this.password = authstr[1];
                     this.username = authstr[0];
-                    string[] convert = authstr[1].Split(' ');
-                    this.password = convert[0];
-                    string proxy = convert[1];
+                    this.password = authstr[1];
+                    string proxy = "";
+                    string[] paddr = authstr[1].Split(' ');
+                    if (paddr.Length >= 2 && paddr[1] != null)
+                    {
+                        this.password = paddr[0];
+                        proxy = paddr[1];
+                    }
 
                     accountNameTxtBox.Text = this.username;
                     accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1056,13 +1157,15 @@ namespace BingRewardsBot
                     this.pts = 0;
                     this.pts_txtbox.Text = Convert.ToString(this.pts);
 
+                    //http://stackoverflow.com/questions/13581182/split-index-was-outside-the-bounds-of-the-array
                     string[] authstr = this.accounts[this.accountNum].Split('/');
-                    //this.username = authstr[0];
-                    //this.password = authstr[1];
                     this.username = authstr[0];
-                    string[] convert = authstr[1].Split(' ');
-                    this.password = convert[0];
-                    string proxy = convert[1];
+                    this.password = authstr[1];
+                    string[] paddr = authstr[1].Split(' ');
+                    if(paddr.Length >= 2 && paddr[1] != null) {
+                        this.password = paddr[0];
+                        string proxy = paddr[1];
+                    }                   
 
                     accountNameTxtBox.Text = this.username;
                     accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1156,12 +1259,14 @@ namespace BingRewardsBot
                 }
 
                 string[] authstr = this.accounts[this.accountNum].Split('/');
-                //this.username = authstr[0];
-                //this.password = authstr[1];
                 this.username = authstr[0];
-                string[] convert = authstr[1].Split(' ');
-                this.password = convert[0];
-                string proxy = convert[1];
+                this.password = authstr[1];
+                string[] paddr = authstr[1].Split(' ');
+                if (paddr.Length >= 2 && paddr[1] != null)
+                {
+                    this.password = paddr[0];
+                    string proxy = paddr[1];
+                }
 
                 accountNameTxtBox.Text = this.username;
                 accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1210,12 +1315,14 @@ namespace BingRewardsBot
             )
             {
                 string[] authstr = this.accounts[this.accountNum].Split('/');
-                //this.username = authstr[0];
-                //this.password = authstr[1];
                 this.username = authstr[0];
-                string[] convert = authstr[1].Split(' ');
-                this.password = convert[0];
-                string proxy = convert[1];
+                this.password = authstr[1];
+                string[] paddr = authstr[1].Split(' ');
+                if (paddr.Length >= 2 && paddr[1] != null)
+                {
+                    this.password = paddr[0];
+                    string proxy = paddr[1];
+                }
 
                 accountNameTxtBox.Text = this.username;
                 accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1629,12 +1736,14 @@ namespace BingRewardsBot
                         }
 
                         string[] authstr = this.accounts[this.accountNum].Split('/');
-                        //this.username = authstr[0];
-                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        string[] convert = authstr[1].Split(' ');
-                        this.password = convert[0];
-                        string proxy = convert[1];
+                        this.password = authstr[1];
+                        string[] paddr = authstr[1].Split(' ');
+                        if (paddr.Length >= 2 && paddr[1] != null)
+                        {
+                            this.password = paddr[0];
+                            string proxy = paddr[1];
+                        }
 
                         accountNameTxtBox.Text = this.username;
                         accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1781,12 +1890,14 @@ namespace BingRewardsBot
 
                         // update account
                         string[] authstr = this.accounts[this.accountNum].Split('/');
-                        //this.username = authstr[0];
-                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        string[] convert = authstr[1].Split(' ');
-                        this.password = convert[0];
-                        string proxy = convert[1];
+                        this.password = authstr[1];   
+                        string[] paddr = authstr[1].Split(' ');
+                        if (paddr.Length >= 2 && paddr[1] != null)
+                        {
+                            this.password = paddr[0];
+                            string proxy = paddr[1];
+                        }
 
                         accountNameTxtBox.Text = this.username;
                         accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1841,12 +1952,14 @@ namespace BingRewardsBot
                     )
                 {
                     string[] authstr = this.accounts[this.accountNum].Split('/');
-                    //this.username = authstr[0];
-                    //this.password = authstr[1];
                     this.username = authstr[0];
-                    string[] convert = authstr[1].Split(' ');
-                    this.password = convert[0];
-                    string proxy = convert[1];
+                    this.password = authstr[1];
+                    string[] paddr = authstr[1].Split(' ');
+                    if (paddr.Length >= 2 && paddr[1] != null)
+                    {
+                        this.password = paddr[0];
+                        string proxy = paddr[1];
+                    }
 
                     accountNameTxtBox.Text = this.username;
                     accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -1935,12 +2048,14 @@ namespace BingRewardsBot
                     }
 
                     string[] authstr = this.accounts[this.accountNum].Split('/');
-                    //this.username = authstr[0];
-                    //this.password = authstr[1];
                     this.username = authstr[0];
-                    string[] convert = authstr[1].Split(' ');
-                    this.password = convert[0];
-                    string proxy = convert[1];
+                    this.password = authstr[1];
+                    string[] paddr = authstr[1].Split(' ');
+                    if (paddr.Length >= 2 && paddr[1] != null)
+                    {
+                        this.password = paddr[0];
+                        string proxy = paddr[1];
+                    }
 
                     accountNameTxtBox.Text = this.username;
                     accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -2000,12 +2115,14 @@ namespace BingRewardsBot
                         ++this.accountVisitedX;
 
                         string[] authstr = this.accounts[this.accountNum].Split('/');
-                        //this.username = authstr[0];
-                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        string[] convert = authstr[1].Split(' ');
-                        this.password = convert[0];
-                        string proxy = convert[1];
+                        this.password = authstr[1];
+                        string[] paddr = authstr[1].Split(' ');
+                        if (paddr.Length >= 2 && paddr[1] != null)
+                        {
+                            this.password = paddr[0];
+                            string proxy = paddr[1];
+                        }
 
                         accountNameTxtBox.Text = this.username;
                         accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -2041,12 +2158,14 @@ namespace BingRewardsBot
                         this.pts_txtbox.Text = Convert.ToString(this.pts);
 
                         string[] authstr = this.accounts[this.accountNum].Split('/');
-                        //this.username = authstr[0];
-                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        string[] convert = authstr[1].Split(' ');
-                        this.password = convert[0];
-                        string proxy = convert[1];
+                        this.password = authstr[1];
+                        string[] paddr = authstr[1].Split(' ');
+                        if (paddr.Length >= 2 && paddr[1] != null)
+                        {
+                            this.password = paddr[0];
+                            string proxy = paddr[1];
+                        }
 
                         accountNameTxtBox.Text = this.username;
                         accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -3509,15 +3628,20 @@ namespace BingRewardsBot
                             Array.Clear(authstr, 0, authstr.Length);
                             authstr = this.accounts[this.accountNum].Split('/');
                             this.username = authstr[0];
-                            string[] convert = authstr[1].Split(' ');
-                            this.password = convert[0];
-                            string proxy = convert[1];
+                            this.password = authstr[1];
+                            string proxy = "";
+                            string[] paddr = authstr[1].Split(' ');
+                            if (paddr.Length >= 2 && paddr[1] != null)
+                            {
+                                this.password = paddr[0];
+                                proxy = paddr[1];
+                            }
 
                             if (proxy != "")
                             {
                                 RefreshIESettings(proxy);
                             }
-
+                            
                             SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                             dbcon.Open();
                             DateTime dateTime = DateTime.UtcNow.Date;
@@ -3735,12 +3859,15 @@ namespace BingRewardsBot
                             Convert.ToInt32(wait[1]));
 
                         authstr = this.accounts[this.accountNum].Split('/');
-                        //this.username = authstr[0];
-                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        string[] convert = authstr[1].Split(' ');
-                        this.password = convert[0];
-                        string proxy = convert[1];
+                        this.password = authstr[1];
+                        string proxy = "";
+                        string[] paddr = authstr[1].Split(' ');
+                        if (paddr.Length >= 2 && paddr[1] != null)
+                        {
+                            this.password = paddr[0];
+                            proxy = paddr[1];
+                        }
 
                         if (proxy != "")
                         {
@@ -3856,12 +3983,15 @@ namespace BingRewardsBot
                             ++this.accountVisitedX;
 
                             string[] authstr = this.accounts[this.accountNum].Split('/');
-                            //this.username = authstr[0];
-                            //this.password = authstr[1];
                             this.username = authstr[0];
-                            string[] convert = authstr[1].Split(' ');
-                            this.password = convert[0];
-                            string proxy = convert[1];
+                            this.password = authstr[1];
+                            string proxy = "";
+                            string[] paddr = authstr[1].Split(' ');
+                            if (paddr.Length >= 2 && paddr[1] != null)
+                            {
+                                this.password = paddr[0];
+                                proxy = paddr[1];
+                            }
 
                             accountNameTxtBox.SafeInvoke(() => accountNameTxtBox.Text = this.username);
                             accountNrTxtBox.SafeInvoke(() => accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count);
@@ -3919,12 +4049,15 @@ namespace BingRewardsBot
                         }
 
                         string[] authstr = this.accounts[this.accountNum].Split('/');
-                        //this.username = authstr[0];
-                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        string[] convert = authstr[1].Split(' ');
-                        this.password = convert[0];
-                        string proxy = convert[1];
+                        this.password = authstr[1];
+                        string proxy = "";
+                        string[] paddr = authstr[1].Split(' ');
+                        if (paddr.Length >= 2 && paddr[1] != null)
+                        {
+                            this.password = paddr[0];
+                            proxy = paddr[1];
+                        }
 
                         accountNameTxtBox.SafeInvoke(() => accountNameTxtBox.Text = this.username);
                         accountNrTxtBox.SafeInvoke(() => accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count);
@@ -4085,12 +4218,15 @@ namespace BingRewardsBot
                         }
 
                         string[] authstr = this.accounts[this.accountNum].Split('/');
-                        //this.username = authstr[0];
-                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        string[] convert = authstr[1].Split(' ');
-                        this.password = convert[0];
-                        string proxy = convert[1];
+                        this.password = authstr[1];
+                        string proxy = "";
+                        string[] paddr = authstr[1].Split(' ');
+                        if (paddr.Length >= 2 && paddr[1] != null)
+                        {
+                            this.password = paddr[0];
+                            proxy = paddr[1];
+                        }
 
                         accountNameTxtBox.SafeInvoke(() => accountNameTxtBox.Text = this.username);
                         accountNrTxtBox.SafeInvoke(() => accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count);
@@ -4926,12 +5062,15 @@ namespace BingRewardsBot
             {
                 --this.accountNum;
                 string[] authstr = this.accounts[this.accountNum].Split('/');
-                //this.username = authstr[0];
-                //this.password = authstr[1];
                 this.username = authstr[0];
-                string[] convert = authstr[1].Split(' ');
-                this.password = convert[0];
-                string proxy = convert[1];
+                this.password = authstr[1];
+                string proxy = "";
+                string[] paddr = authstr[1].Split(' ');
+                if (paddr.Length >= 2 && paddr[1] != null)
+                {
+                    this.password = paddr[0];
+                    proxy = paddr[1];
+                };
 
                 accountNameTxtBox.Text = this.username;
                 accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -4944,12 +5083,15 @@ namespace BingRewardsBot
             {
                 ++this.accountNum;
                 string[] authstr = this.accounts[this.accountNum].Split('/');
-                //this.username = authstr[0];
-                //this.password = authstr[1];
                 this.username = authstr[0];
-                string[] convert = authstr[1].Split(' ');
-                this.password = convert[0];
-                string proxy = convert[1];
+                this.password = authstr[1];
+                string proxy = "";
+                string[] paddr = authstr[1].Split(' ');
+                if (paddr.Length >= 2 && paddr[1] != null)
+                {
+                    this.password = paddr[0];
+                    proxy = paddr[1];
+                }
 
                 accountNameTxtBox.Text = this.username;
                 accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -5599,12 +5741,15 @@ namespace BingRewardsBot
 
                     // update account
                     string[] authstr = this.accounts[this.accountNum].Split('/');
-                    //this.username = authstr[0];
-                    //this.password = authstr[1];
                     this.username = authstr[0];
-                    string[] convert = authstr[1].Split(' ');
-                    this.password = convert[0];
-                    string proxy = convert[1];
+                    this.password = authstr[1];
+                    string proxy = "";
+                    string[] paddr = authstr[1].Split(' ');
+                    if (paddr.Length >= 2 && paddr[1] != null)
+                    {
+                        this.password = paddr[0];
+                        proxy = paddr[1];
+                    }
 
                     accountNameTxtBox.Text = this.username;
                     accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -5769,12 +5914,15 @@ namespace BingRewardsBot
 
                         // update account
                         string[] authstr = this.accounts[this.accountNum].Split('/');
-                        //this.username = authstr[0];
-                        //this.password = authstr[1];
                         this.username = authstr[0];
-                        string[] convert = authstr[1].Split(' ');
-                        this.password = convert[0];
-                        string proxy = convert[1];
+                        this.password = authstr[1];
+                        string proxy = "";
+                        string[] paddr = authstr[1].Split(' ');
+                        if (paddr.Length >= 2 && paddr[1] != null)
+                        {
+                            this.password = paddr[0];
+                            proxy = paddr[1];
+                        }
 
                         accountNameTxtBox.Text = this.username;
                         accountNrTxtBox.Text = (this.accountNum + 1) + "/" + this.accounts.Count;
@@ -6108,7 +6256,11 @@ namespace BingRewardsBot
         //http://matijabozicevic.com/blog/wpf-winforms-development/csharp-get-computer-ip-address-lan-and-internet
         private string GetIP()
         {
-            if (BingRewardsBot.Properties.Settings.Default.set_tor == true)
+            string proxy = Properties.Settings.Default.set_proxy.ToString();
+
+            if ((BingRewardsBot.Properties.Settings.Default.set_tor == true && proxy != "") ||
+                (BingRewardsBot.Properties.Settings.Default.set_tor == false && proxy == "")
+                )
             {
                 // check IP using DynDNS's service
                 WebRequest request = WebRequest.Create("http://checkip.dyndns.org");
@@ -6116,7 +6268,7 @@ namespace BingRewardsBot
                 StreamReader stream = new StreamReader(response.GetResponseStream());
 
                 // IMPORTANT: set Proxy to null, to drastically INCREASE the speed of request
-                request.Proxy = null;
+                // request.Proxy = null;
 
                 //http://stackoverflow.com/questions/1938990/c-sharp-connecting-through-proxy
                 // if (request.Proxy != null)
@@ -6139,11 +6291,9 @@ namespace BingRewardsBot
                 return ipAddress.Replace("<html><head><title>Current IP Check</title></head><body>Current IP Address: ", string.Empty).Replace("</body></html>", string.Empty);
 
             } else
-            {
-                string proxy = Properties.Settings.Default.set_proxy.ToString();
+            {             
                 string[] convert = proxy.Split(':');
                 return convert[0];
-
             }            
         }
 
@@ -6233,7 +6383,7 @@ namespace BingRewardsBot
 
                         // http://stackoverflow.com/questions/22564846/c-sharp-compare-two-datetimes
                         TimeSpan difference = timer - thisversion;
-                        if (difference.TotalDays >= 6)
+                        if (difference.TotalDays >= 3)
                         {
                             // Bingo!
                             MessageBox.Show("Congrats, a new update is available! Please go to https://bbrb.codeplex.com/ for downloads! If you are a supporter you can ask the support!");
