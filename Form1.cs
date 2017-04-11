@@ -142,7 +142,7 @@ namespace BingRewardsBot
         private bool trialstopped = false;
         private bool checkaccount = false;
         private string trialRegKey;
-        private const int FREEX = 19999999; //15500000;  //25500000
+        private const int FREEX = 9999999; //15500000;  //25500000
         private const int FREEA = 3;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
@@ -355,7 +355,7 @@ namespace BingRewardsBot
 
                 // Expected location of the current user config
                 DirectoryInfo currentVersionConfigFileDir = new FileInfo(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath).Directory;
-                if (currentVersionConfigFileDir != null)
+                if (currentVersionConfigFileDir != null && !currentVersionConfigFileDir.Exists)
                 {
                     // Location of the previous user config
                     // grab the most recent folder from the list of user's settings folders, prior to the current version
@@ -5487,7 +5487,7 @@ namespace BingRewardsBot
         {
             try
             {
-                this.ip = this.GetIP().Replace("\r\n", "");
+                this.GetIP();
             }
             catch { }
 
@@ -6254,47 +6254,19 @@ namespace BingRewardsBot
         }
 
         //http://matijabozicevic.com/blog/wpf-winforms-development/csharp-get-computer-ip-address-lan-and-internet
-        private string GetIP()
+        private void GetIP()
         {
-            string proxy = Properties.Settings.Default.set_proxy.ToString();
+            //var htmlNow = DownloadAsync("http://checkip.dyndns.org");
+            var htmlNow = DownloadAsync("https://api.ipify.org");
 
-            if ((BingRewardsBot.Properties.Settings.Default.set_tor == true && proxy != "") ||
-                (BingRewardsBot.Properties.Settings.Default.set_tor == false && proxy == "")
-                )
+            while (browser.ReadyState != WebBrowserReadyState.Complete)
             {
-                // check IP using DynDNS's service
-                WebRequest request = WebRequest.Create("http://checkip.dyndns.org");
-                WebResponse response = request.GetResponse();
-                StreamReader stream = new StreamReader(response.GetResponseStream());
+                Application.DoEvents();
+            };
 
-                // IMPORTANT: set Proxy to null, to drastically INCREASE the speed of request
-                // request.Proxy = null;
-
-                //http://stackoverflow.com/questions/1938990/c-sharp-connecting-through-proxy
-                // if (request.Proxy != null)
-                //     request.Proxy.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
-
-                //string proxy = Properties.Settings.Default.set_proxy.ToString();
-                //string[] convert = proxy.Split(':');
-
-                //WebProxy myproxy = new WebProxy(new Uri(proxy));
-                //myproxy.BypassProxyOnLocal = false;
-                //request.Proxy = myproxy;
-
-                //request.Method = "GET";
-                //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                // read complete response
-                string ipAddress = stream.ReadToEnd();
-
-                // replace everything and keep only IP
-                return ipAddress.Replace("<html><head><title>Current IP Check</title></head><body>Current IP Address: ", string.Empty).Replace("</body></html>", string.Empty);
-
-            } else
-            {             
-                string[] convert = proxy.Split(':');
-                return convert[0];
-            }            
+            string html = browser.DocumentText;
+            //this.ip = html.Replace("<html><head><title>Current IP Check</title></head><body>Current IP Address: ", string.Empty).Replace("</body></html>", string.Empty).Replace("\r\n", string.Empty);
+            this.ip = html.Replace("<!DOCTYPE HTML>\r\n<!DOCTYPE html PUBLIC \"\" \"\"><HTML><HEAD>\r\n<META http-equiv=\"Content-Type\" \r\ncontent=\"text/html; charset=windows-1252\"></HEAD>\r\n<BODY>\r\n<PRE>", string.Empty).Replace("</PRE></BODY></HTML>\r\n", string.Empty);
         }
 
         //http://www.csharphelp.com/2007/08/redirect-web-visitors-by-country-using-net-framework-in-c/
@@ -6437,7 +6409,6 @@ namespace BingRewardsBot
             while (this.browser.ReadyState != WebBrowserReadyState.Complete) {
                 Application.DoEvents();
             };
-
             
         }
 
