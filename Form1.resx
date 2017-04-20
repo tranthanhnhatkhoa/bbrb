@@ -123,12 +123,6 @@
   <metadata name="richTextBox1.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>130, 17</value>
-  </metadata>
-  <metadata name="richTextBox1.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <data name="richTextBox1.Text" xml:space="preserve">
     <value>Better Bing Rewards Bot
 
@@ -197,7 +191,8 @@ Words.txt file is required.
 
 1. Windows internet connection (delete proxy settings and un-select Tor)
 2. proxy settings
-3. Tor (Tor and proxy settings)
+3. Tor
+
 5.6. Start searches
 5.4.1 If Autorotate is enabled go to "Search" tab and click the "Start" button
 5.4.2 If Autorotate is disabled go to "Search" tab and select the account with + and - buttons and press A-button then press Start-button.
@@ -229,6 +224,7 @@ The "-" and "+" button lets you specify an account and the "A"-button let you ma
 6.8 Make a video!
 
 7. Changelog
+16.04.2017 Bugfix login and language settings
 02.04.2017 Update application settings
 29.03.2017 Bugfix custom proxies
 27.03.2017 Bugfix autorotate and autostart. Bugfix threadsafe textbox.
