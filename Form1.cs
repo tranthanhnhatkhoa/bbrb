@@ -48,6 +48,7 @@ namespace BingRewardsBot
         mshtml.IHTMLDocument2 htmlDoc;
         HtmlElement documentElement;
         const string VERSION = "20.04.2017";
+        const string ASSEMBLY = "35";
         const int POLL_DELAY = 300;
         private static bool toriddone = false;
         private const string TORSOCKSPORT = "8118";
@@ -425,12 +426,12 @@ namespace BingRewardsBot
 
             if (SUPPORTER == true)
             {
-                this.Text = TITLE;
+                this.Text = TITLE + " Version: Beta " + ASSEMBLY;
             }
             else
             {
                 double z = (double)100 / FREEX * (this.trialCountDownReg - (this.trialCountUp * DIVIDE));
-                this.Text = TITLE + " : " + Math.Round(z) + "% Shareware";
+                this.Text = TITLE + " : " + Math.Round(z) + "% Shareware" + " Version: Beta " + ASSEMBLY; 
             }
 
             //RegKey
@@ -2995,12 +2996,12 @@ namespace BingRewardsBot
 
                 if (SUPPORTER == true)
                 {
-                    this.Text = TITLE;
+                    this.Text = TITLE + " Version: Beta " + ASSEMBLY;
                 } else
                 {
                     double x = (double)100 / FREEX;
                     double z = x * (this.trialCountDownReg - (this.trialCountUp * DIVIDE));
-                    this.Text = TITLE + " : " + Math.Round(z) + "% Shareware";
+                    this.Text = TITLE + " : " + Math.Round(z) + "% Shareware" + " Version: Beta " + ASSEMBLY;
                 }
                 
                 if (statusTxtBox.Text == "Mobilesearches")
