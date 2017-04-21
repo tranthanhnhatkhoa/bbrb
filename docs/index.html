@@ -42,11 +42,30 @@
 <META http-equiv="PICS-Label" content='(PICS-1.1
 "http://vancouver-webpages.com/VWP1.0/" l gen true comment "VWP1.0"
 on "2004.03.28T15:41-0800" r (P 0 S 0 V 0 Com 0 Tol -1 Env -1 SF 0 Edu -2 Can 0 MC -1 Gam -1 ))'>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <style>
 body {
 	font-family: "Arial", Verdana, sans-serif;
 } 
+
+@media (min-width: 1500px)  { /* right column */
+	.right {
+		transform: translate3d(0,0,0);
+		overflow:hidden;
+		position:fixed;
+		top:0px;
+		left:1200px;
+	}
+}
+
+@media (max-width: 1100px)  { /* right column */
+	.right {
+		visibility:hidden;
+	}
+}
+
 .wikidoc {
 	float:left;
 	width:700px;
@@ -284,7 +303,7 @@ The &quot;-&quot; and &quot;&#43;&quot; button lets you specify an account and t
  </p>
  
 </div>
-<div style="transform: translate3d(0,0,0);overflow:hidden:position:fixed;top:0px;left:1200px">
+<div class="right">
 <p>
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- bbrb1,1 -->
