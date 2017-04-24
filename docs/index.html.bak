@@ -1,19 +1,88 @@
 <html>
 <head>
+<title>:: Better Bing Rewards Bot ::</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Better Bing Rewards Bot</title>
+<meta name="description" content="Better Bing Rewards Bot is the best professional automation tool to earn Microsoft points while searching Bing.">
+<meta name="abstract" content="Better Bing Rewards Bot is the best professional automation tool to earn Microsoft points while searching Bing.">
+<meta name="keywords" content="Bing Rewards, Microsoft Rewards, automation tool, bot, Windows 10, Microsoft points">
+<meta name="keywords" lang="de" content="Bing Rewards, Microsoft Rewards, automation tool, bot, Windows 10, Microsoft points">
+<meta name="keywords" lang="en-us" content="Bing Rewards, Microsoft Rewards, automation tool, bot, Windows 10, Microsoft points">
+<meta name="keywords" lang="en" content="Bing Rewards, Microsoft Rewards, automation tool, bot, Windows 10, Microsoft points">
+<meta name="keywords" lang="fr" content="Bing Rewards, Microsoft Rewards, automation tool, bot, Windows 10, Microsoft points">
+<meta name="keyphrases" content="Better Bing Rewards Bot is the best professional automation tool to earn Microsoft points while searching Bing.">
+<meta name="author" content="Chi Hoang">
+<meta name="copyright" content="Chi Hoang">
+<meta name="publisher" Content="Chi Hoang">
+<meta name="rating" content="Technology">
+
+<meta name="Kategorie" content="Technology">
+<meta name="category" content="Technology">
+<meta name="page-topic" Content="Technology">
+<meta name="page-type" Content="Technology">
+<meta name="audience" Content="all">
+
+<meta http-equiv="content-language" content="en">
+<meta name="Language" content="English, en">
+<meta name="Security" content="public">
+<meta name="Owner" content="Chi Hoang">
+<meta name="made" content="rebrobates@gmail.com">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="pragma" content="no-cache">
+<meta name="revisit-after" content="7 days">
+<meta http-equiv="imagetoolbar" CONTENT="no">
+<meta name="MSSmartTagsPreventParsing" content="TRUE">
+
+<meta name="date" content="2017-04-21">
+<meta name="robots" content="follow, index">
+<meta name="googlebot" content="follow, index">
+<link rev="made" href="mailto:rebrobates@gmail.com">
+
+<META http-equiv="PICS-Label" content='(PICS-1.1
+"http://vancouver-webpages.com/VWP1.0/" l gen true comment "VWP1.0"
+on "2004.03.28T15:41-0800" r (P 0 S 0 V 0 Com 0 Tol -1 Env -1 SF 0 Edu -2 Can 0 MC -1 Gam -1 ))'>
+
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> //-->
 </head>
 <style>
 body {
 	font-family: "Arial", Verdana, sans-serif;
 } 
+
+.left {
+		/* transform: translate3d(0,0,0); */
+		overflow:hidden;
+		/*position:fixed;
+		top:0px;
+		left:0px; */
+		padding:30px;
+		float:left;
+}
+	
+@media (min-width: 1100px)  { /* right column */
+	.right {
+		/* transform: translate3d(0,0,0); */
+		overflow:hidden;
+		position:fixed;
+		top:0px;
+		left:1000px;
+	}
+}
+
+@media (max-width: 1099px)  { /* right column */
+	.right {
+		display:none;
+	}
+}
+
 .wikidoc {
 	float:left;
 	width:700px;
 }
 </style>
 <body>
-<div style="float:left;padding:30px">
+<div class="left">
 <p>
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- bbrb -->
@@ -25,7 +94,7 @@ body {
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 </p>
-<p style="padding-top:1000px"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<p style="padding-top:1300px"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- bbrb 1.5 -->
 <ins class="adsbygoogle"
      style="display:inline-block;width:160px;height:600px"
@@ -117,6 +186,17 @@ In main screen navigate to log tab:<br>
 <p><br>
 1.2.7 Update tab<br>
 <img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=bbrb&DownloadId=1624349" alt="" width="450" height="346"></p>
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- bbrb 2.1 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-6449563648591184"
+     data-ad-slot="4596342753"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</p>
 <p><strong>2. Requirements</strong><br>
 -Windows 10<br>
 -accounts.txt file<br>
@@ -178,7 +258,7 @@ all accounts during the searches. In addition untick this when you want to start
 <strong>5.9 Manual mode (Check)</strong><br>
 The &quot;-&quot; and &quot;&#43;&quot; button lets you specify an account and the &quot;A&quot;-button let you manually&nbsp;log into Bing rewards. Uncheck&nbsp;the &quot;Autorotate&quot; button and press the &quot;Start&quot; button to start a search with this account.&nbsp;</p>
 <p><strong>6. Troubleshooting</strong><br>
-6.1 Windows may requires&nbsp;<a href="http://www.microsoft.com/en-us/download/details.aspx?id=49981" target="_blank">.net framework v4</a>&nbsp;and&nbsp;<a href="https://www.microsoft.com/de-de/download/details.aspx?id=48145">vc redist 2015</a><br>
+6.1 Windows may requires&nbsp;<a href="https://www.microsoft.com/de-de/download/details.aspx?id=42642" target="_blank">.net framework v4</a>&nbsp;and&nbsp;<a href="https://www.microsoft.com/de-de/download/details.aspx?id=48145">vc redist 2015</a><br>
 6.2 If the bot doesn't authenticate or doesn't earns Microsoft points delete all settings file in C:/User/Username/AppData/Local/Elephant7 and start the app again!<br>
 6.3 If the bot doesn't start delete points.sqlite in the app folder.<br>
 6.4 Run the bot as adminstrator.<br>
@@ -236,15 +316,16 @@ The &quot;-&quot; and &quot;&#43;&quot; button lets you specify an account and t
  ?!</a></strong><strong>]</strong></h3>
  
  <p><strong>8. Sourcecode<br></strong>
- <a href="https://github.com/Tetramatrix/bbrb">Link</a>
+ <a href="https://github.com/Tetramatrix/bbrb">:: Link ::</a>
  </p>
  
  <p><strong>9. Download<br></strong>
- <a href="https://tetramatrix.github.io/bbrb/beta35.rar">Beta35</a>
+ <a href="http://fas.li/Hrax2">:: Latest ::</a><br>
+ <a href="http://fas.li/qaEO5">Beta35</a>
  </p>
  
 </div>
-<div style="float:right;padding-right:200px;overflow:hidden:position:fixed;top:0px;left:1200px">
+<div class="right">
 <p>
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- bbrb1,1 -->
@@ -256,27 +337,6 @@ The &quot;-&quot; and &quot;&#43;&quot; button lets you specify an account and t
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 </p>
-<p style="padding-top:1000px">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- bbrb 1.4 -->
-<ins class="adsbygoogle"
-     style="display:inline-block;width:300px;height:1050px"
-     data-ad-client="ca-pub-6449563648591184"
-     data-ad-slot="9001679555"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</p>
-<p style="padding-top:1000px">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- bbrb 1.2 -->
-<ins class="adsbygoogle"
-     style="display:inline-block;width:300px;height:600px"
-     data-ad-client="ca-pub-6449563648591184"
-     data-ad-slot="1618013553"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script></p>
 </div>
 <div style="clear:both">
 <p style="padding-left:190px">
