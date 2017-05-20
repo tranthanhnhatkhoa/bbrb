@@ -52,6 +52,20 @@ on "2004.03.28T15:41-0800" r (P 0 S 0 V 0 Com 0 Tol -1 Env -1 SF 0 Edu -2 Can 0 
 
  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> //-->
 <link rel="stylesheet" type="text/css" href="main.css">
+   <script id="site-layout-config" type="text/javascript">
+        var MeePortal = MeePortal || {};
+        MeePortal.Utilities = MeePortal.Utilities || {};
+        MeePortal.SearchSuggestion = MeePortal.SearchSuggestion || {};
+
+        
+        MeePortal.Utilities.EmailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        MeePortal.SearchSuggestion.Config = {
+            'Url': 'https\x3a\x2f\x2fwww.microsoft.com\x2fservices\x2fapi\x2fv2\x2fsuggest',
+            'ClientId': '1A3B4873-9046-4833-982A-65FAE59682B8',
+            'ProductCount': 3,
+        };
+</script>
 </head>
 <body>
 <div class="left">
@@ -76,7 +90,7 @@ on "2004.03.28T15:41-0800" r (P 0 S 0 V 0 Com 0 Tol -1 Env -1 SF 0 Edu -2 Can 0 
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script></p>
 </div>
-<div class="wikidoc">
+<div class="wikidoc"><!-- google_ad_section_start -->
 <h3><strong><img style="padding-bottom:20px" src="https://github.com/Tetramatrix/bbrb/raw/master/docs/Home_eyeballs.png" alt="" width="400" height="299"><br>
 </strong><strong>[<span style="text-decoration:underline">If you have any question you can&nbsp;ask&nbsp<a href="http://fas.li/blrg7">here</a>&nbsp;(a
  Reddit profile is required!)</span>]&nbsp;<br>
@@ -225,7 +239,7 @@ all accounts during the searches. In addition untick this when you want to start
 The &quot;-&quot; and &quot;&#43;&quot; button lets you specify an account and the &quot;A&quot;-button let you manually&nbsp;log into Bing rewards. Uncheck&nbsp;the &quot;Autorotate&quot; button and press the &quot;Start&quot; button to start a search with this account.&nbsp;</p>
 <p><h3>6. Troubleshooting</h3><br>
 6.1 Windows may requires&nbsp;<a href="https://www.microsoft.com/de-de/download/details.aspx?id=42642" target="_blank">.net framework v4</a>&nbsp;and&nbsp;<a href="https://www.microsoft.com/de-de/download/details.aspx?id=48145">vc redist 2015</a><br>
-6.2 If the bot doesn't authenticate or doesn't earns Microsoft points delete all settings file in C:/User/Username/AppData/Local/Elephant7 and start the app again!<br>
+6.2 If the bot doesn't authenticate or doesn't earns Microsoft points delete all settings file in C:/User/Username/AppData/Local/E7 and start the app again!<br>
 6.3 If the bot doesn't start delete points.sqlite in the app folder.<br>
 6.4 Run the bot as adminstrator.<br>
 6.5 Send me a dump with process explorer.<br>
@@ -244,6 +258,7 @@ The &quot;-&quot; and &quot;&#43;&quot; button lets you specify an account and t
 </script>
 </p>
 <p><h3>7. Changelog</h3><br>
+20.05.2017 Bugfix minimize (toolbar threadsafe)
 28.04.2017 Bugfix invalid cast exception<br>
 24.04.2017 Bugfix login<br>
 20.04.2017 Supports Australia<br>
@@ -292,12 +307,13 @@ The &quot;-&quot; and &quot;&#43;&quot; button lets you specify an account and t
  <p><h1>9. Download<br></h1>
  <ul>
  <li><a href="http://fas.li/Hrax2"><h1>>>:: Latest ::<<</h1></a></li>
+ <li><a href="http://fas.li/fe5jg">Beta37</a></li>
  <li><a href="http://fas.li/5mAzs">Beta36</a></li>
  <li><a href="http://fas.li/qaEO5">Beta35</a></li>
  </ul>
  </p>
  
-</div>
+</div><!-- google_ad_section_end -->
 <div class="right">
 <p>
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -312,7 +328,7 @@ The &quot;-&quot; and &quot;&#43;&quot; button lets you specify an account and t
 </p>
 </div>
 <div style="clear:both">
-<p style="padding-left:200px">
+<p style="padding-left:190px">
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- bbrb4 -->
 <ins class="adsbygoogle"

@@ -47,8 +47,8 @@ namespace BingRewardsBot
         //IntPtr pControl2;
         mshtml.IHTMLDocument2 htmlDoc;
         HtmlElement documentElement;
-        const string VERSION = "28.04.2017";
-        const string ASSEMBLY = "37";
+        const string VERSION = "20.05.2017";
+        const string ASSEMBLY = "38";
         const int POLL_DELAY = 300;
         private static bool toriddone = false;
         private const string TORSOCKSPORT = "8118";
@@ -5935,11 +5935,34 @@ namespace BingRewardsBot
             try
             {
                 this.country = this.QueryGeo(this.ip);
-                this.toolStripStatusLabel1.Text = MYIP + this.ip + " My country:" + this.country;
+
+                if (!this.IsHandleCreated)
+                {
+                    this.toolStripStatusLabel1.Text = MYIP + this.ip + " My country:" + this.country;
+                }
+                else
+                {
+                    try
+                    {
+                        Invoke(new SetToolStripDelegate(SetToolStrip2), MYIP + this.ip + " My country:" + this.country);
+                    }
+                    catch { }
+                }
             }
             catch
             {
-                this.toolStripStatusLabel1.Text = MYIP + this.ip;
+                if (!this.IsHandleCreated)
+                {
+                    this.toolStripStatusLabel1.Text = MYIP + this.ip;
+                }
+                else
+                {
+                    try
+                    {
+                        Invoke(new SetToolStripDelegate(SetToolStrip2), MYIP + this.ip);
+                    }
+                    catch { }
+                }
             }
         }
 
@@ -5959,7 +5982,19 @@ namespace BingRewardsBot
                 this.timer_tor.Enabled = true;
                 this.timer_tor.Start();
 
-                this.toolStripStatusLabel1.Text = "New Identity:";
+                if (!this.IsHandleCreated)
+                {
+                    this.toolStripStatusLabel1.Text = "New Identity:";
+
+                }
+                else
+                {
+                    try
+                    {
+                        Invoke(new SetToolStripDelegate(SetToolStrip2), "New Identity:");
+                    }
+                    catch { }
+                }
 
                 try
                 {
@@ -5968,7 +6003,19 @@ namespace BingRewardsBot
 
                     while (toriddone == false && c < 10)
                     {
-                        this.toolStripStatusLabel1.Text += c + ".";
+                        if (!this.IsHandleCreated)
+                        {
+                            this.toolStripStatusLabel1.Text += c + ".";
+                        }
+                        else
+                        {
+                            try
+                            {
+                                Invoke(new SetToolStripDelegate(SetToolStrip), c + ".");
+                            }
+                            catch { }
+                        }
+
                         Thread.Sleep(SLEEPTOR);
                         ++c;
                         this.timer_tor.Enabled = true;
@@ -5982,7 +6029,7 @@ namespace BingRewardsBot
                 catch (Exception e)
                 {
                     this.timer_tor.Enabled = false;
-                    MessageBox.Show(e.Message);
+                    //MessageBox.Show(e.Message);
                 }
             }
         }
@@ -6101,41 +6148,55 @@ namespace BingRewardsBot
                 }
                 --v;
 
+                string s = a + "L" + Convert.ToString(this.authLock) +
+                           "|M" + Convert.ToString(this.checkaccount) +
+                           "|S" + Convert.ToString(this.iniSearch) +
+                           "|D" + Convert.ToString(this.dashboardta) +
+                           "|Cs" + Convert.ToString(this.Csearch) +
+                           "|Cl" + Convert.ToString(this.clicklist) +
+                           //"|M" + Convert.ToString(this.maxpc) +
+                           "|" + Convert.ToString(this.vrndnum) +
+                           "|V" + Convert.ToString(v + 1) +
+                           "|T" + Convert.ToString(this.accounts.Count) +
+                           "|C" + Convert.ToString(this.accountNum) +
+                           //"|L" + Convert.ToString(this.newloginlock) +
+                           "|" + this.country +
+                           "|" + this.username +
+                           "|" + Convert.ToString(this.pts) +
+                           "|" + Convert.ToString(this.timer_auth) +
+                           "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Enabled) : "no searches") +
+                           "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Interval) : "-") +
+                           "| PC:" + Convert.ToString(this.pccounter);
+
                 if (b)
                 {
-                    this.toolStripStatusLabel1.Text += a + Convert.ToString(this.authLock) +
-                        "|" + Convert.ToString(this.checkaccount) +
-                        "|" + Convert.ToString(this.iniSearch) +
-                        "|" + Convert.ToString(this.accountVisitedX) +
-                        "|" + Convert.ToString(v + 1) +
-                        "|" + Convert.ToString(this.vrndnum) +
-                        "|" + Convert.ToString(this.accounts.Count) +
-                        "|" + Convert.ToString(this.accountNum) +
-                        "|" + this.country +
-                        "|" + this.username +
-                        "|" + Convert.ToString(this.pts) +
-                        "|" + Convert.ToString(this.timer_auth) +
-                        "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Enabled) : "no searches") +
-                        "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Interval) : "-") +
-                        "| PC:" + Convert.ToString(this.pccounter);
+                    if (this.IsHandleCreated)
+                    {
+                        try
+                        {
+                            Invoke(new SetToolStripDelegate(SetToolStrip), s);
+                        }
+                        catch { }
+                    }
+                    else
+                    {
+                        this.toolStripStatusLabel1.Text += s;
+                    }
                 }
                 else
                 {
-                    this.toolStripStatusLabel1.Text = a + Convert.ToString(this.authLock) +
-                      "|" + Convert.ToString(this.checkaccount) +
-                      "|" + Convert.ToString(this.iniSearch) +
-                      "|" + Convert.ToString(this.accountVisitedX) +
-                      "|" + Convert.ToString(v + 1) +
-                      "|" + Convert.ToString(this.vrndnum) +
-                      "|" + Convert.ToString(this.accounts.Count) +
-                      "|" + Convert.ToString(this.accountNum) +
-                      "|" + this.country +
-                      "|" + this.username +
-                      "|" + Convert.ToString(this.pts) +
-                      "|" + Convert.ToString(this.timer_auth) +
-                      "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Enabled) : "no searches") +
-                      "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Interval) : "-") +
-                      "| PC:" + Convert.ToString(this.pccounter);
+                    if (this.IsHandleCreated)
+                    {
+                        try
+                        {
+                            Invoke(new SetToolStripDelegate(SetToolStrip2), s);
+                        }
+                        catch { }
+                    }
+                    else
+                    {
+                        this.toolStripStatusLabel1.Text = s;
+                    }
                 }
             }
             catch { }
