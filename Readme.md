@@ -1,6 +1,6 @@
 Better Bing Rewards Bot  
   
-1. What is does it do?  
+1. What is it and what does it do?  
 Better Bing Rewards Bot is the best professional automation tool to earn Microsoft points while searching Bing.  
   
 1.2. Features  
@@ -36,7 +36,8 @@ Better Bing Rewards Bot is the best professional automation tool to earn Microso
 - New! Custom Windows controls in setting tabs.  
 - New! Migrate old settings if any.  
 - New! Supports Australia.  
-  
+- New! Supports autostart with task scheduler.
+
 2. Requirements  
 -Windows 10 x32/x64  
 -accounts.txt file  
@@ -85,7 +86,7 @@ The "-" and "+" button lets you specify an account and the "A"-button let you ma
   
 6. Troubleshooting  
 6.1 Windows may requires .net framework v4 and vc redist 2015  
-6.2 If the bot doesn't authenticate or doesn't earns Microsoft points delete all settings file in C:/User/Username/AppData/Local/Elephant7 and start the app again!  
+6.2 Delete all settings file in C:/User/Username/AppData/Local/E7 if the bot doesn't authenticate, doesn't earns Microsoft points, internet doesn't work. 
 6.3 If the bot doesn't start delete points.sqlite in the app folder.  
 6.4 Run the bot as adminstrator.  
 6.5 Send me a dump with process explorer.  
@@ -93,7 +94,8 @@ The "-" and "+" button lets you specify an account and the "A"-button let you ma
 6.7 Ask in reddit or codeplex!  
 6.8 Make a video!  
   
-7. Changelog  
+7. Changelog
+20.05.2017 Bugfix minimize (toolbar threadsafe)  
 28.04.2017 Bugfix invalid cast exception  
 24.04.2017 Bugfix login  
 20.04.2017 Supports Australia  
