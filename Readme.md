@@ -23,7 +23,7 @@ Better Bing Rewards Bot is the best professional automation tool to earn Microso
 - Shows earned Microsoft points for each searches.  
 - Faster: Stop searches when all points are earned.  
 - Maximize income: repeat searches until all points are earned (ignores searches count up to 2x)  
-- NEW! Maximize income: Dashboard tasks: earn special dashboard tasks (not the quiz)!  
+- NEW! Maximize income: Dashboard tasks: earns daily dashboard tasks (not the quiz)!  
 - NEW! Stealthier: Custom Desktop & Mobile User Agent!  
 - NEW! Faster: Auto detect & select US language/market!  
 - NEW! Faster: Auto skip temporarily suspended accounts!  
