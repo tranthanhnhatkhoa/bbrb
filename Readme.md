@@ -36,7 +36,7 @@ Better Bing Rewards Bot is the best professional automation tool to earn Microso
 - NEW! Custom Windows controls in setting tabs.  
 - NEW! Migrate old settings if any.  
 - NEW! Supports Australia.  
-- NEW! Supports autostart with task scheduler.
+- NEW! Supports autostart with Windows task scheduler.
 
 2. Requirements  
 -Windows 10 x32/x64  
