@@ -30,13 +30,13 @@ Better Bing Rewards Bot is the best professional automation tool to earn Microso
 - NEW! Faster: Check earned Microsoft points!  
 - NEW! Stealthier: individual proxy settings for each account!  
 - NEW! Stealthier: New user authenticate with keystrokes!  
-- New! Log screen: Informations, settings and score!  
-- New! Faster searches, better authenticate, lower resources,  
+- NEW! Log screen: Informations, settings and score!  
+- NEW! Faster searches, better authenticate, lower resources,  
   new features: random order and update, bugfixes.  
-- New! Custom Windows controls in setting tabs.  
-- New! Migrate old settings if any.  
-- New! Supports Australia.  
-- New! Supports autostart with task scheduler.
+- NEW! Custom Windows controls in setting tabs.  
+- NEW! Migrate old settings if any.  
+- NEW! Supports Australia.  
+- NEW! Supports autostart with task scheduler.
 
 2. Requirements  
 -Windows 10 x32/x64  
