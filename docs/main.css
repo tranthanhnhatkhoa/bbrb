@@ -8,7 +8,7 @@ h3 {
 	margin-bottom:0px;
 	font-weight:bolder;
 }
-@media (min-width: 920px)  {
+@media (min-width: 900px)  {
 	.left {
 			/* transform: translate3d(0,0,0); */
 			overflow:hidden;
@@ -22,7 +22,7 @@ h3 {
 		padding-left:190px;
 	}
 }
-@media (max-width: 919px)  {
+@media (max-width: 889px)  {
 	.left {
 		display:none;
 	}
@@ -30,7 +30,7 @@ h3 {
 		padding-left:0px;
 	}
 }
-@media (min-width: 1080px)  { /* right column */
+@media (min-width: 1060px)  { /* right column */
 	.right {
 		/* transform: translate3d(0,0,0); */
 		overflow:hidden;
@@ -40,7 +40,7 @@ h3 {
 	}	
 }
 
-@media (max-width: 1079px)  { /* right column */
+@media (max-width: 1059px)  { /* right column */
 	.right {
 		display:none;
 	}
@@ -48,5 +48,5 @@ h3 {
 
 .wikidoc {
 	float:left;
-	width:680px;
+	width:660px;
 }
