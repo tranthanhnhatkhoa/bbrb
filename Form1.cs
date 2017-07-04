@@ -175,7 +175,7 @@ namespace BingRewardsBot
         private string accountsFile;
         private string wordsFile;
         private const bool SUPPORTER = false;
-        private const int SUPPORTERAUTOLANG = 2;
+        private const int SUPPORTERAUTOLANG = 1;
         private List<string> accounts = new List<string>();
         private List<string> words = new List<string>();
         Thread mainThread;
@@ -694,7 +694,7 @@ namespace BingRewardsBot
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.vrndnum = 0;
-                    this.spoofmktl = 1;
+                    this.spoofmktl = 0;
                     this.checkaccount = false;
 
                     int z = randAuthTimer(Convert.ToInt32(check[0]), Convert.ToInt32(check[1]));
@@ -715,7 +715,7 @@ namespace BingRewardsBot
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.vrndnum = 0;
-                    this.spoofmktl = 1;
+                    this.spoofmktl = 0;
                     this.authLock = false;
                 }
             }
@@ -726,7 +726,7 @@ namespace BingRewardsBot
                 this.dxloops = 0;
                 this.mxloops = 0;
                 this.vrndnum = 0;
-                this.spoofmktl = 1;
+                this.spoofmktl = 0;
                 this.authLock = false;
             }
         }
@@ -1244,7 +1244,9 @@ namespace BingRewardsBot
                                (task) => this.statusDebug("PC1:"),
                                    TaskScheduler.FromCurrentSynchronizationContext());
 
-            if (this.country == "US" || this.country == "IN" || this.country == "AU" || chkbox_tor.Checked == false)
+            if (this.country == "US" || this.country == "UK" || this.country == "AU"
+                || this.country == "DE" || this.country == "FR"
+                || chkbox_tor.Checked == false)
             {
                 this.authLock = true;
                 this.iniSearch = false;
@@ -1703,7 +1705,9 @@ namespace BingRewardsBot
                     bool autorotate = this.chkbox_autorotate.Checked == true ? true : false;
 
                     // callback search bot
-                    if (this.pts >= MSPOINTS && autorotate == true)
+                    if (((this.pts >= MSPOINTS && chkbox_autolang.Checked == false)  
+                        || (this.pts >= MSPOINTS && this.spoofmktl > SUPPORTERAUTOLANG))
+                        && autorotate == true)
                     {
                         if (this.timer_tor != null)
                         {
@@ -1729,7 +1733,7 @@ namespace BingRewardsBot
                         this.dxloops = 0;
                         this.mxloops = 0;
                         this.vrndnum = 0;
-                        this.spoofmktl = 1;
+                        this.spoofmktl = 0;
 
                         this.iniSearch = false;
                         this.dashboardta = false;
@@ -1739,7 +1743,8 @@ namespace BingRewardsBot
 
                         this.statusDebug("Stop1:");
                     }
-                    else if (this.pts >= MSPOINTS && autorotate == false)
+                    else if (this.pts >= MSPOINTS 
+                             && autorotate == false)
                     {
                         if (this.timer_tor != null)
                         {
@@ -1764,7 +1769,7 @@ namespace BingRewardsBot
                         this.dxloops = 0;
                         this.mxloops = 0;
                         this.authLock = false;
-                        this.spoofmktl = 1;
+                        this.spoofmktl = 0;
 
                         this.iniSearch = false;
                         this.dashboardta = false;
@@ -2537,7 +2542,9 @@ namespace BingRewardsBot
                     && !url.Contains(@"dashboard")
                     )
                 {
-                    if (this.country == "US" || this.country == "IN" || this.country == "AU" || chkbox_tor.Checked == false)
+                    if (this.country == "US" || this.country == "UK" || this.country == "AU"
+                        || this.country == "DE" || this.country == "FR" 
+                        || chkbox_tor.Checked == false)
                     {
                         this.authLock = true;
                         this.iniSearch = false;
@@ -3040,7 +3047,7 @@ namespace BingRewardsBot
                             Convert.ToInt32(auth[1]));
 
                         this.timer_auth = z > 1 ? z * 1000 : AUTHSHORT;
-                        counterTxtBox.Text = z > 1 ? decimal.Round(z / 60).ToString() + " min." : "a few sec.";
+                        counterTxtBox.SafeInvoke(() => counterTxtBox.Text = z > 1 ? decimal.Round(z / 60).ToString() + " min." : "a few sec.");
 
                         this.accountVisited[this.accountNum] = true;
                         ++this.accountVisitedX;
@@ -3059,10 +3066,10 @@ namespace BingRewardsBot
                         this.authLock = false;
                         this.siguid = "";
 
-                        this.statusTxtBox.Text = "Authenticate";
+                        this.statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Authenticate");
                         this.prevpts = 0;
                         this.pts = 0;
-                        this.pts_txtbox.Text = "0";
+                        this.pts_txtbox.SafeInvoke(() => pts_txtbox.Text = "0");
 
                         this.statusDebug("Visited:");
                     }
@@ -3095,14 +3102,14 @@ namespace BingRewardsBot
                             dbcon.Close();
                         }
 
-                        this.button1.Text = "Start";
-                        statusTxtBox.Text = "Stop";
-                        counterTxtBox.Text = "0/0";
+                        this.button1.SafeInvoke(() => button1.Text = "Start");
+                        statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Stop");
+                        counterTxtBox.SafeInvoke(() => counterTxtBox.Text = "0/0");
 
                         this.dxloops = 0;
                         this.mxloops = 0;
                         this.vrndnum = 0;
-                        this.spoofmktl = 1;
+                        this.spoofmktl = 0;
 
                         this.authLock = false;
                         this.iniSearch = false;
@@ -3257,10 +3264,10 @@ namespace BingRewardsBot
                             && SUPPORTER == true
                             )
                         {
-                            statusTxtBox.Text = "Mobilesearches";
+                            statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Mobilesearches");
                             --this.counterMx;
-                            counterTxtBox.Text = (this.countDownMobile - this.counterMx) +
-                                "/" + this.countDownMobile;
+                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx) +
+                                "/" + this.countDownMobile);
                             this.Csearch = true;
 
                             try
@@ -3346,10 +3353,10 @@ namespace BingRewardsBot
                         }
                         else if (this.counterDx > 0 && desktop == true)
                         {
-                            statusTxtBox.Text = "Desktopsearches";
+                            statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Desktopsearches");
                             --this.counterDx;
-                            counterTxtBox.Text = (this.countDownDesktop - this.counterDx) + "/"
-                                + this.countDownDesktop;
+                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx) + "/"
+                                + this.countDownDesktop);
                             this.Csearch = true;
 
                             try
@@ -3493,8 +3500,8 @@ namespace BingRewardsBot
                                 {
                                     // mobile
                                     --this.counterMx;
-                                    counterTxtBox.Text = (this.countDownMobile - this.counterMx) + "/"
-                                        + this.countDownMobile;
+                                    counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx) + "/"
+                                        + this.countDownMobile);
                                     this.Csearch = true;
                                     this.clicklist = false;
 
@@ -3505,8 +3512,8 @@ namespace BingRewardsBot
                                 {
                                     // desktop
                                     --this.counterDx;
-                                    counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
-                                        + "/" + this.countDownDesktop;
+                                    counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
+                                        + "/" + this.countDownDesktop);
                                     this.Csearch = true;
                                     this.clicklist = false;
 
@@ -3625,8 +3632,8 @@ namespace BingRewardsBot
                                 {
                                     // mobile
                                     --this.counterMx;
-                                    counterTxtBox.Text = (this.countDownMobile - this.counterMx)
-                                        + "/" + this.countDownMobile;
+                                    counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx)
+                                        + "/" + this.countDownMobile);
                                     this.Csearch = true;
                                     this.clicklist = false;
 
@@ -3637,8 +3644,8 @@ namespace BingRewardsBot
                                 {
                                     // desktop
                                     --this.counterDx;
-                                    counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
-                                        + "/" + this.countDownDesktop;
+                                    counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
+                                        + "/" + this.countDownDesktop);
                                     this.Csearch = true;
                                     this.clicklist = false;
 
@@ -3713,8 +3720,8 @@ namespace BingRewardsBot
                                         {
                                             // mobile
                                             --this.counterMx;
-                                            counterTxtBox.Text = (this.countDownMobile - this.counterMx)
-                                                + "/" + this.countDownMobile;
+                                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx)
+                                                + "/" + this.countDownMobile);
                                             this.Csearch = true;
                                             this.SubmitSearch();
                                         }
@@ -3722,8 +3729,8 @@ namespace BingRewardsBot
                                         {
                                             // desktop
                                             --this.counterDx;
-                                            counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
-                                                + "/" + this.countDownDesktop;
+                                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
+                                                + "/" + this.countDownDesktop);
                                             this.Csearch = true;
                                             this.SubmitSearch();
                                         }
@@ -3739,7 +3746,7 @@ namespace BingRewardsBot
             else if ((this.counterDx <= 0 && this.counterMx == 0 && autorotate == true && this.trialstopped == false)
                 || (this.counterDx <= 0 && (mobile == false || SUPPORTER == false) && autorotate == true && this.trialstopped == false)
                 || (this.counterMx <= 0 && desktop == false && autorotate == true && this.trialstopped == false)
-                && ((this.pts >= MSPOINTS && chkbox_autolang.Checked == false) || (this.dxloops == MAXLOOPS - 1) && ((this.mxloops == MAXLOOPS - 1) && SUPPORTER == true))
+                && (this.pts >= MSPOINTS || (this.dxloops == MAXLOOPS - 1) && ((this.mxloops == MAXLOOPS - 1) && SUPPORTER == true))
                 )
             {
                 this.qpage = 0;
@@ -3758,13 +3765,14 @@ namespace BingRewardsBot
                     this.timer_dashboardta.Enabled = false;
                 }
 
-                this.button1.Text = "Start";
-                statusTxtBox.Text = "Stop";
-                counterTxtBox.Text = "0/0";
+                this.button1.SafeInvoke(() => button1.Text = "Start");
+                statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Stop");
+                counterTxtBox.SafeInvoke(() => counterTxtBox.Text = "0/0");
+
                 this.dxloops = 0;
                 this.mxloops = 0;
                 this.vrndnum = 0;
-                this.spoofmktl = 1;
+                this.spoofmktl = 0;
 
                 this.authLock = false;
                 this.iniSearch = false;
@@ -3850,10 +3858,10 @@ namespace BingRewardsBot
                         && SUPPORTER == true
                         )
                     {
-                        statusTxtBox.Text = "Mobilesearches";
+                        statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Mobilesearches");
                         --this.counterMx;
-                        counterTxtBox.Text = (this.countDownMobile - this.counterMx) +
-                            "/" + this.countDownMobile;
+                        counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx) +
+                            "/" + this.countDownMobile);
                         this.Csearch = true;
 
                         try
@@ -3940,10 +3948,10 @@ namespace BingRewardsBot
                     }
                     else if (this.counterDx > 0 && desktop == true)
                     {
-                        statusTxtBox.Text = "Desktopsearches";
+                        statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Desktopsearches");
                         --this.counterDx;
-                        counterTxtBox.Text = (this.countDownDesktop - this.counterDx) + "/"
-                            + this.countDownDesktop;
+                        counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx) + "/"
+                            + this.countDownDesktop);
                         this.Csearch = true;
 
                         try
@@ -4087,8 +4095,8 @@ namespace BingRewardsBot
                             {
                                 // mobile
                                 --this.counterMx;
-                                counterTxtBox.Text = (this.countDownMobile - this.counterMx) + "/"
-                                    + this.countDownMobile;
+                                counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx) + "/"
+                                    + this.countDownMobile);
                                 this.Csearch = true;
                                 this.clicklist = false;
 
@@ -4099,8 +4107,8 @@ namespace BingRewardsBot
                             {
                                 // desktop
                                 --this.counterDx;
-                                counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
-                                    + "/" + this.countDownDesktop;
+                                counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
+                                    + "/" + this.countDownDesktop);
                                 this.Csearch = true;
                                 this.clicklist = false;
 
@@ -4219,8 +4227,8 @@ namespace BingRewardsBot
                             {
                                 // mobile
                                 --this.counterMx;
-                                counterTxtBox.Text = (this.countDownMobile - this.counterMx)
-                                    + "/" + this.countDownMobile;
+                                counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx)
+                                    + "/" + this.countDownMobile);
                                 this.Csearch = true;
                                 this.clicklist = false;
 
@@ -4231,8 +4239,8 @@ namespace BingRewardsBot
                             {
                                 // desktop
                                 --this.counterDx;
-                                counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
-                                    + "/" + this.countDownDesktop;
+                                counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
+                                    + "/" + this.countDownDesktop);
                                 this.Csearch = true;
                                 this.clicklist = false;
 
@@ -4307,8 +4315,8 @@ namespace BingRewardsBot
                                     {
                                         // mobile
                                         --this.counterMx;
-                                        counterTxtBox.Text = (this.countDownMobile - this.counterMx)
-                                            + "/" + this.countDownMobile;
+                                        counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx)
+                                            + "/" + this.countDownMobile);
                                         this.Csearch = true;
                                         this.SubmitSearch();
                                     }
@@ -4316,8 +4324,8 @@ namespace BingRewardsBot
                                     {
                                         // desktop
                                         --this.counterDx;
-                                        counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
-                                            + "/" + this.countDownDesktop;
+                                        counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
+                                            + "/" + this.countDownDesktop);
                                         this.Csearch = true;
                                         this.SubmitSearch();
                                     }
@@ -4615,7 +4623,9 @@ namespace BingRewardsBot
 
                 if (this.iniSearch == false
                     && this.authLock == false
-                    &&  (this.button1.Text == "Stop" || this.button1.Text == "Auto")
+                    &&  (this.button1.Text == "Stop" 
+                    || this.button1.Text == "Auto" 
+                    || this.checkaccount == true)
                     && !browserUrlTxtbox.Text.Contains(@"landing")
                     && !browserUrlTxtbox.Text.Contains(@"/rewards/dashboard")
                     )
@@ -4737,7 +4747,9 @@ namespace BingRewardsBot
                         if (a >= 0 && pts < MSPOINTS &&
                             this.accountNum < this.accounts.Count() &&
                             this.accountVisited[this.accountNum] == false &&
-                            (this.country == "US" || this.country == "IN" || this.country == "AU" || chkbox_tor.Checked == false))
+                            (this.country == "US" || this.country == "UK" || this.country == "AU"
+                        || this.country == "DE" || this.country == "FR"
+                        || chkbox_tor.Checked == false))
                         {
                             //http://stackoverflow.com/questions/904478/how-to-fix-the-memory-leak-in-ie-webbrowser-control
                             GC.Collect();
@@ -4747,7 +4759,7 @@ namespace BingRewardsBot
                             this.dashboardta = false;
                             this.ldashboardta = false;
                             this.iniSearch = false;
-                            this.spoofmktl = 1;
+                            this.spoofmktl = 0;
 
                             this.pts = 0;
                             this.siguid = "";
@@ -4792,7 +4804,7 @@ namespace BingRewardsBot
                             this.dashboardta = false;
                             this.ldashboardta = false;
                             this.Csearch = false;
-                            this.spoofmktl = 1;
+                            this.spoofmktl = 0;
 
                             try
                             {
@@ -4817,7 +4829,9 @@ namespace BingRewardsBot
                             }
                             catch { }
 
-                            if ((this.country != "US" || this.country != "IN") && chkbox_tor.Checked == true)
+                            if ((this.country == "US" || this.country == "UK" || this.country == "AU"
+                                || this.country == "DE" || this.country == "FR"
+                                || chkbox_tor.Checked == false) && chkbox_tor.Checked == true)
                             {
                                 this.toridswitcher();
                             }
@@ -4943,7 +4957,7 @@ namespace BingRewardsBot
 
                         this.dxloops = 0;
                         this.mxloops = 0;
-                        this.spoofmktl = 1;
+                        this.spoofmktl = 0;
 
                         this.authLock = true;
                         this.dashboardta = false;
@@ -5010,7 +5024,7 @@ namespace BingRewardsBot
 
                             this.dxloops = 0;
                             this.mxloops = 0;
-                            this.spoofmktl = 1;
+                            this.spoofmktl = 0;
 
                             this.authLock = true;
                             this.iniSearch = false;
@@ -5513,9 +5527,8 @@ namespace BingRewardsBot
 
                     this.dxloops = 0;
                     this.mxloops = 0;
-                    //this.logtries = 0;
                     this.vrndnum = 0;
-                    this.spoofmktl = 1;
+                    this.spoofmktl = 0;
                     this.authLock = false;
 
                     this.accountVisitedX = 0;
@@ -6148,7 +6161,7 @@ namespace BingRewardsBot
                     this.mxloops = 0;
                     this.vrndnum = 0;
                     this.siguid = "";
-                    this.spoofmktl = 1;
+                    this.spoofmktl = 0;
 
                     this.accountVisitedX = 0;
                     this.iniSearch = false;
@@ -6359,7 +6372,9 @@ namespace BingRewardsBot
         {
             this.toridswitcher();
 
-            if (this.country != "US" || this.country != "IN")
+            if (this.country == "US" || this.country == "UK" || this.country == "AU"
+                        || this.country == "DE" || this.country == "FR"
+                        || chkbox_tor.Checked == false)
             {
                 SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                 dbcon.Open();
@@ -6561,7 +6576,9 @@ namespace BingRewardsBot
         }
         private void newUsIp()
         {
-            if (this.country == "US" || this.country == "IN" || this.country == "AU")
+            if (this.country == "US" || this.country == "UK" || this.country == "AU"
+                        || this.country == "DE" || this.country == "FR"
+                        || chkbox_tor.Checked == false)
             {
                 SQLiteConnection dbcon = new SQLiteConnection("Data Source=points.sqlite;Version=3;");
                 dbcon.Open();
@@ -7083,7 +7100,8 @@ namespace BingRewardsBot
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.vrndnum = 0;
-                    this.spoofmktl = 1;
+                    this.spoofmktl = 0;
+
                     this.authLock = false;
                     this.iniSearch = false;
                     this.dashboardta = false;
@@ -7249,7 +7267,8 @@ namespace BingRewardsBot
                         this.dxloops = 0;
                         this.mxloops = 0;
                         this.vrndnum = 0;
-                        this.spoofmktl = 1;
+                        this.spoofmktl = 0;
+
                         this.authLock = false;
                         this.iniSearch = false;
                         this.dashboardta = false;
