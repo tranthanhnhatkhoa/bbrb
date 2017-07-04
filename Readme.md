@@ -37,7 +37,7 @@ Better Bing Rewards Bot is the best professional automation tool to earn Microso
 - NEW! Migrate old settings if any.  
 - NEW! Supports autostart with Windows task scheduler.
 - NEW! Supports Australia, France, Germany, U.K.
-- NEW! Maximize income: Autorotate language for each account (optional)
+- NEW! Maximize income: Autorotate regions for each account (optional)
 
 2. Requirements  
 -Windows 10 x32/x64  
@@ -96,7 +96,7 @@ The "-" and "+" button lets you specify an account and the "A"-button let you ma
 6.8 Make a video!  
   
 7. Changelog
-03.07.2017 Supports Australia, U.K., France, Germany (unsupport India), Autorotate language!
+03.07.2017 Supports Australia, U.K., France, Germany (unsupport India), Autorotate regions
 20.05.2017 Bugfix minimize (toolbar threadsafe)  
 28.04.2017 Bugfix invalid cast exception  
 24.04.2017 Bugfix login  
