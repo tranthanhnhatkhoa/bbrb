@@ -413,6 +413,7 @@
             // label27
             // 
             this.label27.AutoSize = true;
+            this.label27.Enabled = false;
             this.label27.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label27.Location = new System.Drawing.Point(547, 57);
             this.label27.Name = "label27";
