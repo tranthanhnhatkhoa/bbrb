@@ -8,33 +8,39 @@ h3 {
 	margin-bottom:0px;
 	font-weight:bolder;
 }
-@media (min-width: 940px)  {
+@media (min-width: 920px)  {
 	.left {
 			/* transform: translate3d(0,0,0); */
 			overflow:hidden;
 			/*position:fixed;
 			top:0px;
 			left:0px; */
-			padding-right:30px;
+			padding-right:20px;
 			float:left;
+	}	
+	.footer {
+		padding-left:190px;
 	}
 }
-@media (max-width: 939px)  {
+@media (max-width: 919px)  {
 	.left {
 		display:none;
 	}
+	.footer {
+		padding-left:0px;
+	}
 }
-@media (min-width: 1100px)  { /* right column */
+@media (min-width: 1080px)  { /* right column */
 	.right {
 		/* transform: translate3d(0,0,0); */
 		overflow:hidden;
 		position:fixed;
 		top:0px;
 		left:1000px;
-	}
+	}	
 }
 
-@media (max-width: 1099px)  { /* right column */
+@media (max-width: 1079px)  { /* right column */
 	.right {
 		display:none;
 	}
@@ -42,5 +48,5 @@ h3 {
 
 .wikidoc {
 	float:left;
-	width:700px;
+	width:680px;
 }

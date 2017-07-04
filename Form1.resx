@@ -126,7 +126,7 @@
   <data name="richTextBox1.Text" xml:space="preserve">
     <value>Better Bing Rewards Bot
 
-1. What is does it do?
+1. What is it and what does it do?
 Better Bing Rewards Bot is the best professional automation tool to earn Microsoft points while searching Bing.
 
 1.2. Features
@@ -149,18 +149,20 @@ Better Bing Rewards Bot is the best professional automation tool to earn Microso
 - Shows earned Microsoft points for each searches.
 - Faster: Stop searches when all points are earned. 
 - Maximize income: repeat searches until all points are earned (ignores searches count up to 2x)
-- NEW! Maximize income: Dashboard tasks: earn special dashboard tasks (not the quiz)!
+- NEW! Maximize income: Dashboard tasks: earns daily dashboard tasks (not the quiz)!
 - NEW! Stealthier: Custom Desktop &amp; Mobile User Agent!
 - NEW! Faster: Auto detect &amp; select US language/market!
 - NEW! Faster: Auto skip temporarily suspended accounts!
 - NEW! Faster: Check earned Microsoft points!
 - NEW! Stealthier: individual proxy settings for each account!
 - NEW! Stealthier: New user authenticate with keystrokes!
-- New! Log screen: Informations, settings and score!
-- New! Faster searches, better authenticate, lower resources, 
+- NEW! Log screen: Informations, settings and score!
+- NEW! Faster searches, better authenticate, lower resources, 
   new features: random order and update, bugfixes.
-- New! Custom Windows controls in setting tabs.
-- New! Migrate old settings if any.
+- NEW! Custom Windows controls in setting tabs.
+- NEW! Migrate old settings if any.
+- NEW! Supports Australia and India.
+- NEW! Supports autostart with Windows task scheduler.
 
 2. Requirements
 -Windows 10
@@ -215,7 +217,7 @@ The "-" and "+" button lets you specify an account and the "A"-button let you ma
 
 6. Troubleshooting
 6.1 Windows may requires .net framework v4 and vc redist 2015
-6.2 If the bot doesn't authenticate or doesn't earns Microsoft points delete all settings file in C:/User/Username/AppData/Local/Elephant7 and start the app again!
+6.2 Delete all settings file in C:/User/Username/AppData/Local/E7 if the bot doesn't authenticate, doesn't earns Microsoft points, internet doesn't work.
 6.3 If the bot doesn't start delete points.sqlite in the app folder.
 6.4 Run the bot as adminstrator.
 6.5 Send me a dump with process explorer.
@@ -224,6 +226,10 @@ The "-" and "+" button lets you specify an account and the "A"-button let you ma
 6.8 Make a video!
 
 7. Changelog
+20.05.2017 Bugfix minimize (toolbar threadsafe)
+28.04.2017 Bugfix invalid cast exception
+24.04.2017 Bugfix login
+20.04.2017 Supports Australia
 16.04.2017 Bugfix login and language settings
 02.04.2017 Update application settings
 29.03.2017 Bugfix custom proxies

@@ -156,7 +156,7 @@ namespace BingRewardsBot
         private bool checkaccount = false;
         private string trialRegKey;
         private const int FREEX = 9999999; //15500000;  //25500000
-        private const int FREEA = 3;
+        private const int FREEA = 50;
         private const int DIVIDE = 50;
         private int trialCountUp = 0;
         private int trialCountDownReg = -1;
@@ -174,8 +174,7 @@ namespace BingRewardsBot
         private int accountNum = -1;
         private string accountsFile;
         private string wordsFile;
-        private const bool SUPPORTER = false;
-        private const int SUPPORTERAUTOLANG = 2;
+        private const bool SUPPORTER = true;
         private List<string> accounts = new List<string>();
         private List<string> words = new List<string>();
         Thread mainThread;
@@ -694,7 +693,7 @@ namespace BingRewardsBot
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.vrndnum = 0;
-                    this.spoofmktl = 1;
+                    this.spoofmktl = 0;
                     this.checkaccount = false;
 
                     int z = randAuthTimer(Convert.ToInt32(check[0]), Convert.ToInt32(check[1]));
@@ -715,7 +714,7 @@ namespace BingRewardsBot
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.vrndnum = 0;
-                    this.spoofmktl = 1;
+                    this.spoofmktl = 0;
                     this.authLock = false;
                 }
             }
@@ -726,7 +725,7 @@ namespace BingRewardsBot
                 this.dxloops = 0;
                 this.mxloops = 0;
                 this.vrndnum = 0;
-                this.spoofmktl = 1;
+                this.spoofmktl = 0;
                 this.authLock = false;
             }
         }
@@ -1044,8 +1043,9 @@ namespace BingRewardsBot
                 await DownloadAsync(BRI18NUS + this.siguid).ContinueWith(
                     (task) => this.statusDebug("UM1:"),
                      TaskScheduler.FromCurrentSynchronizationContext());
-                
-                await Task.Delay(5000);
+
+             
+                Thread.Sleep(500);
                 this.WDCounter = 0;
                 this.statusTxtBox.Text = "Connected";
 
@@ -1080,7 +1080,7 @@ namespace BingRewardsBot
                     (task) => this.statusDebug("UM1.1:"),
                         TaskScheduler.FromCurrentSynchronizationContext());
 
-                await Task.Delay(5000);
+                Thread.Sleep(500);
 
                 this.WDCounter = 0;
                 this.statusTxtBox.Text = "Connected";
@@ -1097,7 +1097,7 @@ namespace BingRewardsBot
                     (task) => this.statusDebug("UM1.1:"),
                         TaskScheduler.FromCurrentSynchronizationContext());
 
-                await Task.Delay(5000);
+                Thread.Sleep(500);
 
                 this.WDCounter = 0;
                 this.statusTxtBox.Text = "Connected";
@@ -1114,7 +1114,7 @@ namespace BingRewardsBot
                     (task) => this.statusDebug("UM1.1:"),
                         TaskScheduler.FromCurrentSynchronizationContext());
 
-                await Task.Delay(5000);
+                Thread.Sleep(500);
 
                 this.WDCounter = 0;
                 this.statusTxtBox.Text = "Connected";
@@ -1131,7 +1131,7 @@ namespace BingRewardsBot
                     (task) => this.statusDebug("UM1.1:"),
                         TaskScheduler.FromCurrentSynchronizationContext());
 
-                await Task.Delay(5000);
+                Thread.Sleep(500);
 
                 this.WDCounter = 0;
                 this.statusTxtBox.Text = "Connected";
@@ -1140,13 +1140,14 @@ namespace BingRewardsBot
                     (task) => this.statusDebug("UM1.1:"),
                         TaskScheduler.FromCurrentSynchronizationContext());
             }
+
             
             // first step after sign in (very important) navigate bing.com or bing.com/rewards
             //await DownloadAsync("https://www.bing.com/rewards/dashboard").ContinueWith(
             //    (task) => this.statusDebug("UM2:"),
             //       TaskScheduler.FromCurrentSynchronizationContext());
 
-            await Task.Delay(5000);
+            Thread.Sleep(500);
 
             this.WDCounter = 0;
 
@@ -1210,19 +1211,16 @@ namespace BingRewardsBot
                 if (this.siguid != "")
                 {
                     statusTxtBox.Text = "Connected";
-                    await DownloadAsync(BRSIGNIN + this.siguid).ContinueWith(
+                    DownloadAsync(BRSIGNIN + this.siguid).ContinueWith(
                         (task) => this.statusDebug("Finalize UM:"),
                            TaskScheduler.FromCurrentSynchronizationContext());
-
                 } else
                 {
                     statusTxtBox.Text = "Dashboard";
-                    await DownloadAsync("https://www.bing.com/rewards/dashboard").ContinueWith(
-                        (task) => this.statusDebug("DB:"),
-                            TaskScheduler.FromCurrentSynchronizationContext());
+                    DownloadAsync("https://www.bing.com/rewards/dashboard").ContinueWith(
+                   (task) => this.statusDebug("DB:"),
+                      TaskScheduler.FromCurrentSynchronizationContext());
                 }
-
-                await Task.Delay(5000);
             }
            
             //htmlNow = await DownloadAsync("https://www.bing.com/rewards/dashboard");
@@ -1729,7 +1727,7 @@ namespace BingRewardsBot
                         this.dxloops = 0;
                         this.mxloops = 0;
                         this.vrndnum = 0;
-                        this.spoofmktl = 1;
+                        this.spoofmktl = 0;
 
                         this.iniSearch = false;
                         this.dashboardta = false;
@@ -1764,7 +1762,7 @@ namespace BingRewardsBot
                         this.dxloops = 0;
                         this.mxloops = 0;
                         this.authLock = false;
-                        this.spoofmktl = 1;
+                        this.spoofmktl = 0;
 
                         this.iniSearch = false;
                         this.dashboardta = false;
@@ -3005,10 +3003,10 @@ namespace BingRewardsBot
             if ((this.counterDx <= 0 && this.counterMx <= 0 && autorotate == true && this.trialstopped == false)
                 || (this.counterDx <= 0 && (mobile == false || SUPPORTER == false) && autorotate == true && this.trialstopped == false)
                 || (this.counterMx <= 0 && desktop == false && autorotate == true && this.trialstopped == false)
-                && ((this.pts >= MSPOINTS && chkbox_autolang.Checked == false) || (this.dxloops == MAXLOOPS - 1) && ((this.mxloops == MAXLOOPS - 1) && SUPPORTER == true))
+                && (this.pts >= MSPOINTS || (this.dxloops == MAXLOOPS - 1) && ((this.mxloops == MAXLOOPS - 1) && SUPPORTER == true))
                 )
             {
-                if (this.spoofmktl > SUPPORTERAUTOLANG || chkbox_autolang.Checked == false)
+                if (this.spoofmktl > 4 || chkbox_autolang.Checked == false)
                 {
                     this.Csearch = false;
 
@@ -3053,13 +3051,14 @@ namespace BingRewardsBot
                         this.iniSearch = false;
                         this.dashboardta = false;
                         this.ldashboardta = false;
-                        this.spoofmktl = 0;
+                        this.spoofmktl = 0; 
 
                         this.Csearch = false;
                         this.authLock = false;
                         this.siguid = "";
 
                         this.statusTxtBox.Text = "Authenticate";
+
                         this.prevpts = 0;
                         this.pts = 0;
                         this.pts_txtbox.Text = "0";
@@ -3102,7 +3101,7 @@ namespace BingRewardsBot
                         this.dxloops = 0;
                         this.mxloops = 0;
                         this.vrndnum = 0;
-                        this.spoofmktl = 1;
+                        this.spoofmktl = 0;
 
                         this.authLock = false;
                         this.iniSearch = false;
@@ -3130,23 +3129,12 @@ namespace BingRewardsBot
                
                 } else
                 {
-                    if (timer_searches != null)
+                    if (this.spoofmktl >= listBox1.SelectedIndex)
                     {
-                        this.timer_searches.Enabled = false;
-                        this.Csearch = false;
+                        ++this.spoofmktl;
                     }
 
-                    this.dxloops = 0;
-                    string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
-                    this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
-                        Convert.ToInt32(wait[1]));
-
-                    this.mxloops = 0;
-                    wait = Properties.Settings.Default.set_counter.ToString().Split('-');
-                    this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
-                        Convert.ToInt32(wait[1]));                                    
-
-                    if (listBox1.SelectedIndex == this.spoofmktl)
+                    if (listBox1.SelectedIndex == this.spoofmktl && this.spoofmktl < 5)
                     {
                         ++this.spoofmktl;
                     }
@@ -3155,8 +3143,8 @@ namespace BingRewardsBot
                     {
                         this.WDCounter = 0;
                         await DownloadAsync(BRI18NUS + this.siguid);
-                        await Task.Delay(9000);
 
+                        await Task.Delay(2000);
                         this.WDCounter = 0;
                         await DownloadAsync("https://account.microsoft.com/?lang=en-US");
                     }
@@ -3183,8 +3171,8 @@ namespace BingRewardsBot
                     {
                         this.WDCounter = 0;
                         await DownloadAsync(BRI18NGB + this.siguid);
-                        await Task.Delay(9000);
 
+                        await Task.Delay(2000);
                         this.WDCounter = 0;
                         await DownloadAsync("https://account.microsoft.com/?lang=en-GB");
                     }
@@ -3192,7 +3180,8 @@ namespace BingRewardsBot
                     {
                         this.WDCounter = 0;
                         await DownloadAsync(BRI18NFR + this.siguid);
-                        await Task.Delay(9000);
+
+                        await Task.Delay(2000);
 
                         this.WDCounter = 0;
                         await DownloadAsync("https://account.microsoft.com/?lang=fr-FR");
@@ -3200,8 +3189,10 @@ namespace BingRewardsBot
                     else if (this.spoofmktl == 3)
                     {
                         this.WDCounter = 0;
+
                         await DownloadAsync(BRI18NDE + this.siguid);
-                        await Task.Delay(9000);
+
+                        await Task.Delay(2000);
 
                         this.WDCounter = 0;
                         await DownloadAsync("https://account.microsoft.com/?lang=de-DE");
@@ -3209,15 +3200,50 @@ namespace BingRewardsBot
                     else if (this.spoofmktl == 4)
                     {
                         this.WDCounter = 0;
+
                         await DownloadAsync(BRI18NAU + this.siguid);
-                        await Task.Delay(9000);
+
+                        await Task.Delay(2000);
 
                         this.WDCounter = 0;
                         await DownloadAsync("https://account.microsoft.com/?lang=en-AU");
                     }
 
                     ++this.spoofmktl;
-                    await Task.Delay(9000);                    
+                    await Task.Delay(2000);
+
+                    this.dxloops = MAXLOOPS;
+                    string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                    this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                        Convert.ToInt32(wait[1]));
+                    
+                    this.mxloops = MAXLOOPS;
+                    wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                    this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                        Convert.ToInt32(wait[1]));
+
+                    if (timer_searches != null)
+                    {
+                        this.timer_searches.Enabled = false;
+                        this.Csearch = false;
+                    }
+
+                    // max out
+                    if (this.counterDx <= 0 && this.dxloops < MAXLOOPS)
+                    {
+                        this.dxloops++;
+                        wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                        this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                            Convert.ToInt32(wait[1]));
+                    }
+
+                    if (this.counterMx <= 0 && this.mxloops < MAXLOOPS && SUPPORTER == true)
+                    {
+                        this.mxloops++;
+                        wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                        this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                            Convert.ToInt32(wait[1]));
+                    }
 
                     // searches loop
                     ++this.trialCountUp;
@@ -3310,6 +3336,7 @@ namespace BingRewardsBot
                                     //       (task) => this.statusDebug("Search:"),
                                     //        TaskScheduler.FromCurrentSynchronizationContext());
                                 }
+
                             }
                             catch
                             {
@@ -3734,12 +3761,13 @@ namespace BingRewardsBot
                         }
                     }
                 }
+
                 // semi-automatic
             }
             else if ((this.counterDx <= 0 && this.counterMx == 0 && autorotate == true && this.trialstopped == false)
                 || (this.counterDx <= 0 && (mobile == false || SUPPORTER == false) && autorotate == true && this.trialstopped == false)
                 || (this.counterMx <= 0 && desktop == false && autorotate == true && this.trialstopped == false)
-                && ((this.pts >= MSPOINTS && chkbox_autolang.Checked == false) || (this.dxloops == MAXLOOPS - 1) && ((this.mxloops == MAXLOOPS - 1) && SUPPORTER == true))
+                && (this.pts >= MSPOINTS || (this.dxloops == MAXLOOPS - 1) && ((this.mxloops == MAXLOOPS - 1) && SUPPORTER == true))
                 )
             {
                 this.qpage = 0;
@@ -3764,7 +3792,7 @@ namespace BingRewardsBot
                 this.dxloops = 0;
                 this.mxloops = 0;
                 this.vrndnum = 0;
-                this.spoofmktl = 1;
+                this.spoofmktl = 0;
 
                 this.authLock = false;
                 this.iniSearch = false;
@@ -4747,7 +4775,7 @@ namespace BingRewardsBot
                             this.dashboardta = false;
                             this.ldashboardta = false;
                             this.iniSearch = false;
-                            this.spoofmktl = 1;
+                            this.spoofmktl = 0;
 
                             this.pts = 0;
                             this.siguid = "";
@@ -4792,7 +4820,7 @@ namespace BingRewardsBot
                             this.dashboardta = false;
                             this.ldashboardta = false;
                             this.Csearch = false;
-                            this.spoofmktl = 1;
+                            this.spoofmktl = 0;
 
                             try
                             {
@@ -4943,7 +4971,7 @@ namespace BingRewardsBot
 
                         this.dxloops = 0;
                         this.mxloops = 0;
-                        this.spoofmktl = 1;
+                        this.spoofmktl = 0;
 
                         this.authLock = true;
                         this.dashboardta = false;
@@ -5010,7 +5038,7 @@ namespace BingRewardsBot
 
                             this.dxloops = 0;
                             this.mxloops = 0;
-                            this.spoofmktl = 1;
+                            this.spoofmktl = 0;
 
                             this.authLock = true;
                             this.iniSearch = false;
@@ -5515,7 +5543,7 @@ namespace BingRewardsBot
                     this.mxloops = 0;
                     //this.logtries = 0;
                     this.vrndnum = 0;
-                    this.spoofmktl = 1;
+                    this.spoofmktl = 0;
                     this.authLock = false;
 
                     this.accountVisitedX = 0;
@@ -5722,29 +5750,10 @@ namespace BingRewardsBot
                     itm = new ListViewItem("Tor settings:" + BingRewardsBot.Properties.Settings.Default.set_torsettings);
                     itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
-                    string lang = "";
-                    switch (BingRewardsBot.Properties.Settings.Default.set_lang)
-                    {
-                        case 0:
-                            lang = "Lang:US";
-                            break;
-                        case 1:
-                            lang = "Lang:UK";
-                            break;
-                        case 2:
-                            lang = "Lang:FR";
-                            break;
-                        case 3:
-                            lang = "Lang:DE";
-                            break;
-                        case 4:
-                            lang = "Lang:AU";
-                            break;
-                    }
-                    itm = new ListViewItem(lang);
+                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_lang == 0 ? "Lang: US" : "Lang: UK");
                     itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
-                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_chkbox_autolang == true ? "Autorotate lang:true" : "Auto lang:false");
+                    itm = new ListViewItem(BingRewardsBot.Properties.Settings.Default.set_chkbox_autolang == true ? "True" : "False");
                     itm.Font = new Font(log.Font, FontStyle.Regular);
                     log.Items.Add(itm);
 
@@ -6148,7 +6157,7 @@ namespace BingRewardsBot
                     this.mxloops = 0;
                     this.vrndnum = 0;
                     this.siguid = "";
-                    this.spoofmktl = 1;
+                    this.spoofmktl = 0;
 
                     this.accountVisitedX = 0;
                     this.iniSearch = false;
@@ -6889,7 +6898,7 @@ namespace BingRewardsBot
                            //"|" + Convert.ToString(this.pts) +
                            "|DX" + Convert.ToString(this.counterDx) +
                            "|MX" + Convert.ToString(this.counterMx) +
-                           "|AL" + Convert.ToString(this.spoofmktl-1 < 0 ? listBox1.SelectedIndex : this.spoofmktl - 1) +
+                           "|AL" + Convert.ToString(this.spoofmktl) +
                            "|" + Convert.ToString(this.timer_auth) +
                            "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Enabled) : "no searches") +
                            "|" + (this.timer_searches != null ? Convert.ToString(this.timer_searches.Interval) : "-") +
@@ -7083,7 +7092,7 @@ namespace BingRewardsBot
                     this.dxloops = 0;
                     this.mxloops = 0;
                     this.vrndnum = 0;
-                    this.spoofmktl = 1;
+                    this.spoofmktl = 0;
                     this.authLock = false;
                     this.iniSearch = false;
                     this.dashboardta = false;
@@ -7249,7 +7258,7 @@ namespace BingRewardsBot
                         this.dxloops = 0;
                         this.mxloops = 0;
                         this.vrndnum = 0;
-                        this.spoofmktl = 1;
+                        this.spoofmktl = 0;
                         this.authLock = false;
                         this.iniSearch = false;
                         this.dashboardta = false;

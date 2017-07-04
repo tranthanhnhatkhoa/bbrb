@@ -108,6 +108,8 @@
             this.passwd_txtbox = new System.Windows.Forms.TextBox();
             this.regcode_txtbox = new System.Windows.Forms.TextBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.chkbox_autolang = new System.Windows.Forms.CheckBox();
+            this.label27 = new System.Windows.Forms.Label();
             this.updatetab.SuspendLayout();
             this.btn_ip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -355,6 +357,8 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage2.Controls.Add(this.label27);
+            this.tabPage2.Controls.Add(this.chkbox_autolang);
             this.tabPage2.Controls.Add(this.label26);
             this.tabPage2.Controls.Add(this.txtbox_autostartrecurrence);
             this.tabPage2.Controls.Add(this.label25);
@@ -563,7 +567,10 @@
             this.listBox1.ItemHeight = 14;
             this.listBox1.Items.AddRange(new object[] {
             "US english",
-            "India"});
+            "UK english",
+            "France",
+            "Germany",
+            "Australia"});
             this.listBox1.Location = new System.Drawing.Point(355, 58);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(131, 32);
@@ -998,6 +1005,27 @@
             this.notifyIcon1.Text = "notifyIcon1";
             this.notifyIcon1.Visible = true;
             // 
+            // chkbox_autolang
+            // 
+            this.chkbox_autolang.AutoSize = true;
+            this.chkbox_autolang.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.chkbox_autolang.Location = new System.Drawing.Point(668, 57);
+            this.chkbox_autolang.Name = "chkbox_autolang";
+            this.chkbox_autolang.Size = new System.Drawing.Size(46, 18);
+            this.chkbox_autolang.TabIndex = 56;
+            this.chkbox_autolang.Text = "Yes";
+            this.chkbox_autolang.UseVisualStyleBackColor = true;
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label27.Location = new System.Drawing.Point(538, 57);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(125, 14);
+            this.label27.TabIndex = 57;
+            this.label27.Text = "Autorotate language:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1105,6 +1133,8 @@
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.TextBox txtbox_autostartrecurrence;
         private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.CheckBox chkbox_autolang;
     }
 }
 
