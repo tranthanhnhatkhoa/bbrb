@@ -52,6 +52,8 @@
             this.accountNameTxtBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label27 = new System.Windows.Forms.Label();
+            this.chkbox_autolang = new System.Windows.Forms.CheckBox();
             this.label26 = new System.Windows.Forms.Label();
             this.txtbox_autostartrecurrence = new System.Windows.Forms.TextBox();
             this.label25 = new System.Windows.Forms.Label();
@@ -108,8 +110,6 @@
             this.passwd_txtbox = new System.Windows.Forms.TextBox();
             this.regcode_txtbox = new System.Windows.Forms.TextBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.chkbox_autolang = new System.Windows.Forms.CheckBox();
-            this.label27 = new System.Windows.Forms.Label();
             this.updatetab.SuspendLayout();
             this.btn_ip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -409,6 +409,27 @@
             this.tabPage2.Size = new System.Drawing.Size(728, 486);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Settings";
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label27.Location = new System.Drawing.Point(547, 57);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(115, 14);
+            this.label27.TabIndex = 57;
+            this.label27.Text = "Autorotate regions:";
+            // 
+            // chkbox_autolang
+            // 
+            this.chkbox_autolang.AutoSize = true;
+            this.chkbox_autolang.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.chkbox_autolang.Location = new System.Drawing.Point(668, 57);
+            this.chkbox_autolang.Name = "chkbox_autolang";
+            this.chkbox_autolang.Size = new System.Drawing.Size(46, 18);
+            this.chkbox_autolang.TabIndex = 56;
+            this.chkbox_autolang.Text = "Yes";
+            this.chkbox_autolang.UseVisualStyleBackColor = true;
             // 
             // label26
             // 
@@ -1004,27 +1025,6 @@
             // 
             this.notifyIcon1.Text = "notifyIcon1";
             this.notifyIcon1.Visible = true;
-            // 
-            // chkbox_autolang
-            // 
-            this.chkbox_autolang.AutoSize = true;
-            this.chkbox_autolang.Font = new System.Drawing.Font("Tahoma", 9F);
-            this.chkbox_autolang.Location = new System.Drawing.Point(668, 57);
-            this.chkbox_autolang.Name = "chkbox_autolang";
-            this.chkbox_autolang.Size = new System.Drawing.Size(46, 18);
-            this.chkbox_autolang.TabIndex = 56;
-            this.chkbox_autolang.Text = "Yes";
-            this.chkbox_autolang.UseVisualStyleBackColor = true;
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label27.Location = new System.Drawing.Point(538, 57);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(125, 14);
-            this.label27.TabIndex = 57;
-            this.label27.Text = "Autorotate language:";
             // 
             // Form1
             // 
