@@ -2491,7 +2491,6 @@ namespace BingRewardsBot
                     }
                     else
                     {
-
                         string code = this.culture.ToString();
 
                         if (code == "en-US" || code == "in-Hin")
@@ -2993,6 +2992,528 @@ namespace BingRewardsBot
             }
         }
 
+        private async void regionSearch()
+        {
+            bool autorotate = BingRewardsBot.Properties.Settings.Default.set_autorotate;
+            bool mobile = BingRewardsBot.Properties.Settings.Default.set_mobile;
+            bool desktop = BingRewardsBot.Properties.Settings.Default.set_desktop;
+
+            // searches loop
+            ++this.trialCountUp;
+
+            if (SUPPORTER == true)
+            {
+                this.Text = TITLE + " Version: Beta " + ASSEMBLY;
+            }
+            else
+            {
+                double x = (double)100 / FREEX;
+                double z = x * (this.trialCountDownReg - (this.trialCountUp * DIVIDE));
+                this.Text = TITLE + " : " + Math.Round(z) + "% Shareware" + " Version: Beta " + ASSEMBLY;
+            }
+
+            if (statusTxtBox.Text == "Mobilesearches" && SUPPORTER == true)
+            {
+                this.ChangeUserAgent(this.txtboxcustommobile.Text);
+            }
+            else
+            {
+                this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
+            }
+
+            //**************************
+            // default search
+            //**************************
+            if (randomNumber(0, 11) > randomNumber(0, 3))
+            {
+                this.qpage = 0;
+
+                natural_search();
+
+                // mobile searches
+                if (((randomNumber(0, 9) > (randomNumber(3, 7)) && this.counterMx > 0 && mobile == true) ||
+                    ((mobile == true && this.counterDx <= 0) || (mobile == true && desktop == false)))
+                    && SUPPORTER == true
+                    )
+                {
+                    statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Mobilesearches");
+                    --this.counterMx;
+                    counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx) +
+                        "/" + this.countDownMobile);
+                    this.Csearch = true;
+
+                    try
+                    {
+                        if (browser.Document.GetElementById("sb_form_q") != null)
+                        {
+                            this.ChangeUserAgent(this.txtboxcustommobile.Text);
+
+                            if (browser.Document.GetElementById("sb_form_q") != null)
+                            {
+                                browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
+
+                                if (browser.Document.GetElementById("sbBtn") != null)
+                                {
+                                    browser.Document.GetElementById("sbBtn").InvokeMember("click");
+                                }
+                                else if (browser.Document.GetElementById("sb_form_go") != null)
+                                {
+                                    browser.Document.GetElementById("sb_form_go").InvokeMember("click");
+                                }
+                                else
+                                {
+                                    browser.Navigate("http://bing.com/search?q=" + this.query);
+
+                                    //SearchAsync("http://bing.com/search?q=" + this.query).ContinueWith(
+                                    //    (task) => this.statusDebug("Search:"),
+                                    //        TaskScheduler.FromCurrentSynchronizationContext());
+                                }
+                            }
+                        }
+                        else if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
+                        {
+                            this.clicklist = false;
+                            browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                + this.clickref);
+
+                            //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
+                            //         (task) => this.statusDebug("Search:"),
+                            //             TaskScheduler.FromCurrentSynchronizationContext());
+                        }
+                        else
+                        {
+                            this.clicklist = false;
+                            browser.Navigate("http://bing.com/search?q=" + this.query);
+
+                            //SearchAsync("http://bing.com/search?q=" + this.query).ContinueWith(
+                            //       (task) => this.statusDebug("Search:"),
+                            //        TaskScheduler.FromCurrentSynchronizationContext());
+                        }
+                    }
+                    catch
+                    {
+                        if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
+                        {
+                            this.clicklist = false;
+                            browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                + this.clickref);
+
+                            //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
+                            //        (task) => this.statusDebug("Search:"),
+                            //            TaskScheduler.FromCurrentSynchronizationContext());
+                        }
+                        else
+                        {
+                            this.clicklist = false;
+                            browser.Navigate("http://bing.com/search?q=" + this.query);
+
+                            //SearchAsync("http://bing.com/search?q=" + this.query).ContinueWith(
+                            //       (task) => this.statusDebug("Search:"),
+                            //       TaskScheduler.FromCurrentSynchronizationContext());
+                        }
+                    }
+
+                    browser.Invoke(new Action(() =>
+                    {
+                        while (browser.ReadyState != WebBrowserReadyState.Complete)
+                        {
+                            Application.DoEvents();
+                        }
+                    }));
+
+                    // desktop searches
+                }
+                else if (this.counterDx > 0 && desktop == true)
+                {
+                    statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Desktopsearches");
+                    --this.counterDx;
+                    counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx) + "/"
+                        + this.countDownDesktop);
+                    this.Csearch = true;
+
+                    try
+                    {
+                        if (browser.Document.GetElementById("sb_form_q") != null)
+                        {
+                            this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
+
+                            if (browser.Document.GetElementById("sb_form_q") != null)
+                            {
+                                browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
+
+                                if (browser.Document.GetElementById("sbBtn") != null)
+                                {
+                                    browser.Document.GetElementById("sbBtn").InvokeMember("click");
+                                }
+                                else if (browser.Document.GetElementById("sb_form_go") != null)
+                                {
+                                    browser.Document.GetElementById("sb_form_go").InvokeMember("click");
+                                }
+                                else
+                                {
+                                    browser.Navigate("http://bing.com/search?q=" + this.query);
+
+                                    //SearchAsync("http://bing.com/search?q=" + this.query).ContinueWith(
+                                    //    (task) => this.statusDebug("Search:"),
+                                    //           TaskScheduler.FromCurrentSynchronizationContext());
+                                }
+                            }
+                        }
+                        else if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
+                        {
+                            this.clicklist = false;
+                            browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                + this.clickref);
+
+                            //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
+                            //        (task) => this.statusDebug("Search:"),
+                            //            TaskScheduler.FromCurrentSynchronizationContext());
+                        }
+                        else
+                        {
+                            this.clicklist = false;
+                            browser.Navigate("http://bing.com/search?q=" + this.query);
+
+                            //SearchAsync("http://bing.com/search?q=" + this.query).ContinueWith(
+                            //       (task) => this.statusDebug("Search:"),
+                            //       TaskScheduler.FromCurrentSynchronizationContext());
+                        }
+                    }
+                    catch
+                    {
+                        if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
+                        {
+                            this.clicklist = false;
+                            browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: " +
+                                this.clickref);
+
+                            //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
+                            //          (task) => this.statusDebug("Search:"),
+                            //              TaskScheduler.FromCurrentSynchronizationContext());
+                        }
+                        else
+                        {
+                            this.clicklist = false;
+                            browser.Navigate("http://bing.com/search?q=" + this.query);
+
+                            //SearchAsync("http://bing.com/search?q=" + this.query).ContinueWith(
+                            //       (task) => this.statusDebug("Search:"),
+                            //       TaskScheduler.FromCurrentSynchronizationContext());
+                        }
+                    }
+
+                    browser.Invoke(new Action(() =>
+                    {
+                        while (browser.ReadyState != WebBrowserReadyState.Complete)
+                        {
+                            Application.DoEvents();
+                        }
+                    }));
+                }
+            }
+            else
+            {
+
+                //**************************
+                // natural search (click)
+                //**************************
+                this.Csearch = true;
+
+                if (randomNumber(0, 7) > randomNumber(0, 9))
+                {
+                    // Creates an HtmlDocument object from an URL
+                    //HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                    //doc.LoadHtml(browser.Document.All);
+
+                    int c = 0;
+                    string[] links = new string[10];
+
+                    try
+                    {
+                        HtmlElementCollection elemColl = browser.Document.Links;
+                        if (elemColl.Count > 0)
+                        {
+                            foreach (HtmlElement ele in elemColl)
+                            {
+                                if (ele.Parent.TagName == "H2" && c < 10)
+                                {
+                                    links[c++] = ele.GetAttribute("href");
+                                }
+                                //MessageBox.Show(ele.InnerText + ele.Parent.TagName);
+                            }
+                        }
+                    }
+                    catch { }
+
+                    if (c == 0)
+                    {
+                        this.qpage = 0;
+
+                        if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
+                        {
+                            this.clicklist = false;
+                            this.Csearch = true;
+                            browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                + this.clickref);
+
+                            //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
+                            //        (task) => this.statusDebug("Search:"),
+                            //            TaskScheduler.FromCurrentSynchronizationContext());
+
+                            browser.Invoke(new Action(() =>
+                            {
+                                while (browser.ReadyState != WebBrowserReadyState.Complete)
+                                {
+                                    Application.DoEvents();
+                                }
+                            }));
+                        }
+                        else if (statusTxtBox.Text == "Mobilesearches")
+                        {
+                            // mobile
+                            --this.counterMx;
+                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx) + "/"
+                                + this.countDownMobile);
+                            this.Csearch = true;
+                            this.clicklist = false;
+
+                            natural_search();
+                            this.SubmitSearch();
+                        }
+                        else
+                        {
+                            // desktop
+                            --this.counterDx;
+                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
+                                + "/" + this.countDownDesktop);
+                            this.Csearch = true;
+                            this.clicklist = false;
+
+                            natural_search();
+                            this.SubmitSearch();
+                        }
+                    }
+                    else if (c == 1)
+                    {
+                        //this.clicklist = true;
+                        this.clicklink = this.browserUrlTxtbox.Text;
+                        try
+                        {
+                            this.clickref = links[0];
+                            if (!String.IsNullOrEmpty(this.clicklink))
+                            {
+                                this.Csearch = true;
+                                browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                    + this.clickref);
+
+                                //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
+                                //    (task) => this.statusDebug("Search:"),
+                                //        TaskScheduler.FromCurrentSynchronizationContext());
+
+                                browser.Invoke(new Action(() =>
+                                {
+                                    while (browser.ReadyState != WebBrowserReadyState.Complete)
+                                    {
+                                        Application.DoEvents();
+                                    }
+                                }));
+                            }
+                        }
+                        catch { }
+
+                    }
+                    else if (c > 1)
+                    {
+                        c = randomNumber(0, c - 1);
+                        this.clicklink = this.browserUrlTxtbox.Text;
+
+                        try
+                        {
+                            this.clickref = links[c];
+                            if (!String.IsNullOrEmpty(this.clicklink))
+                            {
+                                this.Csearch = true;
+                                browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                    + this.clickref);
+
+                                //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
+                                //    (task) => this.statusDebug("Search:"),
+                                //            TaskScheduler.FromCurrentSynchronizationContext());
+
+                                browser.Invoke(new Action(() =>
+                                {
+                                    while (browser.ReadyState != WebBrowserReadyState.Complete)
+                                    {
+                                        Application.DoEvents();
+                                    }
+                                }));
+                            }
+                        }
+                        catch { }
+                    }
+                }
+                else
+
+                {   //****************
+                    // pagination
+                    //****************
+
+                    int c = 0; int j = 0; string[] links = new string[4];
+
+                    try
+                    {
+                        HtmlElementCollection elemColl = browser.Document.Links;
+                        foreach (HtmlElement ele in elemColl)
+                        {
+                            if (ele.Parent.TagName == "LI" && Int32.TryParse(ele.InnerText, out j))
+                            {
+                                //MessageBox.Show(ele.InnerText + ele.Parent.TagName);
+                                if (j >= 1 && j <= 10 && c < 4)
+                                {
+                                    links[c++] = ele.GetAttribute("href");
+                                }
+                            }
+                        }
+                    }
+                    catch { }
+
+                    if (c == 0)
+                    {
+                        this.qpage = 0;
+
+                        if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
+                        {
+                            this.clicklist = false;
+                            this.Csearch = true;
+                            browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
+                                + this.clickref);
+
+                            //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
+                            //    (task) => this.statusDebug("Search:"),
+                            //        TaskScheduler.FromCurrentSynchronizationContext());
+
+                            browser.Invoke(new Action(() =>
+                            {
+                                while (browser.ReadyState != WebBrowserReadyState.Complete)
+                                {
+                                    Application.DoEvents();
+                                }
+                            }));
+                        }
+                        else if (statusTxtBox.Text == "Mobilesearches")
+                        {
+                            // mobile
+                            --this.counterMx;
+                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx)
+                                + "/" + this.countDownMobile);
+                            this.Csearch = true;
+                            this.clicklist = false;
+
+                            natural_search();
+                            this.SubmitSearch();
+                        }
+                        else
+                        {
+                            // desktop
+                            --this.counterDx;
+                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
+                                + "/" + this.countDownDesktop);
+                            this.Csearch = true;
+                            this.clicklist = false;
+
+                            natural_search();
+                            this.SubmitSearch();
+                        }
+                    }
+                    else if (c > 0)
+                    {
+                        this.Csearch = true;
+                        try
+                        {
+                            if (this.qpage == 0 && !String.IsNullOrEmpty(links[0]))
+                            {
+                                this.qpage = 1;
+                                browser.Navigate(new Uri(links[0]));
+
+                                //SearchAsync(links[0]).ContinueWith(
+                                //       (task) => this.statusDebug("Search:"),
+                                //        TaskScheduler.FromCurrentSynchronizationContext());
+
+                                browser.Invoke(new Action(() =>
+                                {
+                                    while (browser.ReadyState != WebBrowserReadyState.Complete)
+                                    {
+                                        Application.DoEvents();
+                                    }
+                                }));
+
+                            }
+                            else if (this.qpage == 1 && !String.IsNullOrEmpty(links[1]))
+                            {
+                                this.qpage = 2;
+                                browser.Navigate(new Uri(links[1]));
+
+                                //SearchAsync(links[1]).ContinueWith(
+                                //     (task) => this.statusDebug("Search:"),
+                                //        TaskScheduler.FromCurrentSynchronizationContext());
+
+                                browser.Invoke(new Action(() =>
+                                {
+                                    while (browser.ReadyState != WebBrowserReadyState.Complete)
+                                    {
+                                        Application.DoEvents();
+                                    }
+                                }));
+                            }
+                            else if (this.qpage == 2 && !String.IsNullOrEmpty(links[2]))
+                            {
+                                this.qpage = 3;
+                                browser.Navigate(new Uri(links[2]));
+
+                                //SearchAsync(links[2]).ContinueWith(
+                                //    (task) => this.statusDebug("Search:"),
+                                //        TaskScheduler.FromCurrentSynchronizationContext());
+
+                                browser.Invoke(new Action(() =>
+                                {
+                                    while (browser.ReadyState != WebBrowserReadyState.Complete)
+                                    {
+                                        Application.DoEvents();
+                                    }
+                                }));
+                            }
+                            else if (this.qpage == 3)
+                            {
+                                this.qpage = 0;
+
+                                natural_search();
+
+                                if (statusTxtBox.Text == "Mobilesearches")
+                                {
+                                    // mobile
+                                    --this.counterMx;
+                                    counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx)
+                                        + "/" + this.countDownMobile);
+                                    this.Csearch = true;
+                                    this.SubmitSearch();
+                                }
+                                else
+                                {
+                                    // desktop
+                                    --this.counterDx;
+                                    counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
+                                        + "/" + this.countDownDesktop);
+                                    this.Csearch = true;
+                                    this.SubmitSearch();
+                                }
+                            }
+                        }
+                        catch { }
+                    }
+                }
+            }
+        }
+
         //http://stackoverflow.com/questions/18303758/can-i-wait-for-a-webbrowser-to-finish-navigating-using-a-for-loop
         private async void DoSearch(object sender, EventArgs e)
         {
@@ -3012,7 +3533,8 @@ namespace BingRewardsBot
             if ((this.counterDx <= 0 && this.counterMx <= 0 && autorotate == true && this.trialstopped == false)
                 || (this.counterDx <= 0 && (mobile == false || SUPPORTER == false) && autorotate == true && this.trialstopped == false)
                 || (this.counterMx <= 0 && desktop == false && autorotate == true && this.trialstopped == false)
-                && ((this.pts >= MSPOINTS && chkbox_autolang.Checked == false) || (this.dxloops == MAXLOOPS - 1) && ((this.mxloops == MAXLOOPS - 1) && SUPPORTER == true))
+                && ((this.pts >= MSPOINTS && chkbox_autolang.Checked == false) 
+                     || (this.dxloops == MAXLOOPS - 1) && ((this.mxloops == MAXLOOPS - 1) && SUPPORTER == true))
                 )
             {
                 if (this.spoofmktl > SUPPORTERAUTOLANG || chkbox_autolang.Checked == false)
@@ -3224,576 +3746,162 @@ namespace BingRewardsBot
                     }
 
                     ++this.spoofmktl;
-                    await Task.Delay(9000);                    
+                    await Task.Delay(9000);
 
-                    // searches loop
-                    ++this.trialCountUp;
+                    this.regionSearch();
 
-                    if (SUPPORTER == true)
-                    {
-                        this.Text = TITLE + " Version: Beta " + ASSEMBLY;
-                    }
-                    else
-                    {
-                        double x = (double)100 / FREEX;
-                        double z = x * (this.trialCountDownReg - (this.trialCountUp * DIVIDE));
-                        this.Text = TITLE + " : " + Math.Round(z) + "% Shareware" + " Version: Beta " + ASSEMBLY;
-                    }
-
-                    if (statusTxtBox.Text == "Mobilesearches" && SUPPORTER == true)
-                    {
-                        this.ChangeUserAgent(this.txtboxcustommobile.Text);
-                    }
-                    else
-                    {
-                        this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
-                    }
-
-                    //**************************
-                    // default search
-                    //**************************
-                    if (randomNumber(0, 11) > randomNumber(0, 3))
-                    {
-                        this.qpage = 0;
-
-                        natural_search();
-
-                        // mobile searches
-                        if (((randomNumber(0, 9) > (randomNumber(3, 7)) && this.counterMx > 0 && mobile == true) ||
-                            ((mobile == true && this.counterDx <= 0) || (mobile == true && desktop == false)))
-                            && SUPPORTER == true
-                            )
-                        {
-                            statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Mobilesearches");
-                            --this.counterMx;
-                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx) +
-                                "/" + this.countDownMobile);
-                            this.Csearch = true;
-
-                            try
-                            {
-                                if (browser.Document.GetElementById("sb_form_q") != null)
-                                {
-                                    this.ChangeUserAgent(this.txtboxcustommobile.Text);
-
-                                    if (browser.Document.GetElementById("sb_form_q") != null)
-                                    {
-                                        browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-
-                                        if (browser.Document.GetElementById("sbBtn") != null)
-                                        {
-                                            browser.Document.GetElementById("sbBtn").InvokeMember("click");
-                                        }
-                                        else if (browser.Document.GetElementById("sb_form_go") != null)
-                                        {
-                                            browser.Document.GetElementById("sb_form_go").InvokeMember("click");
-                                        }
-                                        else
-                                        {
-                                            browser.Navigate("http://bing.com/search?q=" + this.query);
-
-                                            //SearchAsync("http://bing.com/search?q=" + this.query).ContinueWith(
-                                            //    (task) => this.statusDebug("Search:"),
-                                            //        TaskScheduler.FromCurrentSynchronizationContext());
-                                        }
-                                    }
-                                }
-                                else if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
-                                {
-                                    this.clicklist = false;
-                                    browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                        + this.clickref);
-
-                                    //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
-                                    //         (task) => this.statusDebug("Search:"),
-                                    //             TaskScheduler.FromCurrentSynchronizationContext());
-                                }
-                                else
-                                {
-                                    this.clicklist = false;
-                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-
-                                    //SearchAsync("http://bing.com/search?q=" + this.query).ContinueWith(
-                                    //       (task) => this.statusDebug("Search:"),
-                                    //        TaskScheduler.FromCurrentSynchronizationContext());
-                                }
-                            }
-                            catch
-                            {
-                                if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
-                                {
-                                    this.clicklist = false;
-                                    browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                        + this.clickref);
-
-                                    //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
-                                    //        (task) => this.statusDebug("Search:"),
-                                    //            TaskScheduler.FromCurrentSynchronizationContext());
-                                }
-                                else
-                                {
-                                    this.clicklist = false;
-                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-
-                                    //SearchAsync("http://bing.com/search?q=" + this.query).ContinueWith(
-                                    //       (task) => this.statusDebug("Search:"),
-                                    //       TaskScheduler.FromCurrentSynchronizationContext());
-                                }
-                            }
-
-                            browser.Invoke(new Action(() =>
-                            {
-                                while (browser.ReadyState != WebBrowserReadyState.Complete)
-                                {
-                                    Application.DoEvents();
-                                }
-                            }));
-
-                            // desktop searches
-                        }
-                        else if (this.counterDx > 0 && desktop == true)
-                        {
-                            statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Desktopsearches");
-                            --this.counterDx;
-                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx) + "/"
-                                + this.countDownDesktop);
-                            this.Csearch = true;
-
-                            try
-                            {
-                                if (browser.Document.GetElementById("sb_form_q") != null)
-                                {
-                                    this.ChangeUserAgent(this.txtboxcustomdesktop.Text);
-
-                                    if (browser.Document.GetElementById("sb_form_q") != null)
-                                    {
-                                        browser.Document.GetElementById("sb_form_q").SetAttribute("value", this.query);
-
-                                        if (browser.Document.GetElementById("sbBtn") != null)
-                                        {
-                                            browser.Document.GetElementById("sbBtn").InvokeMember("click");
-                                        }
-                                        else if (browser.Document.GetElementById("sb_form_go") != null)
-                                        {
-                                            browser.Document.GetElementById("sb_form_go").InvokeMember("click");
-                                        }
-                                        else
-                                        {
-                                            browser.Navigate("http://bing.com/search?q=" + this.query);
-
-                                            //SearchAsync("http://bing.com/search?q=" + this.query).ContinueWith(
-                                            //    (task) => this.statusDebug("Search:"),
-                                            //           TaskScheduler.FromCurrentSynchronizationContext());
-                                        }
-                                    }
-                                }
-                                else if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
-                                {
-                                    this.clicklist = false;
-                                    browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                        + this.clickref);
-
-                                    //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
-                                    //        (task) => this.statusDebug("Search:"),
-                                    //            TaskScheduler.FromCurrentSynchronizationContext());
-                                }
-                                else
-                                {
-                                    this.clicklist = false;
-                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-
-                                    //SearchAsync("http://bing.com/search?q=" + this.query).ContinueWith(
-                                    //       (task) => this.statusDebug("Search:"),
-                                    //       TaskScheduler.FromCurrentSynchronizationContext());
-                                }
-                            }
-                            catch
-                            {
-                                if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
-                                {
-                                    this.clicklist = false;
-                                    browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: " +
-                                        this.clickref);
-
-                                    //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
-                                    //          (task) => this.statusDebug("Search:"),
-                                    //              TaskScheduler.FromCurrentSynchronizationContext());
-                                }
-                                else
-                                {
-                                    this.clicklist = false;
-                                    browser.Navigate("http://bing.com/search?q=" + this.query);
-
-                                    //SearchAsync("http://bing.com/search?q=" + this.query).ContinueWith(
-                                    //       (task) => this.statusDebug("Search:"),
-                                    //       TaskScheduler.FromCurrentSynchronizationContext());
-                                }
-                            }
-
-                            browser.Invoke(new Action(() =>
-                            {
-                                while (browser.ReadyState != WebBrowserReadyState.Complete)
-                                {
-                                    Application.DoEvents();
-                                }
-                            }));
-                        }
-                    }
-                    else
-                    {
-
-                        //**************************
-                        // natural search (click)
-                        //**************************
-                        this.Csearch = true;
-
-                        if (randomNumber(0, 7) > randomNumber(0, 9))
-                        {
-                            // Creates an HtmlDocument object from an URL
-                            //HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                            //doc.LoadHtml(browser.Document.All);
-
-                            int c = 0;
-                            string[] links = new string[10];
-
-                            try
-                            {
-                                HtmlElementCollection elemColl = browser.Document.Links;
-                                if (elemColl.Count > 0)
-                                {
-                                    foreach (HtmlElement ele in elemColl)
-                                    {
-                                        if (ele.Parent.TagName == "H2" && c < 10)
-                                        {
-                                            links[c++] = ele.GetAttribute("href");
-                                        }
-                                        //MessageBox.Show(ele.InnerText + ele.Parent.TagName);
-                                    }
-                                }
-                            }
-                            catch { }
-
-                            if (c == 0)
-                            {
-                                this.qpage = 0;
-
-                                if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
-                                {
-                                    this.clicklist = false;
-                                    this.Csearch = true;
-                                    browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                        + this.clickref);
-
-                                    //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
-                                    //        (task) => this.statusDebug("Search:"),
-                                    //            TaskScheduler.FromCurrentSynchronizationContext());
-
-                                    browser.Invoke(new Action(() =>
-                                    {
-                                        while (browser.ReadyState != WebBrowserReadyState.Complete)
-                                        {
-                                            Application.DoEvents();
-                                        }
-                                    }));
-                                }
-                                else if (statusTxtBox.Text == "Mobilesearches")
-                                {
-                                    // mobile
-                                    --this.counterMx;
-                                    counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx) + "/"
-                                        + this.countDownMobile);
-                                    this.Csearch = true;
-                                    this.clicklist = false;
-
-                                    natural_search();
-                                    this.SubmitSearch();
-                                }
-                                else
-                                {
-                                    // desktop
-                                    --this.counterDx;
-                                    counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
-                                        + "/" + this.countDownDesktop);
-                                    this.Csearch = true;
-                                    this.clicklist = false;
-
-                                    natural_search();
-                                    this.SubmitSearch();
-                                }
-                            }
-                            else if (c == 1)
-                            {
-                                //this.clicklist = true;
-                                this.clicklink = this.browserUrlTxtbox.Text;
-                                try
-                                {
-                                    this.clickref = links[0];
-                                    if (!String.IsNullOrEmpty(this.clicklink))
-                                    {
-                                        this.Csearch = true;
-                                        browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                            + this.clickref);
-
-                                        //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
-                                        //    (task) => this.statusDebug("Search:"),
-                                        //        TaskScheduler.FromCurrentSynchronizationContext());
-
-                                        browser.Invoke(new Action(() =>
-                                        {
-                                            while (browser.ReadyState != WebBrowserReadyState.Complete)
-                                            {
-                                                Application.DoEvents();
-                                            }
-                                        }));
-                                    }
-                                }
-                                catch { }
-
-                            }
-                            else if (c > 1)
-                            {
-                                c = randomNumber(0, c - 1);
-                                this.clicklink = this.browserUrlTxtbox.Text;
-
-                                try
-                                {
-                                    this.clickref = links[c];
-                                    if (!String.IsNullOrEmpty(this.clicklink))
-                                    {
-                                        this.Csearch = true;
-                                        browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                            + this.clickref);
-
-                                        //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
-                                        //    (task) => this.statusDebug("Search:"),
-                                        //            TaskScheduler.FromCurrentSynchronizationContext());
-
-                                        browser.Invoke(new Action(() =>
-                                        {
-                                            while (browser.ReadyState != WebBrowserReadyState.Complete)
-                                            {
-                                                Application.DoEvents();
-                                            }
-                                        }));
-                                    }
-                                }
-                                catch { }
-                            }
-                        }
-                        else
-
-                        {   //****************
-                            // pagination
-                            //****************
-
-                            int c = 0; int j = 0; string[] links = new string[4];
-
-                            try
-                            {
-                                HtmlElementCollection elemColl = browser.Document.Links;
-                                foreach (HtmlElement ele in elemColl)
-                                {
-                                    if (ele.Parent.TagName == "LI" && Int32.TryParse(ele.InnerText, out j))
-                                    {
-                                        //MessageBox.Show(ele.InnerText + ele.Parent.TagName);
-                                        if (j >= 1 && j <= 10 && c < 4)
-                                        {
-                                            links[c++] = ele.GetAttribute("href");
-                                        }
-                                    }
-                                }
-                            }
-                            catch { }
-
-                            if (c == 0)
-                            {
-                                this.qpage = 0;
-
-                                if (this.clicklist == true && !String.IsNullOrEmpty(this.clicklink))
-                                {
-                                    this.clicklist = false;
-                                    this.Csearch = true;
-                                    browser.Navigate(new Uri(this.clicklink), "_self", null, "Referrer: "
-                                        + this.clickref);
-
-                                    //SearchAsync(this.clicklink, "_self", this.clickref).ContinueWith(
-                                    //    (task) => this.statusDebug("Search:"),
-                                    //        TaskScheduler.FromCurrentSynchronizationContext());
-
-                                    browser.Invoke(new Action(() =>
-                                    {
-                                        while (browser.ReadyState != WebBrowserReadyState.Complete)
-                                        {
-                                            Application.DoEvents();
-                                        }
-                                    }));
-                                }
-                                else if (statusTxtBox.Text == "Mobilesearches")
-                                {
-                                    // mobile
-                                    --this.counterMx;
-                                    counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx)
-                                        + "/" + this.countDownMobile);
-                                    this.Csearch = true;
-                                    this.clicklist = false;
-
-                                    natural_search();
-                                    this.SubmitSearch();
-                                }
-                                else
-                                {
-                                    // desktop
-                                    --this.counterDx;
-                                    counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
-                                        + "/" + this.countDownDesktop);
-                                    this.Csearch = true;
-                                    this.clicklist = false;
-
-                                    natural_search();
-                                    this.SubmitSearch();
-                                }
-                            }
-                            else if (c > 0)
-                            {
-                                this.Csearch = true;
-                                try
-                                {
-                                    if (this.qpage == 0 && !String.IsNullOrEmpty(links[0]))
-                                    {
-                                        this.qpage = 1;
-                                        browser.Navigate(new Uri(links[0]));
-
-                                        //SearchAsync(links[0]).ContinueWith(
-                                        //       (task) => this.statusDebug("Search:"),
-                                        //        TaskScheduler.FromCurrentSynchronizationContext());
-
-                                        browser.Invoke(new Action(() =>
-                                        {
-                                            while (browser.ReadyState != WebBrowserReadyState.Complete)
-                                            {
-                                                Application.DoEvents();
-                                            }
-                                        }));
-
-                                    }
-                                    else if (this.qpage == 1 && !String.IsNullOrEmpty(links[1]))
-                                    {
-                                        this.qpage = 2;
-                                        browser.Navigate(new Uri(links[1]));
-
-                                        //SearchAsync(links[1]).ContinueWith(
-                                        //     (task) => this.statusDebug("Search:"),
-                                        //        TaskScheduler.FromCurrentSynchronizationContext());
-
-                                        browser.Invoke(new Action(() =>
-                                        {
-                                            while (browser.ReadyState != WebBrowserReadyState.Complete)
-                                            {
-                                                Application.DoEvents();
-                                            }
-                                        }));
-                                    }
-                                    else if (this.qpage == 2 && !String.IsNullOrEmpty(links[2]))
-                                    {
-                                        this.qpage = 3;
-                                        browser.Navigate(new Uri(links[2]));
-
-                                        //SearchAsync(links[2]).ContinueWith(
-                                        //    (task) => this.statusDebug("Search:"),
-                                        //        TaskScheduler.FromCurrentSynchronizationContext());
-
-                                        browser.Invoke(new Action(() =>
-                                        {
-                                            while (browser.ReadyState != WebBrowserReadyState.Complete)
-                                            {
-                                                Application.DoEvents();
-                                            }
-                                        }));
-                                    }
-                                    else if (this.qpage == 3)
-                                    {
-                                        this.qpage = 0;
-
-                                        natural_search();
-
-                                        if (statusTxtBox.Text == "Mobilesearches")
-                                        {
-                                            // mobile
-                                            --this.counterMx;
-                                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownMobile - this.counterMx)
-                                                + "/" + this.countDownMobile);
-                                            this.Csearch = true;
-                                            this.SubmitSearch();
-                                        }
-                                        else
-                                        {
-                                            // desktop
-                                            --this.counterDx;
-                                            counterTxtBox.SafeInvoke(() => counterTxtBox.Text = (this.countDownDesktop - this.counterDx)
-                                                + "/" + this.countDownDesktop);
-                                            this.Csearch = true;
-                                            this.SubmitSearch();
-                                        }
-                                    }
-                                }
-                                catch { }
-                            }
-                        }
-                    }
                 }
                 // semi-automatic
             }
-            else if ((this.counterDx <= 0 && this.counterMx == 0 && autorotate == true && this.trialstopped == false)
-                || (this.counterDx <= 0 && (mobile == false || SUPPORTER == false) && autorotate == true && this.trialstopped == false)
-                || (this.counterMx <= 0 && desktop == false && autorotate == true && this.trialstopped == false)
-                && (this.pts >= MSPOINTS || (this.dxloops == MAXLOOPS - 1) && ((this.mxloops == MAXLOOPS - 1) && SUPPORTER == true))
+            else if ((this.counterDx <= 0 && this.counterMx == 0 && autorotate == false && this.trialstopped == false)
+                || (this.counterDx <= 0 && (mobile == false || SUPPORTER == false) && autorotate == false && this.trialstopped == false)
+                || (this.counterMx <= 0 && desktop == false && autorotate == false && this.trialstopped == false)
+                    && (this.pts >= MSPOINTS || (this.dxloops == MAXLOOPS - 1) && ((this.mxloops == MAXLOOPS - 1) && SUPPORTER == true))
                 )
             {
-                this.qpage = 0;
-
-                // full searches
-                //this.checkaccount = false;
-
-                if (timer_searches != null)
+                if (this.spoofmktl > SUPPORTERAUTOLANG || chkbox_autolang.Checked == false)
                 {
-                    this.timer_searches.Enabled = false;
+                    this.qpage = 0;
+
+                    // full searches
+                    //this.checkaccount = false;
+
+                    if (timer_searches != null)
+                    {
+                        this.timer_searches.Enabled = false;
+                        this.Csearch = false;
+                    }
+
+                    if (this.timer_dashboardta != null)
+                    {
+                        this.timer_dashboardta.Enabled = false;
+                    }
+
+                    this.button1.SafeInvoke(() => button1.Text = "Start");
+                    statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Stop");
+                    counterTxtBox.SafeInvoke(() => counterTxtBox.Text = "0/0");
+
+                    this.dxloops = 0;
+                    this.mxloops = 0;
+                    this.vrndnum = 0;
+                    this.spoofmktl = 0;
+
+                    this.authLock = false;
+                    this.iniSearch = false;
+                    this.dashboardta = false;
+                    this.ldashboardta = false;
                     this.Csearch = false;
+                    this.siguid = "";
+
+                    if (this.timer_tor != null)
+                    {
+                        this.timer_tor.Enabled = false;
+                    }
+
+                    if (this.timer_searches != null)
+                    {
+                        this.timer_searches.Enabled = false;
+                    }
+
+                    if (this.timer_dashboardta != null)
+                    {
+                        this.timer_dashboardta.Enabled = false;
+                    }
+
                 }
-
-                if (this.timer_dashboardta != null)
+                else
                 {
-                    this.timer_dashboardta.Enabled = false;
-                }
+                    if (timer_searches != null)
+                    {
+                        this.timer_searches.Enabled = false;
+                        this.Csearch = false;
+                    }
 
-                this.button1.SafeInvoke(() => button1.Text = "Start");
-                statusTxtBox.SafeInvoke(() => statusTxtBox.Text = "Stop");
-                counterTxtBox.SafeInvoke(() => counterTxtBox.Text = "0/0");
+                    this.dxloops = 0;
+                    string[] wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                    this.counterDx = this.countDownDesktop = randomNumber(Convert.ToInt32(wait[0]),
+                        Convert.ToInt32(wait[1]));
 
-                this.dxloops = 0;
-                this.mxloops = 0;
-                this.vrndnum = 0;
-                this.spoofmktl = 0;
+                    this.mxloops = 0;
+                    wait = Properties.Settings.Default.set_counter.ToString().Split('-');
+                    this.counterMx = this.countDownMobile = randomNumber(Convert.ToInt32(wait[0]),
+                        Convert.ToInt32(wait[1]));
 
-                this.authLock = false;
-                this.iniSearch = false;
-                this.dashboardta = false;
-                this.ldashboardta = false;
-                this.Csearch = false;
-                this.siguid = "";
+                    if (listBox1.SelectedIndex == this.spoofmktl)
+                    {
+                        ++this.spoofmktl;
+                    }
 
-                if (this.timer_tor != null)
-                {
-                    this.timer_tor.Enabled = false;
-                }
+                    if (this.spoofmktl == 0)
+                    {
+                        this.WDCounter = 0;
+                        await DownloadAsync(BRI18NUS + this.siguid);
+                        await Task.Delay(9000);
 
-                if (this.timer_searches != null)
-                {
-                    this.timer_searches.Enabled = false;
-                }
+                        this.WDCounter = 0;
+                        await DownloadAsync("https://account.microsoft.com/?lang=en-US");
+                    }
+                    /*
+                    else if (listBox1.SelectedIndex == 1)
+                    {               
+                       this.WDCounter = 0;
 
-                if (this.timer_dashboardta != null)
-                {
-                    this.timer_dashboardta.Enabled = false;
+                        await DownloadAsync(BRI18NIN + this.siguid).ContinueWith(
+                            (task) => this.statusDebug("UM1.1:"),
+                                TaskScheduler.FromCurrentSynchronizationContext());
+
+                        Thread.Sleep(500);
+
+                        this.WDCounter = 0;
+                        this.statusTxtBox.Text = "Connected";
+
+                        await DownloadAsync("https://account.microsoft.com/?lang=hi-IN").ContinueWith(
+                            (task) => this.statusDebug("UM1.1:"),
+                                TaskScheduler.FromCurrentSynchronizationContext());   
+                    }
+                    */
+                    else if (this.spoofmktl == 1)
+                    {
+                        this.WDCounter = 0;
+                        await DownloadAsync(BRI18NGB + this.siguid);
+                        await Task.Delay(9000);
+
+                        this.WDCounter = 0;
+                        await DownloadAsync("https://account.microsoft.com/?lang=en-GB");
+                    }
+                    else if (this.spoofmktl == 2)
+                    {
+                        this.WDCounter = 0;
+                        await DownloadAsync(BRI18NFR + this.siguid);
+                        await Task.Delay(9000);
+
+                        this.WDCounter = 0;
+                        await DownloadAsync("https://account.microsoft.com/?lang=fr-FR");
+                    }
+                    else if (this.spoofmktl == 3)
+                    {
+                        this.WDCounter = 0;
+                        await DownloadAsync(BRI18NDE + this.siguid);
+                        await Task.Delay(9000);
+
+                        this.WDCounter = 0;
+                        await DownloadAsync("https://account.microsoft.com/?lang=de-DE");
+                    }
+                    else if (this.spoofmktl == 4)
+                    {
+                        this.WDCounter = 0;
+                        await DownloadAsync(BRI18NAU + this.siguid);
+                        await Task.Delay(9000);
+
+                        this.WDCounter = 0;
+                        await DownloadAsync("https://account.microsoft.com/?lang=en-AU");
+                    }
+
+                    ++this.spoofmktl;
+                    await Task.Delay(9000);
+
+                    this.regionSearch();
+
                 }
             }
             else if (this.trialstopped == false)

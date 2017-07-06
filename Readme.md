@@ -37,7 +37,7 @@ Better Bing Rewards Bot is the best professional automation tool to earn Microso
 - NEW! Migrate old settings if any.  
 - NEW! Supports autostart with Windows task scheduler.
 - NEW! Supports Australia, France, Germany, U.K.
-- NEW! Maximize income: Autorotate regions for each account (optional)
+- NEW! Maximize income: Autorotate regions for each account
 
 2. Requirements  
 -Windows 10 x32/x64  
