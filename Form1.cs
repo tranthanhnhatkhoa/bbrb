@@ -956,6 +956,89 @@ namespace BingRewardsBot
             BingRewardsBot.Properties.Settings.Default.Save();
         }
 
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            //var myForm = new Form2();
+            //myForm.Show();
+
+            BingRewardsBot.Properties.Settings.Default.set_autorotate = chkbox_autorotate.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_tor = chkbox_tor.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_mobile = chkbox_mobile.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_desktop = chkbox_desktop.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_counter = txtbox_counter.Text;
+            BingRewardsBot.Properties.Settings.Default.set_waitsearches = txtbox_waitsearches.Text;
+            BingRewardsBot.Properties.Settings.Default.set_waitauth = txtbox_waitauth.Text;
+            BingRewardsBot.Properties.Settings.Default.set_autostart = txtbox_autostart.Text;
+            BingRewardsBot.Properties.Settings.Default.set_proxy = txtbox_proxy.Text;
+            BingRewardsBot.Properties.Settings.Default.set_torsettings = this.txtbox_torsettings.Text;
+            BingRewardsBot.Properties.Settings.Default.set_uadesktop = this.txtboxcustomdesktop.Text;
+            BingRewardsBot.Properties.Settings.Default.set_uamobile = this.txtboxcustommobile.Text;
+            BingRewardsBot.Properties.Settings.Default.set_accounts = this.txtbox_customaccounts.Text;
+            BingRewardsBot.Properties.Settings.Default.set_lang = this.listBox1.SelectedIndex;
+            BingRewardsBot.Properties.Settings.Default.set_randomo = randomo.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_ns = this.chkbox_ns.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_chkbox_as = this.chkbox_as.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.set_chkbox_autolang = this.chkbox_autolang.Checked == true ? true : false;
+            BingRewardsBot.Properties.Settings.Default.Save();
+
+            if (this.trialCountDownReg > 0 && this.trialCountUp > 0)
+            {
+                try
+                {
+                    Application.UserAppDataRegistry.SetValue("ConnXY",
+                        this.trialCountDownReg - (this.trialCountUp * DIVIDE));
+                }
+                catch
+                {
+                    MessageBox.Show("Registry error!");
+                }
+            }
+            else
+            {
+                if (Application.UserAppDataRegistry.GetValue("Injector") == null)
+                {
+                    try
+                    {
+                        Application.UserAppDataRegistry.SetValue("Injector", randomNumber(1000, 100000));
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Registry error!");
+                    }
+                }
+                if (Application.UserAppDataRegistry.GetValue("Codedll") == null)
+                {
+                    try
+                    {
+                        Application.UserAppDataRegistry.SetValue("Codedll", randomNumber(1000, 100000));
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Registry error!");
+                    }
+                }
+                if (Application.UserAppDataRegistry.GetValue("Vnumber") == null)
+                {
+                    try
+                    {
+                        Application.UserAppDataRegistry.SetValue("Vnumber", randomNumber(1000, 100000));
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Registry error!");
+                    }
+                }
+            }
+            try
+            {
+                Application.UserAppDataRegistry.SetValue("RegKey", this.trialRegKey);
+            }
+            catch
+            {
+                MessageBox.Show("Registry error!");
+            }
+        }
         //*************************
         // Main webbrowser change
         //*************************
@@ -3756,7 +3839,8 @@ namespace BingRewardsBot
             else if ((this.counterDx <= 0 && this.counterMx == 0 && autorotate == false && this.trialstopped == false)
                 || (this.counterDx <= 0 && (mobile == false || SUPPORTER == false) && autorotate == false && this.trialstopped == false)
                 || (this.counterMx <= 0 && desktop == false && autorotate == false && this.trialstopped == false)
-                    && (this.pts >= MSPOINTS || (this.dxloops == MAXLOOPS - 1) && ((this.mxloops == MAXLOOPS - 1) && SUPPORTER == true))
+                    && ((this.pts >= MSPOINTS && chkbox_autolang.Checked == false) 
+                    || (this.dxloops == MAXLOOPS - 1) && ((this.mxloops == MAXLOOPS - 1) && SUPPORTER == true))
                 )
             {
                 if (this.spoofmktl > SUPPORTERAUTOLANG || chkbox_autolang.Checked == false)
@@ -6390,92 +6474,10 @@ namespace BingRewardsBot
             if (this.accountNum < 0) this.accountNum = 0;
             this.checkaccount = true;
             this.authLock = false;
+            this.spoofmktl = 0;
 
         }
-
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            //var myForm = new Form2();
-            //myForm.Show();
-
-            BingRewardsBot.Properties.Settings.Default.set_autorotate = chkbox_autorotate.Checked == true ? true : false;
-            BingRewardsBot.Properties.Settings.Default.set_tor = chkbox_tor.Checked == true ? true : false;
-            BingRewardsBot.Properties.Settings.Default.set_mobile = chkbox_mobile.Checked == true ? true : false;
-            BingRewardsBot.Properties.Settings.Default.set_desktop = chkbox_desktop.Checked == true ? true : false;
-            BingRewardsBot.Properties.Settings.Default.set_counter = txtbox_counter.Text;
-            BingRewardsBot.Properties.Settings.Default.set_waitsearches = txtbox_waitsearches.Text;
-            BingRewardsBot.Properties.Settings.Default.set_waitauth = txtbox_waitauth.Text;
-            BingRewardsBot.Properties.Settings.Default.set_autostart = txtbox_autostart.Text;
-            BingRewardsBot.Properties.Settings.Default.set_proxy = txtbox_proxy.Text;
-            BingRewardsBot.Properties.Settings.Default.set_torsettings = this.txtbox_torsettings.Text;
-            BingRewardsBot.Properties.Settings.Default.set_uadesktop = this.txtboxcustomdesktop.Text;
-            BingRewardsBot.Properties.Settings.Default.set_uamobile = this.txtboxcustommobile.Text;
-            BingRewardsBot.Properties.Settings.Default.set_accounts = this.txtbox_customaccounts.Text;
-            BingRewardsBot.Properties.Settings.Default.set_lang = this.listBox1.SelectedIndex;
-            BingRewardsBot.Properties.Settings.Default.set_randomo = randomo.Checked == true ? true : false;
-            BingRewardsBot.Properties.Settings.Default.set_ns = this.chkbox_ns.Checked == true ? true : false;
-            BingRewardsBot.Properties.Settings.Default.set_chkbox_as = this.chkbox_as.Checked == true ? true : false;
-            BingRewardsBot.Properties.Settings.Default.set_chkbox_autolang = this.chkbox_autolang.Checked == true ? true : false;
-            BingRewardsBot.Properties.Settings.Default.Save();
-
-            if (this.trialCountDownReg > 0 && this.trialCountUp > 0)
-            {
-                try
-                {
-                    Application.UserAppDataRegistry.SetValue("ConnXY",
-                        this.trialCountDownReg - (this.trialCountUp * DIVIDE));
-                }
-                catch
-                {
-                    MessageBox.Show("Registry error!");
-                }
-            }
-            else
-            {
-                if (Application.UserAppDataRegistry.GetValue("Injector") == null)
-                {
-                    try
-                    {
-                        Application.UserAppDataRegistry.SetValue("Injector", randomNumber(1000, 100000));
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Registry error!");
-                    }
-                }
-                if (Application.UserAppDataRegistry.GetValue("Codedll") == null)
-                {
-                    try
-                    {
-                        Application.UserAppDataRegistry.SetValue("Codedll", randomNumber(1000, 100000));
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Registry error!");
-                    }
-                }
-                if (Application.UserAppDataRegistry.GetValue("Vnumber") == null)
-                {
-                    try
-                    {
-                        Application.UserAppDataRegistry.SetValue("Vnumber", randomNumber(1000, 100000));
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Registry error!");
-                    }
-                }
-            }
-            try
-            {
-                Application.UserAppDataRegistry.SetValue("RegKey", this.trialRegKey);
-            }
-            catch
-            {
-                MessageBox.Show("Registry error!");
-            }
-        }
-
+        
         private void button3_Click(object sender, EventArgs e)
         {
             this.toridswitcher();
@@ -6599,6 +6601,19 @@ namespace BingRewardsBot
                 string.Join("\r\n", score));
         }
 
+        //http://stackoverflow.com/questions/21466488/async-method-throws-exception
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+
+            update();
+
+            while (this.browser.ReadyState != WebBrowserReadyState.Complete)
+            {
+                Application.DoEvents();
+            };
+
+        }
+        
         private void updateUserPts(int a)
         {
             int num = this.numIpDate();
@@ -7795,17 +7810,6 @@ namespace BingRewardsBot
             }
          }
 
-        //http://stackoverflow.com/questions/21466488/async-method-throws-exception
-        private void button4_Click_1(object sender, EventArgs e)
-        {
-   
-            update();
-
-            while (this.browser.ReadyState != WebBrowserReadyState.Complete) {
-                Application.DoEvents();
-            };
-            
-        }
 
         /*
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
