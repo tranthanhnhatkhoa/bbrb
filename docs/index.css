@@ -11,6 +11,44 @@ h3 {
 	font-weight:bolder;
 }
 
+@media (min-width: 900px)  {
+	.left {
+			/* transform: translate3d(0,0,0); */
+			overflow:hidden;
+			/*position:fixed;
+			top:0px;
+			left:0px; */
+			padding-right:20px;
+			float:left;
+	}	
+	.footer {
+		padding-left:180px;
+	}
+}
+@media (max-width: 889px)  {
+	.left {
+		display:none;
+	}
+	.footer {
+		padding-left:0px;
+	}
+}
+@media (min-width: 1060px)  { /* right column */
+	.right {
+		/* transform: translate3d(0,0,0); */
+		overflow:hidden;
+		position:fixed;
+		top:0px;
+		left:920px;
+	}	
+}
+
+@media (max-width: 1059px)  { /* right column */
+	.right {
+		display:none;
+	}
+}
+
 .wikidoc {
 	float:left;
 	width:660px;
