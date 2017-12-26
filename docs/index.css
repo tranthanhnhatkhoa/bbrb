@@ -39,7 +39,7 @@ h3 {
 		/* transform: translate3d(0,0,0); */
 		overflow:hidden;
 		position:fixed;
-		top:20px;
+		top:10px;
 		left:1000px;
 	}	
 }
