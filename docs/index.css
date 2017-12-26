@@ -51,6 +51,7 @@ h3 {
 
 .wikidoc {
 	float:left;
-	width:700px;
+	width:750px;
 	height:990px;
+	padding-right:20px;
 }
