@@ -30,7 +30,7 @@ h3 {
 		padding-left:180px;
 	}
 }
-@media (max-width: 940px)  {
+@media (max-width: 975px)  {
 	.left {
 		display:none;
 	}
