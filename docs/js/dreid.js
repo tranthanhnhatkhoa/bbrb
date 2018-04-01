@@ -536,9 +536,9 @@ rx+=2;ry+=4;rz+=2;
 if (rx>359) rx=0;if (ry>359) ry=0;if (rz>359) rz=0;
 
 var zeit02=new Date();var nachher=zeit02.getTime();temp=(nachher-vorher);vbl=temp/20;if (vbl>old_vbl) old_vbl=vbl;hilf_timer+=1;
-switch(hilf_timer){
-case 20: hilf_cpu.innerHTML='<span id="fussnote">VBL: '+(old_vbl).toFixed(2)+' (Peak)<br>VBL: '+(vbl).toFixed(2)+' (Current)</span>';hilf_timer=0;break;
-}
+//switch(hilf_timer){
+//case 20: hilf_cpu.innerHTML='<span id="fussnote">VBL: '+(old_vbl).toFixed(2)+' (Peak)<br>VBL: '+(vbl).toFixed(2)+' (Current)</span>';hilf_timer=0;break;
+//}
 }  
 
 function Init() {
