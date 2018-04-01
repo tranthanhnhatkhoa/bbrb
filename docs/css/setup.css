@@ -5,6 +5,7 @@ margin-right: 0px;
 margin-bottom: 0px;
 background-color: #ffffff;						
 background: url(../gfx/bg_moore-silver.png);
+position:relative;
 }
 
 h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,nobr,b,i,select {
