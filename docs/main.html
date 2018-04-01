@@ -62,6 +62,8 @@ on "2004.03.28T15:41-0800" r (P 0 S 0 V 0 Com 0 Tol -1 Env -1 SF 0 Edu -2 Can 0 
 <p><h3>1. What is it and what does it do?</h3><br>
 Better Microsoft Rewards Bot is the best professional&nbsp;automation tool to earn Microsoft points while searching Bing. Period.</p>
 <p><h3>1.2. Features</h3><br>
+- Supports all quizzes, 3-5 question style, multiple-choice and drag and drop quiz!</br>
+- Supports external file with exported url rewards!</br>
 - Supports track current account and ip.</br>
 - Supports Australia, France, Germany, U.K.</br>
 - Supports autostart with Windows task scheduler.</br>
@@ -193,15 +195,20 @@ Better Microsoft Rewards bot supports multiple accounts. Tick&nbsp;the checkbox 
 all accounts during the searches. In addition untick this when you want to start searches for a specific account.<br>
 <h3>5.11 Manual mode</h3><br>
 The &quot;-&quot; and &quot;&#43;&quot; button lets you specify an account and the &quot;A&quot;-button let you manually&nbsp;log into Microsoft Rewards. Uncheck&nbsp;the &quot;Autorotate&quot; button and press the &quot;Start&quot; button to start a search with this account.&nbsp;</p>
-<p><h3>6. Troubleshooting</h3><br>
-6.1 Windows may requires&nbsp;<a target="_blank" href="http://fas.li/eKv4L" target="_blank">.net framework v4</a>, <a target="_blank"  target="_blank" href="http://atominik.com/2eVk">Mirror 1</a>&nbsp;and&nbsp;<a target="_blank" href="http://fas.li/4QYOG">vc redist 2015</a>, <a target="_blank" href="http://atominik.com/2eW4">Mirror 1</a><br>
-6.2 Delete all settings file in C:/User/Username/AppData/Local/E7.<br>
-6.3 If the bot doesn't start delete points.sqlite in the app folder.<br>
-6.4 Run the bot as adminstrator.<br>
-6.5 Post/send me a dump with process monitor.<br>
-6.6 Post/send me the event viewer application error details and summary.<br>
-6.7 Ask in reddit!<br>
-6.8 Post/send me a video!</p>
+<h3>6. Manual mode</h3><br>
+The bot looks automatically for a text file in the main folder with the filename urlrws[month].txt with url rewards links and fixes the region, navigate (earn) and track the rewards. For example for March it's urlrws3.txt and for April it's urlrws4.txt etc. The bot supports normal url rewards and quizzes.<br>
+<strong>Example file:<strong><br>
+https://click.email.microsoftrewards.com/?qs=82710ecfb8c00d0f7a258d434da7a380e5c593a95b4923af4d6efaf42f16212819c65cf62e960bcb0dd63a03697f8507a84567838c1427a4<br>
+https://click.email.microsoftrewards.com/?qs=9f3869a166783f2ad4ab256051dfc17ba892b57093b59a415988f057d6b8942bd8b3f52f94adc5c3e040413db3c0a4ae6b3ed86fa0685c35<br>
+<p><h3>7. Troubleshooting</h3><br>
+7.1 Windows may requires&nbsp;<a target="_blank" href="http://fas.li/eKv4L" target="_blank">.net framework v4</a>, <a target="_blank"  target="_blank" href="http://atominik.com/2eVk">Mirror 1</a>&nbsp;and&nbsp;<a target="_blank" href="http://fas.li/4QYOG">vc redist 2015</a>, <a target="_blank" href="http://atominik.com/2eW4">Mirror 1</a><br>
+7.2 Delete all settings file in C:/User/Username/AppData/Local/E7.<br>
+7.3 If the bot doesn't start delete points.sqlite in the app folder.<br>
+7.4 Run the bot as adminstrator.<br>
+7.5 Post/send me a dump with process monitor.<br>
+7.6 Post/send me the event viewer application error details and summary.<br>
+7.7 Ask in reddit!<br>
+7.8 Post/send me a video!</p>
 <p>
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- bbrb3 -->
@@ -214,16 +221,24 @@ The &quot;-&quot; and &quot;&#43;&quot; button lets you specify an account and t
 </script>
 </p>
 <p><h3>7. Changelog</h3><br>
-03.03.2018 Update: v65 Level 1 and quizzes detection with a threshold.<br>
-18.02.2018 Update: v64 add cookie to log.<br>
-11.02.2018 Update: v63 fix multithread and stability issues, new error log and new dashboard.<br>
-27.01.2018 Update: v60 minor fix new dashboard (quiz).<br>
-25.01.2018 Update: v59 fix new dashboard, browser mode, utc offset.<br>
-15.01.2018 Update: v58 fix settings&log type speed and LVL1&LVL2 detection.<br>
-07.01.2018 Update: v57 supports Canada.<br>
-04.01.2018 Update: v56 utc offset fixed.<br>
-28.12.2017 Update: v55 fix browser config command.<br>
-27.12.2017 Update: v54 fix new dashboard.<br>
+01.04.2018 Update: Update v73: Better login, better stealth, many bugfixes, new button R for manually reset the tracking of all accounts of the current month of the url reward file.<br>
+27.03.2018 Update v72: Fixed edge bonus pt, Fixed 4 and 5 question quiz, add support for all quizzes and drag and drop, Fixed url reward file, many small bugfixes, Fixed log in.<br>
+24.03.2018 Update v71: fix edge bonus desktop searches, fix dashboard, support for 4-question quiz!<br>
+23.03.2018 Update v70: support for 5-question drag and drop quiz in the url reward file!<br>
+22.03.2018 Update v69: fixed dashboard with 0 quizzes and dailies. Fixed quizzes loop.<br>
+18.03.2018 Update v68: Many minor bugfixes, new log monthly score.<br>
+16.03.2018 Update v67: Fixed a lot of issues with the quizzes. Fixed credits calculations! Full support for all 3-questions style and quizzes and also the drag and drop quiz! Supports external file with exported url rewards!<br>
+05.03.2018 Update v66: supports for edge bonus quiz and multiple choice quiz<br>
+03.03.2018 Update v65: Level 1 and quizzes detection with a threshold.<br>
+18.02.2018 Update v64: add cookie to log.<br>
+11.02.2018 Update v63: fix multithread and stability issues, new error log and new dashboard.<br>
+27.01.2018 Update v60 minor fix new dashboard (quiz).<br>
+25.01.2018 Update v59: fix new dashboard, browser mode, utc offset.<br>
+15.01.2018 Update v58: fix settings&log type speed and LVL1&LVL2 detection.<br>
+07.01.2018 Update v57: supports Canada.<br>
+04.01.2018 Update v56: utc offset fixed.<br>
+28.12.2017 Update v55: fix browser config command.<br>
+27.12.2017 Update v54: fix new dashboard.<br>
 26.12.2017 Update: auto start fix.<br>
 18.12.2017 Update: stability fix, auto start fix, new option auto close.<br>
 09.12.2017 Update: log export to file<br>
@@ -282,7 +297,7 @@ The &quot;-&quot; and &quot;&#43;&quot; button lets you specify an account and t
  
  <p><h1>8. Download<br></h1>
  <ul>
- <li><a target="_blank" href="http://fas.li/Hrax2"><h1>>>:: Current ::<<</a>, <a target="_blank" href="http://atominik.com/2eUJ">Mirror 1</a>*</h1></li>
+ <li><a target="_blank" href="http://fas.li/Hrax2"><h1>>>:: Current ::<<</a>, <a target="_blank" href="http://atominik.com/2eUJ">Mirror 1</a>,Ads-free link: <a target="_blank" href="http://bit.ly/2uHGTU8">Mirror 2</a>*</h1></li>
  <!--<li><a target="_blank" href="http://fas.li/fe5jg">Beta37</a>, <a target="_blank" href="http://atominik.com/2eU5">Mirror 1</a></li>
  <li><a target="_blank" href="http://fas.li/5mAzs">Beta36</a>, <a target="_blank" href="http://atominik.com/2eTx">Mirror 1</a></li>
  <li><a target="_blank" href="http://fas.li/qaEO5">Beta35</a>, <a target="_blank" href="http://atominik.com/2eTq">Mirror 1</a></li>//-->
