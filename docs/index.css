@@ -5,7 +5,7 @@ body {
 	line-height: 1.55em;
 	padding:0px;
 	background-image: url("spider-web-bg.jpg");
-	height:1300px;
+	height:1000px;
 } 
 
 #external-frame {min-height:940px;}
@@ -57,5 +57,5 @@ h3 {
 .wikidoc {
 	float:left;
 	width:760px;
-	height:1300px;
+	height:1000px;
 }
