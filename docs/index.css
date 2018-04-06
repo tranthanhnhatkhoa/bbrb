@@ -34,7 +34,7 @@ h3 {
 		padding-left:180px;
 	}
 }
-@media (max-width: 965px)  {
+@media (max-width: 975px)  {
 	.left {
 		display:none;
 	}
@@ -60,6 +60,6 @@ h3 {
 
 .wikidoc {
 	float:left;
-	width:760px;
+	width:740px;
 	height:880px;
 }
